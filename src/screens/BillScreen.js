@@ -1,124 +1,3 @@
-// import React, { useState } from 'react';
-// import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-// import Icon from 'react-native-vector-icons/MaterialIcons';
-
-// const BillScreen = () => {
-//   const [billItems, setBillItems] = useState([
-//     { id: 1, name: 'Item 1', price: 10 },
-//     { id: 2, name: 'Item 2', price: 20 },
-//     { id: 3, name: 'Item 3', price: 30 },
-//     { id: 4, name: 'Item 1', price: 10 },
-//     { id: 5, name: 'Item 2', price: 20 },
-//     { id: 6, name: 'Item 3', price: 30 },
-//   ]);
-
-//   const handleAddItem = (id) => {
-//     console.log('Add item with id:', id);
-//   };
-
-//   const handleDeleteItem = (id) => {
-//     console.log('Delete item with id:', id);
-//   };
-
-//   return (
-//     <ScrollView contentContainerStyle={styles.container}>
-//       <View style={styles.table}>
-//         <View style={styles.tableHeader}>
-//           <Text style={styles.headerText}>Item Name</Text>
-//           <Text style={styles.headerText}>Qty.</Text>
-//           <Text style={styles.headerText}>Price</Text>
-//           <Text style={styles.headerText}>Actions</Text>
-//         </View>
-//         {billItems.map((item) => (
-//           <View key={item.id} style={styles.tableRow}>
-//             <Text style={styles.itemName}>{item.name}</Text>
-//             <TouchableOpacity onPress={() => handleDeleteItem(item.id)} style={styles.actionButton1}>
-//               <Text style={styles.incStyle}>+</Text>
-//               </TouchableOpacity>
-//              <Text style={styles.itemName}>{item.price}</Text>
-//              <TouchableOpacity onPress={() => handleDeleteItem(item.id)} style={styles.actionButton1}>
-//              <Text style={styles.incStyle}>-</Text>
-//               </TouchableOpacity>
-
-//             <Text style={styles.itemPrice}>${item.price}</Text>
-//             <View style={styles.actionsContainer}>
-//               {/* <TouchableOpacity onPress={() => handleAddItem(item.id)} style={styles.actionButton}>
-//                 <Text>Add</Text>
-//               </TouchableOpacity> */}
-//               <TouchableOpacity onPress={() => handleDeleteItem(item.id)} style={styles.actionButton}>
-//               <Icon name="delete" size={20} color="red" />
-//               </TouchableOpacity>
-//             </View>
-//           </View>
-//         ))}
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flexGrow: 1,
-//     padding: 20,
-//   },
-//   table: {
-//     flex: 1,
-//     borderWidth: 1,
-//     borderColor: '#000',
-//     borderRadius: 5,
-//     marginBottom: 20,
-//   },
-//   tableHeader: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     borderBottomWidth: 1,
-//     borderColor: '#000',
-//     paddingVertical: 10,
-//     paddingHorizontal: 5,
-//   },
-//   headerText: {
-//     fontWeight: 'bold',
-//     fontSize: 16,
-//   },
-//   tableRow: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     borderBottomWidth: 1,
-//     borderColor: '#000',
-//     paddingVertical: 10,
-//     paddingHorizontal: 5,
-//   },
-//   itemName: {
-//     fontSize: 16,
-//   },
-//   itemPrice: {
-//     fontSize: 16,
-//   },
-//   actionsContainer: {
-//     flexDirection: 'row',
-//   },
-//   actionButton: {
-//     backgroundColor: '#007bff',
-//     paddingVertical: 5,
-//     paddingHorizontal: 10,
-//     borderRadius: 5,
-//     marginLeft: 5,
-//   },
-//   actionButton1: {
-//     backgroundColor: '#007bff',
-//     paddingVertical: 5,
-//     paddingHorizontal: 10,
-//     borderRadius: 5,
-//   },
-//   incStyle:{
-//     color:'white',
-//     fontWeight:'bold'
-//   }
-// });
-
-// export default BillScreen;
-
-
 import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import LeftArrow from 'react-native-vector-icons/Entypo'
@@ -126,8 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
 import Dec from '../components/Dec';
 import Inc from '../components/Inc';
-
-
 
 const BillScreen = () => {
   ProductList = [
@@ -187,39 +64,7 @@ const BillScreen = () => {
   const Product = ({ item }) => {
     return (
       <View style={styles.flamainview}>
-        {/* <View style={{ width: '25%', flex: 1 }}>
-          <Image
-            source={item.image}
-            style={{ width: '100%', height: '100%' }}
-          />
-        </View>
-        <View style={{ width: '75%', flexDirection: 'column' }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ marginHorizontal: '2%', justifyContent: 'center', fontSize: 13, color: 'black' }}>Name:{item.name}</Text>
-            <TouchableOpacity style={styles.flatdeleteicon}>
-              <Delete
-                name='delete'
-                size={20}
-                color='black'
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ height: '70%', flexDirection: 'row' }}>
-            <View style={{ width: '70%', paddingHorizontal: '2%' }}>
-              <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Type:{item.type}</Text>
-              <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Price:{item.price}/-</Text>
-              <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Total:{item.total}/-</Text>
-            </View>
-            <View style={{ flexDirection: 'row', marginTop: '20%' }}>
-
-              <Inc onPress1={() => setCounter(counter + 1)} />
-              <View style={{ marginHorizontal: '5%' }}>
-                <Text style={{ color: 'black' }}>{counter}</Text>
-              </View>
-              <Dec onPress2={() => counter >= 2 ? setCounter(counter - 1) : 1} />
-            </View>
-          </View>
-        </View> */}
+    
         <View style={styles.flatimageview}>
           <Image
             source={item.image}
