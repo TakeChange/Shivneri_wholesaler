@@ -7,6 +7,7 @@ const COLORS = {
     darkgrey: '#676767',
     new_black: '#3F3F41',
 
+    textfield_colo : '',
    
     light: '#F3F4FB',
     darkBlue: '#ee4e2c',
