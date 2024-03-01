@@ -6,6 +6,7 @@ import { getProductMethod } from '../redux/product/productAction';
 const ProductListScreen = () => {
     const dispatch = useDispatch();
     const getProd = useSelector(state => state.ProductReducer);
+    console.log(getProd);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
