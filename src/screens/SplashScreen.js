@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native'
+import React, { useEffect } from 'react'
 
 const SplashScreen = ({ navigation }) => {
 
@@ -8,12 +8,23 @@ const SplashScreen = ({ navigation }) => {
             navigation.navigate('DrawerNavigation');
         }, 2000);
     }, []);
-
     return (
-        <View>
-            <Text>Splash</Text>
+        <View style={styles.container}>
+            <Image
+                source={require("../assets/icons/pan.png")}
+                style={{ width: '35%', height: '18%', borderRadius: 90 }}
+            ></Image>
         </View>
-    );
-};
+    )
+}
 
-export default SplashScreen;
+export default SplashScreen
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: '#23AA49',
+        justifyContent: 'center'
+    },
+})
+
