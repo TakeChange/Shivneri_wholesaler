@@ -1,0 +1,68 @@
+const data = [
+    {
+        id:1,
+        name:'Aata',
+        BoxPrice:'6$',
+        Qty:'1kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+    {
+        id:2,
+        name:'Red Chilli powder sunscreen',
+        BoxPrice:'8$',
+        Qty:'1kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+    {
+        id:3,
+        name:'oil',
+        BoxPrice:'2$',
+        Qty:'1kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+    {
+        id:4,
+        name:'suger',
+        BoxPrice:'8$',
+        Qty:'1kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+    {
+        id:5,
+        name:'Aata',
+        BoxPrice:'8$',
+        Qty:'1kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+    {
+        id:6,
+        name:'Chilli powder',
+        BoxPrice:'$8',
+        Qty:'1kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+    {
+        id:7,
+        name:'oil',
+        BoxPrice:'3$',
+        Qty:'2kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+    {
+        id:8,
+        name:'suger',
+        BoxPrice:'3$',
+        Qty:'4kg',
+        Total:0,
+        image:require("../assets/chilli.jpg"),
+    },
+
+];
+export default data;
