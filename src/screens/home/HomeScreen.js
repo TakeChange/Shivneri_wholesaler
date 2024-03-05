@@ -1,10 +1,12 @@
-import React from 'react';
-import ProductListScreen from '../ProductListSCreen'
-import ButtonWithScroll from '../../components/ButtonWithScroll';
+import { View, Text } from 'react-native'
+import React from 'react'
 
 const HomeScreen = () => {
+  
   return (
-    <ButtonWithScroll/>
+    <View>
+      <Text>HomeScreen</Text>
+    </View>
   )
 }
 

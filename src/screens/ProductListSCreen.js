@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
+import { FlatList,StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductMethod } from '../redux/product/productAction';
 

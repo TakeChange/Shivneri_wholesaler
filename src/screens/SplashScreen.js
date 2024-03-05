@@ -4,8 +4,8 @@ import React, { useEffect } from 'react'
 const SplashScreen = ({ navigation }) => {
 
     useEffect(() => {
-        setTimeout(() => {
-            navigation.navigate('DrawerNavigation');
+        setTimeout(() => { 
+            navigation.navigate('LoginScreen');
         }, 2000);
     }, []);
     return (
