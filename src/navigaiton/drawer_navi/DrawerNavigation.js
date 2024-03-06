@@ -1,27 +1,3 @@
-// import React from 'react';
-// import { createDrawerNavigator } from '@react-navigation/drawer';
-// import HomeScreen from '../../screens/home/HomeScreen';
-// import CustomDrawer from './CustomDrawer';
-
-// const Drawer = createDrawerNavigator();
-
-// const DrawerNavigation = () => {
-//     return (
-//         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
-
-//             <Drawer.Screen
-//                 name="HomeScreen"
-//                 component={HomeScreen}
-//                 options={{ headerShown: true }}
-//             />
-
-//         </Drawer.Navigator>
-//     );
-// };
-
-// export default DrawerNavigation;
-
-
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
@@ -39,6 +15,7 @@ import SettingScreen from '../../screens/SettingScreen';
 
 
 const Drawer = createDrawerNavigator();
+
 const DrawerNavigation = () => {
 
   return (
@@ -49,7 +26,7 @@ const DrawerNavigation = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           title: 'Home',
           drawerIcon: ({ focused, size }) => (
             <FontAwesome name='home' size={22} color='#000'
@@ -61,7 +38,7 @@ const DrawerNavigation = () => {
         name="Order History(Counter)"
         component={OrderHistoryScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           title: 'Order History(Counter)',
           drawerIcon: ({ focused, size }) => (
             <MaterialIcons name='countertops' size={22} color='#000'
@@ -73,7 +50,7 @@ const DrawerNavigation = () => {
         name="Order History(Vehicle)"
         component={OrderHistoryVehicleScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           title: 'Order History(Vehicle)',
           drawerIcon: ({ focused, size }) => (
             <Entypo name='text-document' size={22} color='#000'
@@ -85,7 +62,7 @@ const DrawerNavigation = () => {
         name="ProductRunningOutofStock"
         component={ProductRunningScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           title: 'Product Out of Stock',
           drawerIcon: ({ focused, size }) => (
             <MaterialCommunityIcons name='cart-remove' size={22} color='#000'
@@ -97,7 +74,7 @@ const DrawerNavigation = () => {
         name="Setting"
         component={SettingScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           title: 'Setting',
           drawerIcon: ({ focused, size }) => (
             <AntDesign name='setting' size={22} color='#000'
