@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
+import { FlatList,StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductMethod } from '../redux/product/productAction';
 
 const ProductListScreen = () => {
     const dispatch = useDispatch();
     const getProd = useSelector(state => state.ProductReducer);
+    console.log(getProd);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
