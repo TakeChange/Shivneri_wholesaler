@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity,TextInput } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -24,8 +24,8 @@ const CategoryScreen = ({ navigation }) => {
                 <View style={styles.floatIcon}>
                     <TouchableOpacity>
                         <Ionicons name='add-circle' size={38}
-                         style={styles.addIcon}
-                         onPress={() => setModalVisible(true)} />
+                            style={styles.addIcon}
+                            onPress={() => setModalVisible(true)} />
                     </TouchableOpacity>
                 </View>
                 <Modal
@@ -74,7 +74,7 @@ const CategoryScreen = ({ navigation }) => {
 
                     </View>
                 </Modal>
-                </View>
+            </View>
 
         )
     }
