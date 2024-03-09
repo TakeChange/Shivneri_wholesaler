@@ -33,4 +33,7 @@ Redux :
             npm install redux
             npm install react-redux
 
+Model:
+    Plugin:
+        npm i react-native-modal
 

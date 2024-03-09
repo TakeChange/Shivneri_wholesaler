@@ -5,11 +5,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Modal } from 'react-native';
 import DropDown from '../components/DropdownComponent';
 import Icon from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 
-const CategoryScreen = () => {
+const CategoryScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
-
     const renderItem = ({ item, index }) => {
         return (
             <View style={styles.listContainer}>
@@ -74,9 +74,12 @@ const CategoryScreen = () => {
 
                     </View>
                 </Modal>
-            </View>
+                </View>
+
         )
     }
+
+
 
 
     return (
@@ -88,7 +91,9 @@ const CategoryScreen = () => {
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
             />
-
+            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('')}>
+                <AntDesign name="arrowright" size={25} color="white" />
+            </TouchableOpacity>
         </View>
     );
 };
@@ -195,5 +200,13 @@ const styles = StyleSheet.create({
         color: '#000'
     },
 
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#23AA29',
+        padding: 15,
+        borderRadius: 50,
+    },
 
 })

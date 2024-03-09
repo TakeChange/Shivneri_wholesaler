@@ -12,6 +12,7 @@ import OrderHistoryScreen from '../../screens/OrderHistoryScreen';
 import OrderHistoryVehicleScreen from '../../screens/OrderHistoryVehicleScreen';
 import ProductRunningScreen from '../../screens/ProductRunningScreen';
 import SettingScreen from '../../screens/SettingScreen';
+import CategoryScreen from '../../screens/CategoryScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -82,6 +83,7 @@ const DrawerNavigation = () => {
           ),
         }}
       />
+
     </Drawer.Navigator>
   )
 }

@@ -1,70 +1,122 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList } from 'react-native'
-import React, { useState } from 'react'
-import LeftArrow from 'react-native-vector-icons/Entypo'
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList } from 'react-native';
+import LeftArrow from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
 import Dec from '../components/Dec';
 import Inc from '../components/Inc';
 
 const BillScreen = () => {
-  ProductList = [
+  const [searchText, setSearchText] = useState('');
+  const [productList, setProductList] = useState([
     {
       id: 1,
       image: require('../assets/logo.png'),
       name: 'soap ',
       type: 'dsfsdf',
-      price: '210',
-      total: '210'
+      price: 210,
+      counter: 1
     },
     {
       id: 2,
       image: require('../assets/logo.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
-      price: '1100',
-      total: '1100'
+      price: 100,
+      counter: 1
     },
     {
       id: 3,
       image: require('../assets/logo.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
-      price: '1100',
-      total: '1100'
+      price: 500,
+      counter: 1
     },
     {
       id: 4,
       image: require('../assets/logo.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
-      price: '1100',
-      total: '1100'
+      price: 1100,
+      counter: 1
     },
+  ]);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [key, setKey] = useState(Date.now()); // Unique key for FlatList re-render
 
-  ]
+  useEffect(() => {
+    calculateTotal();
+  }, []);
 
-  const [searchText, setSearchText] = useState('');
-  const [counter, setCounter] = useState(1);
-  const handleClick1 = () => {
-    console.log("Inc:" + counter);
-    setCounter(counter + 1);
+  useEffect(() => {
+    // Update key when productList changes to re-render FlatList
+    setKey(Date.now());
+  }, [productList]);
+
+  const calculateTotal = () => {
+    let total = 0;
+    productList.forEach(item => {
+      total += item.price * item.counter;
+    });
+    setTotalAmount(total);
   };
 
-  const handleClick2 = () => {
-    if (counter >= 1) {
-      setCounter(counter - 1);
-    }
+  const handleClick1 = (index) => {
+    setProductList(prevList => {
+      const newList = [...prevList];
+      newList[index].counter++;
+      return newList;
+    });
+    calculateTotal();
+  };
+
+  const handleClick2 = (index) => {
+    setProductList(prevList => {
+      const newList = [...prevList];
+      if (newList[index].counter > 1) {
+        newList[index].counter--;
+      }
+      return newList;
+    });
+    calculateTotal();
   };
 
   const handleClearSearch = () => {
     setSearchText('');
   };
 
+  const Product = ({ item, index }) => {
+    const [total, setTotal] = useState(item.price * item.counter); // Initialize total with the product of price and counter
 
-  const Product = ({ item }) => {
+    const updateTotal = (counter) => {
+      setTotal(item.price * counter); // Update total based on counter
+    };
+
+    const handleClick1 = () => {
+      setProductList(prevList => {
+        const newList = [...prevList];
+        newList[index].counter++;
+        return newList;
+      });
+      updateTotal(item.counter + 1); // Update total when incrementing
+      calculateTotal(); // Recalculate the total amount
+    };
+
+    const handleClick2 = () => {
+      setProductList(prevList => {
+        const newList = [...prevList];
+        if (newList[index].counter > 1) {
+          newList[index].counter--;
+        }
+        return newList;
+      });
+      updateTotal(item.counter - 1); // Update total when decrementing
+      calculateTotal(); // Recalculate the total amount
+    };
+
     return (
       <View style={styles.flamainview}>
-    
         <View style={styles.flatimageview}>
           <Image
             source={item.image}
@@ -72,12 +124,11 @@ const BillScreen = () => {
           />
         </View>
         <View style={styles.flatdataview}>
-          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Type:{item.name}</Text>
-          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Type:{item.type}</Text>
-          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Price:{item.price}/-</Text>
-          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Total:{item.total}/-</Text>
+          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Type: {item.name}</Text>
+          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Type: {item.type}</Text>
+          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Price: {item.price}/-</Text>
+          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Total: {total}/-</Text>
         </View>
-        {/* delete and increment decrement view  */}
         <View style={styles.delidview}>
           <View style={styles.del}>
             <TouchableOpacity style={styles.flatdeleteicon}>
@@ -89,17 +140,17 @@ const BillScreen = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.id}>
-            <Inc onPress1={() => setCounter(counter + 1)} />
+            <Inc onPress1={handleClick1} />
             <View style={{ marginHorizontal: '5%' }}>
-              <Text style={{ color: 'black' }}>{counter}</Text>
+              <Text style={{ color: 'black' }}>{item.counter}</Text>
             </View>
-            <Dec onPress2={() => counter >= 2 ? setCounter(counter - 1) : 1} />
+            <Dec onPress2={handleClick2} />
           </View>
         </View>
-
       </View>
     )
   }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -138,14 +189,15 @@ const BillScreen = () => {
         )}
       </View>
       <FlatList
-        data={ProductList}
-        keyExtractor={(item) => item.id}
-        renderItem={Product}
-      // numColumns={2}
+        key={key} // Pass key to FlatList
+        data={productList}
+        keyExtractor={(item) => item.id.toString()} // Convert id to string
+        renderItem={({ item, index }) => <Product item={item} index={index} />}
       />
-      <View style={{marginTop:'10%',alignItems:'flex-end'}}>
-        <Text style={{color:'black',fontWeight:'bold',fontSize:16}}>Total : 3212/-</Text>
+      <View style={{ marginTop: '10%', alignItems: 'flex-end' }}>
+        <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 16 }}>Total : {totalAmount}/-</Text>
       </View>
+      
       <TouchableOpacity style={styles.btn}>
         <Text style={styles.text}>LOGIN</Text>
       </TouchableOpacity>
@@ -156,8 +208,6 @@ const BillScreen = () => {
 export default BillScreen
 
 const styles = StyleSheet.create({
-
-  ////full Screen
   container: {
     flex: 1,
     paddingHorizontal: 20,
@@ -261,9 +311,9 @@ const styles = StyleSheet.create({
   id: {
     //backgroundColor: 'green',
     height: 50,
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center'
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   flatdeleteicon: {
     width: 30,
@@ -289,5 +339,4 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold'
   },
-
-})
+});
