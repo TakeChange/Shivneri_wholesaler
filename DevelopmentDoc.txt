@@ -1,0 +1,39 @@
+
+Project Development Flow :-
+
+react native version : 0.73
+
+React Native Vector Icon
+    plugins:
+        npm i react-native-vector-icons
+
+    android/app/build.gradle (NOT android/build.gradle) and add:
+        apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+
+Navigation :
+    Stack Navigation:
+        plugins:
+            npm install @react-navigation/stack
+            npm install @react-navigation/native
+            npm install react-native-screens react-native-safe-area-context
+            npm install @react-navigation/native-stack
+
+    Drawer Navigation:
+        plugins:
+            npm install @react-navigation/drawer
+            npm install react-native-gesture-handler react-native-reanimated
+
+        Add react-native-reanimated/plugin plugin to your babel.config.js:
+            plugins: ['react-native-reanimated/plugin'],
+
+Redux :
+
+    Redux insatllation:
+        plugins:
+            npm install redux
+            npm install react-redux
+
+Model:
+    Plugin:
+        npm i react-native-modal
+
