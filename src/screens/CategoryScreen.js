@@ -2,9 +2,8 @@ import { FlatList, SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity
 import React, { useState } from 'react'
 import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
-
-const CategoryScreen = () => {
+import AntDesign from 'react-native-vector-icons/AntDesign'
+const CategoryScreen = ({ navigation }) => {
     const renderItem = ({ item, index }) => {
         return (
             <View style={styles.listContainer}>
@@ -18,9 +17,10 @@ const CategoryScreen = () => {
                 <Text style={styles.total}>{item.Total}</Text>
                 <View style={styles.floatIcon}>
                     <TouchableOpacity>
-                        <Ionicons name='add-circle' size={38} style={styles.addIcon}/>
+                        <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                     </TouchableOpacity>
                 </View>
+
             </View>
         )
     }
@@ -35,7 +35,9 @@ const CategoryScreen = () => {
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
             />
-
+            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('')}>
+                <AntDesign name="arrowright" size={25} color="white" />
+            </TouchableOpacity>
         </View>
     );
 };
@@ -72,15 +74,23 @@ const styles = StyleSheet.create({
     total: {
         color: 'red',
         fontWeight: '500',
-        paddingLeft:'5%'
+        paddingLeft: '5%'
     },
     floatIcon: {
-        position:'absolute',
-        bottom:1,
+        position: 'absolute',
+        bottom: 1,
         alignSelf: 'flex-end',
     },
-    addIcon:{
-        color:'#23AA49', 
-    }
+    addIcon: {
+        color: '#23AA49',
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#23AA29',
+        padding: 15,
+        borderRadius: 50,
+    },
 
 })
