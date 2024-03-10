@@ -40,7 +40,7 @@ const LoginScreen = ({ navigation }) => {
                 ToastAndroid.show('Login successfully!!!', ToastAndroid.SHORT);
                 setSession();
                 navigation.navigate('DrawerNavigation');
-            }else{
+            } else {
                 setUserError('Please enter valid username and password');
             }
         }
@@ -54,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
             );
             const value = await AsyncStorage.getItem('login');
             if (value !== null) {
-              console.log(value);
+                console.log(value);
             }
         } catch (error) {
             console.log(error);

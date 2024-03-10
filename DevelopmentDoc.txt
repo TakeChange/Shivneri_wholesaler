@@ -40,4 +40,11 @@ List Element:
     plugin :
         npm install react-native-elements
 
+Model:
+    Plugin:
+        npm i react-native-modal
+
+Image-picker:
+    Plugin:
+        npm i react-native-image-picker
 
