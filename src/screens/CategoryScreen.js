@@ -7,7 +7,6 @@ import DropDown from '../components/DropdownComponent';
 import Icon from 'react-native-vector-icons/AntDesign';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
-
 const CategoryScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const renderItem = ({ item, index }) => {
@@ -75,12 +74,8 @@ const CategoryScreen = ({ navigation }) => {
                     </View>
                 </Modal>
             </View>
-
         )
     }
-
-
-
 
     return (
         <View style={styles.container}>
@@ -91,13 +86,12 @@ const CategoryScreen = ({ navigation }) => {
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
             />
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('')}>
+            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('BillScreen')}>
                 <AntDesign name="arrowright" size={25} color="white" />
             </TouchableOpacity>
         </View>
     );
 };
-
 
 export default CategoryScreen
 
@@ -105,7 +99,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 0,
         backgroundColor: '#F7F9FD',
-
     },
     listContainer: {
         flex: 1,
@@ -199,7 +192,6 @@ const styles = StyleSheet.create({
         paddingTop: '5%',
         color: '#000'
     },
-
     addButton: {
         position: 'absolute',
         bottom: 20,
