@@ -43,5 +43,14 @@ Image-picker:
 
 Dropdown:
     Plugin:
+<<<<<<< HEAD
          npm i react-native-element-dropdown        
+=======
+         npm i react-native-element-dropdown     
+Toggle-Switch :
+    plugin:
+        npm i toggle-switch-react-native
+
+
+>>>>>>> 80ad8a4e62a4fca37b6dff7d0a23eb03a962033e
 

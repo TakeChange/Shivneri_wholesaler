@@ -5,6 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomDrawer from './CustomDrawer';
 import HomeScreen from '../../screens/home/HomeScreen';
@@ -13,6 +14,7 @@ import OrderHistoryVehicleScreen from '../../screens/OrderHistoryVehicleScreen';
 import ProductRunningScreen from '../../screens/ProductRunningScreen';
 import SettingScreen from '../../screens/SettingScreen';
 import CategoryScreen from '../../screens/CategoryScreen';
+import AddProduct from '../../screens/AddProduct';
 
 
 const Drawer = createDrawerNavigator();
@@ -67,6 +69,18 @@ const DrawerNavigation = () => {
           title: 'Product Out of Stock',
           drawerIcon: ({ focused, size }) => (
             <MaterialCommunityIcons name='cart-remove' size={22} color='#000'
+              style={{ height: 25, width: 25, }} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={{
+          headerShown: true,
+          title: 'AddProduct',
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons name='bag-add' size={22} color='#000'
               style={{ height: 25, width: 25, }} />
           ),
         }}

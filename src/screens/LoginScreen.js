@@ -35,8 +35,8 @@ const LoginScreen = ({ navigation }) => {
             setPasswordError('');
         }
         if (isValid) {
-            handleLogin();
-            // navigation.navigate('DrawerNavigation');
+            // handleLogin();
+            navigation.navigate('DrawerNavigation');
         }
     }
 
