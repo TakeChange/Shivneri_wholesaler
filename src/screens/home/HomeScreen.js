@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView, Modal,} from 'react-native';
+import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,} from 'react-native';
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Modal from "react-native-modal";
+import { Modal } from 'react-native';
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
