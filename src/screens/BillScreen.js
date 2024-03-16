@@ -11,7 +11,7 @@ const BillScreen = () => {
   const [productList, setProductList] = useState([
     {
       id: 1,
-      image: require('../assets/logo.png'),
+      image: require('../../src/assets/Shivneri.png'),
       name: 'soap ',
       type: 'dsfsdf',
       price: 210,
@@ -19,7 +19,7 @@ const BillScreen = () => {
     },
     {
       id: 2,
-      image: require('../assets/logo.png'),
+      image: require('../../src/assets/Shivneri.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
       price: 100,
@@ -27,7 +27,7 @@ const BillScreen = () => {
     },
     {
       id: 3,
-      image: require('../assets/logo.png'),
+      image: require('../../src/assets/Shivneri.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
       price: 500,
@@ -35,7 +35,7 @@ const BillScreen = () => {
     },
     {
       id: 4,
-      image: require('../assets/logo.png'),
+      image: require('../../src/assets/Shivneri.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
       price: 1100,
