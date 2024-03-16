@@ -1,4 +1,4 @@
-export const API_URL    = 'url';  // local
+export const API_URL    = 'https://demo.raviscyber.in/public';  // local
 // export const API_URL    = 'url';  // live
 
 
