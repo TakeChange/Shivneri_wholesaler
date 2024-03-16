@@ -4,7 +4,7 @@ import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Modal } from 'react-native';
+import Modal from "react-native-modal";
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
