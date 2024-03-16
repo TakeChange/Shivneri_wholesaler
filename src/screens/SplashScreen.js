@@ -11,8 +11,8 @@ const SplashScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Image
-                source={require("../assets/icons/pan.png")}
-                style={{ width: '35%', height: '18%', borderRadius: 90 }}
+                source={require("../../src/assets/Shivneri.png")}
+                style={{ width: '45%', height: '20%', borderRadius: 90 }}
             ></Image>
         </View>
     )
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#23AA49',
+      
         justifyContent: 'center'
     },
 })

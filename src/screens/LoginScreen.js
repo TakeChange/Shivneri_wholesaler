@@ -92,7 +92,7 @@ const LoginScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.logo}>
                     <Image
-                        source={require('../assets/logo.png')}
+                        source={require('../../src/assets/Shivneri.png')}
                         style={styles.logo1}
                     />
                 </View>
