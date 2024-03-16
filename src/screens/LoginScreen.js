@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, ToastAndroid } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, ToastAndroid, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import User from 'react-native-vector-icons/FontAwesome'
 import LeftArrow from 'react-native-vector-icons/Entypo'
 import Eye from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, { Axios } from 'axios';
+import { API_URL } from '../constant/Constants';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -12,8 +14,7 @@ const LoginScreen = ({ navigation }) => {
     const [passwordError, setPasswordError] = useState('');
     const [username, setUsername] = useState('');
     const [userError, setUserError] = useState('');
-
-
+    const [loading, setLoading] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -27,7 +28,6 @@ const LoginScreen = ({ navigation }) => {
         } else {
             setUserError('');
         }
-
         if (password == '') {
             setPasswordError('Password do not empty');
             isValid = false;
@@ -35,14 +35,8 @@ const LoginScreen = ({ navigation }) => {
             setPasswordError('');
         }
         if (isValid) {
-            if (username == "pritish" && password == "pritish") {
-                setUserError('');
-                ToastAndroid.show('Login successfully!!!', ToastAndroid.SHORT);
-                setSession();
-                navigation.navigate('DrawerNavigation');
-            } else {
-                setUserError('Please enter valid username and password');
-            }
+            handleLogin();
+            // navigation.navigate('DrawerNavigation');
         }
     }
 
@@ -58,6 +52,29 @@ const LoginScreen = ({ navigation }) => {
             }
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const handleLogin = async () => {
+        setLoading(true);
+
+        try {
+            // Make a POST request to the login API
+            const response = await Axios.post(API_URL+"/login.php", { username, password });
+            // Handle successful login response
+            console.log('Login successful:', response.status);
+            // Do something after successful login, like navigation to another screen
+            setUserError('');
+            ToastAndroid.show('Login successfully!!!', ToastAndroid.SHORT);
+            setSession();
+            navigation.navigate('DrawerNavigation');
+        } catch (error) {
+            // Handle login error
+            console.error('Login failed:', response.status);
+            // Show an error message
+            Alert.alert('Login Failed', 'Invalid username or password');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -131,6 +148,7 @@ const LoginScreen = ({ navigation }) => {
                 <TouchableOpacity style={styles.btn} onPress={Validation}>
                     <Text style={styles.text}>LOGIN</Text>
                 </TouchableOpacity>
+                {loading && <ActivityIndicator size="large" color="#0000ff" />}
             </View>
         </ScrollView>
     )
