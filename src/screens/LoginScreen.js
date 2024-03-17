@@ -4,7 +4,7 @@ import User from 'react-native-vector-icons/FontAwesome'
 import LeftArrow from 'react-native-vector-icons/Entypo'
 import Eye from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { Axios } from 'axios';
+import Axios from 'axios';
 import { API_URL } from '../constant/Constants';
 
 const LoginScreen = ({ navigation }) => {
@@ -54,29 +54,31 @@ const LoginScreen = ({ navigation }) => {
             console.log(error);
         }
     };
-
     const handleLogin = async () => {
         setLoading(true);
-
         try {
-            // Make a POST request to the login API
-            const response = await Axios.post(API_URL+"/login.php", { username, password });
-            // Handle successful login response
-            console.log('Login successful:', response.status);
-            // Do something after successful login, like navigation to another screen
+          const response = await Axios.post("https://demo.raviscyber.in/public/login.php", { username, password });
+          console.log('res:',response);
+          
+          const { status, message } = response.data;
+      
+          if (status === "success") {
+            console.log('Login successful:', message);
             setUserError('');
             ToastAndroid.show('Login successfully!!!', ToastAndroid.SHORT);
             setSession();
             navigation.navigate('DrawerNavigation');
-        } catch (error) {
-            // Handle login error
-            console.error('Login failed:', response.status);
-            // Show an error message
+          } else {
+            console.error('Login failed:', message);
             Alert.alert('Login Failed', 'Invalid username or password');
+          }
+        } catch (error) {
+          console.error('Login failed:', error.message);
+          Alert.alert('Login Failed', 'An error occurred while logging in');
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
     return (
         <ScrollView>
