@@ -35,7 +35,6 @@ const LoginScreen = ({ navigation }) => {
         }
         if (isValid) {
             handleLogin();
-            // navigation.navigate('DrawerNavigation');
         }
     }
 
@@ -44,6 +43,10 @@ const LoginScreen = ({ navigation }) => {
             await AsyncStorage.setItem(
                 'login',
                 'yes',
+            );
+            await AsyncStorage.setItem(
+                'username',
+                uname,
             );
             const value = await AsyncStorage.getItem('login');
             if (value !== null) {
@@ -76,7 +79,6 @@ const LoginScreen = ({ navigation }) => {
             console.log('res',response);
             
             if (status === "success") {
-                //console.log('Login successful:', message);
                 setSession();
                 ToastAndroid.show(message, ToastAndroid.SHORT);
                 navigation.navigate('DrawerNavigation');

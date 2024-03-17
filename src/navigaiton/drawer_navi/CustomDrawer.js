@@ -1,11 +1,26 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, ToastAndroid, } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DrawerItemList } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CustomDrawer = (props) => {
     const { navigation } = props;
+    const [uname,setUsername] = useState();
+
+    useEffect(()=>{
+        checkSession();
+    },[uname]);
+
+    const checkSession = async () => {
+        try {
+            const value = await AsyncStorage.getItem('username');
+            setUsername(value);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const logoutSession = async () => {
         try {
             await AsyncStorage.setItem(
@@ -27,7 +42,7 @@ const CustomDrawer = (props) => {
                     source={require('../../assets/user-profile.jpg')}
                     style={styles.imgStyle}
                 ></Image>
-                <Text style={styles.nameStyle}>Hello EveryOne!...</Text>
+                <Text style={styles.nameStyle}>Hello {uname}</Text>
             </View>
 
             <DrawerItemList {...props} />
