@@ -35,8 +35,8 @@ const LoginScreen = ({ navigation }) => {
             setPasswordError('');
         }
         if (isValid) {
-            handleLogin();
-            // navigation.navigate('DrawerNavigation');
+            // handleLogin();
+            navigation.navigate('DrawerNavigation');
         }
     }
 
@@ -94,7 +94,7 @@ const LoginScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.logo}>
                     <Image
-                        source={require('../assets/logo.png')}
+                        source={require('../../src/assets/Shivneri.png')}
                         style={styles.logo1}
                     />
                 </View>
