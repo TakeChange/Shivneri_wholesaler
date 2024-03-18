@@ -94,19 +94,19 @@ const HomeScreen = ({ navigation }) => {
       const loginUrl = 'https://demo.raviscyber.in/public/customerlist.php';
 
       const response = await axios.post(loginUrl,
-       {
+        {
           headers: {
             "Content-Type": "multipart/form-data",
-            
+
           },
         }
       );
 
       const { status, data } = response.data;
-      //console.log('res',response);      
-      console.log('const sorted = response.data.user_name',data)
-      const sorted = response.data.user_name.sort((a, b) => {
-        const nameA = a.user_name.toLowerCase();
+      console.log('res', response);
+      console.log('const sorted = response.data.user_name', data)
+      const sorted = data.sort((a, b) => {
+        const nameA = a.user_name.toLowerCase(); // Accessing the 'user_name' field directly
         const nameB = b.user_name.toLowerCase();
         if (nameA < nameB) return -1;
         if (nameA > nameB) return 1;
@@ -125,18 +125,18 @@ const HomeScreen = ({ navigation }) => {
       setData([]);
     } else {
       const filtered = sortedData.filter(item =>
-        item.name.first.toLowerCase().includes(text.toLowerCase()) ||
-        item.name.last.toLowerCase().includes(text.toLowerCase())
+        item.user_name.toLowerCase().includes(text.toLowerCase()) ||
+        item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
     }
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleItemClick(`${item.name.first} ${item.name.last}`)}>
+    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} ${item.user_name}`)}>
       <ListItem>
         <ListItem.Content>
-          <ListItem.Title>{`${item.name.first} ${item.name.last}`}</ListItem.Title>
+          <ListItem.Title>{`${item.user_name} ${item.user_name}`}</ListItem.Title>
         </ListItem.Content>
       </ListItem>
     </TouchableOpacity>
