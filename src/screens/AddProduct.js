@@ -24,7 +24,7 @@ const AddProduct = () => {
             quality: 1,
         };
         launchImageLibrary(options, (response) => {
-           // console.log('Response1 = ', response);
+            // console.log('Response1 = ', response);
 
             if (response.didCancel) {
                 //alert('User cancelled image picker');
@@ -71,10 +71,17 @@ const AddProduct = () => {
                         </TouchableOpacity>
                     </View>
                     <Text></Text>
-                    <Image
-                        source={{ uri: filePath }}
+                    {filePath == null ? <Image
                         style={styles.imageStyle}
-                    />
+                        source={{
+                            uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
+                        }}
+                    /> :
+                        <Image
+                            source={{ uri: filePath }}
+                            style={styles.imageStyle}
+                        />}
+
                 </View>
 
                 <TouchableOpacity
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     input: {
-        height: 30,
+        height: '7%',
         alignSelf: 'center',
         borderBottomWidth: 1,
         padding: '2%',
@@ -139,7 +146,7 @@ const styles = StyleSheet.create({
         padding: 15,
         width: '80%',
         alignSelf: 'center',
-        marginTop: '10%',
+        marginBottom: '5%',
         borderRadius: 25
     }
 });

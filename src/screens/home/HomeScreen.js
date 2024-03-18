@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,} from 'react-native';
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -74,9 +74,10 @@ const HomeScreen = ({ navigation }) => {
     setModalVisible(false);
   };
 
-  const handleSaveUser = (customerName, mobileNumber) => {
+  const handleSaveUser = (customerName, mobileNumber,address) => {
     console.log('Customer Name:', customerName);
     console.log('Mobile Number:', mobileNumber);
+    console.log('Address:', address);
   }
 
   const [search, setSearch] = useState('');
@@ -89,10 +90,21 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://randomuser.me/api/?results=30');
-      const sorted = response.data.results.sort((a, b) => {
-        const nameA = a.name.first.toLowerCase();
-        const nameB = b.name.first.toLowerCase();
+      const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
+      const response = await axios.post(getUser,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const { status, data } = response.data;
+      console.log('res', response);
+      console.log('const sorted = response.data.user_name', data)
+      const sorted = data.sort((a, b) => {
+        const nameA = a.user_name.toLowerCase();
+        const nameB = b.user_name.toLowerCase();
         if (nameA < nameB) return -1;
         if (nameA > nameB) return 1;
         return 0;
@@ -110,18 +122,18 @@ const HomeScreen = ({ navigation }) => {
       setData([]);
     } else {
       const filtered = sortedData.filter(item =>
-        item.name.first.toLowerCase().includes(text.toLowerCase()) ||
-        item.name.last.toLowerCase().includes(text.toLowerCase())
+        item.user_name.toLowerCase().includes(text.toLowerCase()) ||
+        item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
     }
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleItemClick(`${item.name.first} ${item.name.last}`)}>
+    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} ${item.user_name}`)}>
       <ListItem>
         <ListItem.Content>
-          <ListItem.Title>{`${item.name.first} ${item.name.last}`}</ListItem.Title>
+          <ListItem.Title>{`${item.user_name} ${item.user_name}`}</ListItem.Title>
         </ListItem.Content>
       </ListItem>
     </TouchableOpacity>
@@ -130,6 +142,42 @@ const HomeScreen = ({ navigation }) => {
   const handleItemClick = itemName => {
     setSearch(itemName);
     handleSearch(itemName);
+  };
+
+  const registerNewUser = async () => {
+    setLoading(true);
+
+    try {
+      const loginUrl = 'https://demo.raviscyber.in/public/register.php';
+
+      const response = await axios.post(loginUrl, {
+        username: uname,
+        password: pass
+      },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+
+          },
+        }
+      );
+
+      const { status, message } = response.data;
+      console.log('res', response);
+
+      if (status === "success") {
+        setSession();
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+        navigation.navigate('DrawerNavigation');
+      } else {
+        console.error('Login failed:', message);
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      ToastAndroid.show('Please enter valid username and password', ToastAndroid.SHORT);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
