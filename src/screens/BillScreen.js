@@ -11,7 +11,7 @@ const BillScreen = () => {
   const [productList, setProductList] = useState([
     {
       id: 1,
-      image: require('../../src/assets/Shivneri.png'),
+      image: require('../../src/assets/logo.png'),
       name: 'soap ',
       type: 'dsfsdf',
       price: 210,
@@ -19,7 +19,7 @@ const BillScreen = () => {
     },
     {
       id: 2,
-      image: require('../../src/assets/Shivneri.png'),
+      image: require('../../src/assets/logo.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
       price: 100,
@@ -27,7 +27,7 @@ const BillScreen = () => {
     },
     {
       id: 3,
-      image: require('../../src/assets/Shivneri.png'),
+      image: require('../../src/assets/logo.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
       price: 500,
@@ -35,7 +35,7 @@ const BillScreen = () => {
     },
     {
       id: 4,
-      image: require('../../src/assets/Shivneri.png'),
+      image: require('../../src/assets/logo.png'),
       name: 'dishwasher',
       type: 'Bsdfsdf',
       price: 1100,
@@ -124,7 +124,7 @@ const BillScreen = () => {
           />
         </View>
         <View style={styles.flatdataview}>
-          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Type: {item.name}</Text>
+          <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>name: {item.name}</Text>
           <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Type: {item.type}</Text>
           <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Price: {item.price}/-</Text>
           <Text style={{ fontSize: 13, color: 'black', marginTop: '2%' }}>Total: {total}/-</Text>
@@ -153,17 +153,6 @@ const BillScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.lefticon}>
-          <LeftArrow
-            name='chevron-small-left'
-            size={35}
-            color='black'
-          />
-        </TouchableOpacity>
-        <Text style={styles.headtext}>Bill Screen</Text>
-      </View>
-
       <View style={styles.custnameview}>
         <Text style={styles.custtext}>Customer name</Text>
       </View>
@@ -214,25 +203,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   //// header
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  lefticon: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 40 / 2,
-    borderColor: '#ccc',
-    borderWidth: 1
-  },
+ 
   headtext: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
     justifyContent: 'flex-end',
-    marginHorizontal: '5%',
 
   },
 
@@ -242,7 +218,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: '6%',
+    //marginVertical: '6%',
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -255,7 +231,7 @@ const styles = StyleSheet.create({
 
   ////remaining & pending
   rempenview: {
-
+    marginTop:'5%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',

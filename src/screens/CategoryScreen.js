@@ -4,6 +4,7 @@ import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DropDown from '../components/DropdownComponent';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const CategoryScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -12,6 +13,9 @@ const CategoryScreen = ({ navigation }) => {
     const renderItem = ({ item }) => {
         return (
             <View style={styles.listContainer}>
+                <TouchableOpacity style={styles.edit}>
+                    <FontAwesome name='edit' size={20} style={{color:'#23AA49'}} />
+                </TouchableOpacity>
                 <View style={styles.imageContainer}>
                     <Image source={item.image} style={styles.image} />
                 </View>
@@ -95,7 +99,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     imageContainer: {
-        margin: 15,
+        margin: 5,
         overflow: 'hidden',
     },
     image: {
@@ -166,7 +170,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10,
-        backgroundColor:'grey'
+        backgroundColor: 'grey'
     },
     boxcontain: {
         flexDirection: 'row',
@@ -186,4 +190,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 50,
     },
+    edit:{
+        alignSelf:'flex-end',
+    }
 });
