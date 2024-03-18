@@ -1,18 +1,17 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, ToastAndroid, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, ToastAndroid, ActivityIndicator, Alert } from 'react-native'
 import React, { useState } from 'react'
 import User from 'react-native-vector-icons/FontAwesome'
 import LeftArrow from 'react-native-vector-icons/Entypo'
 import Eye from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { Axios } from 'axios';
-import { API_URL } from '../constant/Constants';
+import axios from 'axios';
 
 const LoginScreen = ({ navigation }) => {
 
     const [showPassword, setShowPassword] = useState(false);
-    const [password, setPassword] = useState('');
+    const [pass, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    const [username, setUsername] = useState('');
+    const [uname, setUsername] = useState('');
     const [userError, setUserError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -22,21 +21,20 @@ const LoginScreen = ({ navigation }) => {
 
     const Validation = () => {
         var isValid = true;
-        if (username == '') {
+        if (uname == '') {
             setUserError('Username do not empty');
             isValid = false;
         } else {
             setUserError('');
         }
-        if (password == '') {
+        if (pass == '') {
             setPasswordError('Password do not empty');
             isValid = false;
         } else {
             setPasswordError('');
         }
         if (isValid) {
-            // handleLogin();
-            navigation.navigate('DrawerNavigation');
+            handleLogin();
         }
     }
 
@@ -45,6 +43,10 @@ const LoginScreen = ({ navigation }) => {
             await AsyncStorage.setItem(
                 'login',
                 'yes',
+            );
+            await AsyncStorage.setItem(
+                'username',
+                uname,
             );
             const value = await AsyncStorage.getItem('login');
             if (value !== null) {
@@ -59,20 +61,33 @@ const LoginScreen = ({ navigation }) => {
         setLoading(true);
 
         try {
-            // Make a POST request to the login API
-            const response = await Axios.post(API_URL+"/login.php", { username, password });
-            // Handle successful login response
-            console.log('Login successful:', response.status);
-            // Do something after successful login, like navigation to another screen
-            setUserError('');
-            ToastAndroid.show('Login successfully!!!', ToastAndroid.SHORT);
-            setSession();
-            navigation.navigate('DrawerNavigation');
+            const loginUrl = 'https://demo.raviscyber.in/public/login.php';
+
+            const response = await axios.post(loginUrl, {
+                username: uname,
+                password: pass
+            },
+             {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  
+                },
+              }
+            );
+
+            const { status, message } = response.data;
+            console.log('res',response);
+            
+            if (status === "success") {
+                setSession();
+                ToastAndroid.show(message, ToastAndroid.SHORT);
+                navigation.navigate('DrawerNavigation');
+            } else {
+                console.error('Login failed:', message);
+                ToastAndroid.show(message, ToastAndroid.SHORT);
+            }
         } catch (error) {
-            // Handle login error
-            console.error('Login failed:', response.status);
-            // Show an error message
-            Alert.alert('Login Failed', 'Invalid username or password');
+            ToastAndroid.show('Please enter valid username and password', ToastAndroid.SHORT);
         } finally {
             setLoading(false);
         }
@@ -112,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
                         style={styles.inputField}
                         placeholder="Username"
                         placeholderTextColor="#999"
-                        value={username}
+                        value={uname}
                         onChangeText={(text) => setUsername(text)}
                     />
                 </View>
@@ -132,7 +147,7 @@ const LoginScreen = ({ navigation }) => {
                         placeholder="Password"
                         placeholderTextColor="#999"
                         secureTextEntry={!showPassword}
-                        value={password}
+                        value={pass}
                         onChangeText={(text) => setPassword(text)}
                     />
                     <TouchableOpacity onPress={togglePasswordVisibility} style={{ padding: 5 }}>
