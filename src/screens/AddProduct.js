@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     name: {
         color: '#000',
         marginLeft: '5%',
-        marginBottom: "1%",
         fontWeight: '700'
     },
     input: {
