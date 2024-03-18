@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,} from 'react-native';
+import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,BackHandler,Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -64,6 +64,38 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 };
 
 const HomeScreen = ({ navigation }) => {
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => BackHandler.exitApp(),
+            backgroundColor: 'red'
+          },
+          {
+            text: 'No',
+            onPress: () => null,
+            style: 'no',
+            backgroundColor: 'red'
+
+          },
+
+        ],
+        { cancelable: false }
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleOpenModal = () => {
@@ -74,7 +106,7 @@ const HomeScreen = ({ navigation }) => {
     setModalVisible(false);
   };
 
-  const handleSaveUser = (customerName, mobileNumber,address) => {
+  const handleSaveUser = (customerName, mobileNumber, address) => {
     console.log('Customer Name:', customerName);
     console.log('Mobile Number:', mobileNumber);
     console.log('Address:', address);
