@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ToastAndroid, } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, ToastAndroid, ScrollView, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { DrawerItemList } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -35,6 +35,7 @@ const CustomDrawer = (props) => {
     };
 
     return (
+        <ScrollView>
         <View style={styles.container}>
 
             <View style={{ backgroundColor: '#23AA49', marginBottom: '2%', padding: '5%' }}>
@@ -62,6 +63,7 @@ const CustomDrawer = (props) => {
             </TouchableOpacity>
 
         </View>
+        </ScrollView>
     )
 }
 export default CustomDrawer

@@ -35,7 +35,7 @@ const AppNavigation = () => {
                 <Stack.Screen
                     name="CategoryScreen"
                     component={CategoryScreen}
-                    options={{ headerShown: true }}
+                    options={{ headerShown: false }}
                 />
 
                 <Stack.Screen
