@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     input: {
-        height: 30,
+        height:'7%',
         alignSelf: 'center',
         borderBottomWidth: 1,
         padding: '2%',
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         padding: 15,
         width: '80%',
         alignSelf: 'center',
-        marginTop: '10%',
+        marginBottom:'5%',
         borderRadius: 25
     }
 });
