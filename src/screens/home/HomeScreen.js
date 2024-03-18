@@ -65,38 +65,8 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 };
 
 const HomeScreen = ({ navigation }) => {
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert(
-        'Exit App',
-        'Are you sure you want to exit?',
-        [
-          {
-            text: 'Yes',
-            onPress: () => BackHandler.exitApp(),
-            backgroundColor: 'red'
-          },
-          {
-            text: 'No',
-            onPress: () => null,
-            style: 'no',
-            backgroundColor: 'red'
-
-          },
-
-        ],
-        { cancelable: false }
-      );
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
+  
+  
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
