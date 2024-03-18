@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10,
-        backgroundColor:'grey'
+        backgroundColor: 'grey'
     },
     boxcontain: {
         flexDirection: 'row',
