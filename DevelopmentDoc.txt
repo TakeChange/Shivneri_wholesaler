@@ -32,6 +32,13 @@ Redux :
         plugins:
             npm install redux
             npm install react-redux
+Axois :
+    plugin :
+        npm install axios
+
+List Element:
+    plugin :
+        npm install react-native-elements
 
 Model:
     Plugin:
