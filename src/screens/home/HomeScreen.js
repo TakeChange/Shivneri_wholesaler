@@ -89,15 +89,11 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchData = async () => {
     try {
-      // const response = await axios.get('https://demo.raviscyber.in/public/customerlist.php');
-
-      const loginUrl = 'https://demo.raviscyber.in/public/customerlist.php';
-
-      const response = await axios.post(loginUrl,
+      const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
+      const response = await axios.post(getUser,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-
           },
         }
       );
@@ -106,7 +102,7 @@ const HomeScreen = ({ navigation }) => {
       console.log('res', response);
       console.log('const sorted = response.data.user_name', data)
       const sorted = data.sort((a, b) => {
-        const nameA = a.user_name.toLowerCase(); // Accessing the 'user_name' field directly
+        const nameA = a.user_name.toLowerCase();
         const nameB = b.user_name.toLowerCase();
         if (nameA < nameB) return -1;
         if (nameA > nameB) return 1;
@@ -145,6 +141,42 @@ const HomeScreen = ({ navigation }) => {
   const handleItemClick = itemName => {
     setSearch(itemName);
     handleSearch(itemName);
+  };
+
+  const registerNewUser = async () => {
+    setLoading(true);
+
+    try {
+      const loginUrl = 'https://demo.raviscyber.in/public/register.php';
+
+      const response = await axios.post(loginUrl, {
+        username: uname,
+        password: pass
+      },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+
+          },
+        }
+      );
+
+      const { status, message } = response.data;
+      console.log('res', response);
+
+      if (status === "success") {
+        setSession();
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+        navigation.navigate('DrawerNavigation');
+      } else {
+        console.error('Login failed:', message);
+        ToastAndroid.show(message, ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      ToastAndroid.show('Please enter valid username and password', ToastAndroid.SHORT);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
