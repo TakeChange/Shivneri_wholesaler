@@ -40,7 +40,6 @@ const AddProduct = () => {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Text style={styles.addProduct}>Add Products</Text>
                 <View style={styles.All}>
                     <Text style={styles.name}>Enter Product Name :</Text>
                     <TextInput
@@ -94,13 +93,6 @@ export default AddProduct
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    },
-    addProduct: {
-        alignSelf: 'center',
-        fontSize: 20,
-        fontWeight: "700",
-        color: "#000",
-        marginTop: '7%'
     },
     All: {
         marginTop: '13%',
