@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,} from 'react-native';
+import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,ToastAndroid,BackHandler,Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,6 +10,7 @@ const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [address, setAddress] = useState('');
+
 
   const handleSave = () => {
     onSave(customerName, mobileNumber, address);
@@ -64,7 +65,17 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 };
 
 const HomeScreen = ({ navigation }) => {
+  
+  
   const [modalVisible, setModalVisible] = useState(false);
+  const [search, setSearch] = useState('');
+  const [data, setData] = useState([]);
+  const [sortedData, setSortedData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -74,19 +85,14 @@ const HomeScreen = ({ navigation }) => {
     setModalVisible(false);
   };
 
-  const handleSaveUser = (customerName, mobileNumber,address) => {
+  const handleSaveUser = (customerName, mobileNumber, address) => {
     console.log('Customer Name:', customerName);
     console.log('Mobile Number:', mobileNumber);
     console.log('Address:', address);
+
+    registerNewUser();
+
   }
-
-  const [search, setSearch] = useState('');
-  const [data, setData] = useState([]);
-  const [sortedData, setSortedData] = useState([]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const fetchData = async () => {
     try {
@@ -143,16 +149,18 @@ const HomeScreen = ({ navigation }) => {
     setSearch(itemName);
     handleSearch(itemName);
   };
-
+  
   const registerNewUser = async () => {
     setLoading(true);
+
 
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/register.php';
 
       const response = await axios.post(loginUrl, {
-        username: uname,
-        password: pass
+        user_name:customerName,
+        mobile_number:mobileNumber,
+        address:address,
       },
         {
           headers: {
@@ -168,9 +176,8 @@ const HomeScreen = ({ navigation }) => {
       if (status === "success") {
         setSession();
         ToastAndroid.show(message, ToastAndroid.SHORT);
-        navigation.navigate('DrawerNavigation');
       } else {
-        console.error('Login failed:', message);
+        console.error('Registation Failed:', message);
         ToastAndroid.show(message, ToastAndroid.SHORT);
       }
     } catch (error) {
