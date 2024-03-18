@@ -89,10 +89,25 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://randomuser.me/api/?results=30');
-      const sorted = response.data.results.sort((a, b) => {
-        const nameA = a.name.first.toLowerCase();
-        const nameB = b.name.first.toLowerCase();
+      // const response = await axios.get('https://demo.raviscyber.in/public/customerlist.php');
+
+      const loginUrl = 'https://demo.raviscyber.in/public/customerlist.php';
+
+      const response = await axios.post(loginUrl,
+       {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            
+          },
+        }
+      );
+
+      const { status, data } = response.data;
+      //console.log('res',response);      
+      console.log('const sorted = response.data.user_name',data)
+      const sorted = response.data.user_name.sort((a, b) => {
+        const nameA = a.user_name.toLowerCase();
+        const nameB = b.user_name.toLowerCase();
         if (nameA < nameB) return -1;
         if (nameA > nameB) return 1;
         return 0;
