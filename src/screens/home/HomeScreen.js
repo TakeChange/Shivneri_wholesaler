@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View,TextInput, FlatList, Text, TouchableOpacity, ScrollView,ToastAndroid} from 'react-native';
+import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView, ToastAndroid, BackHandler, Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,15 +7,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Modal from "react-native-modal";
+import { useNavigationState } from '@react-navigation/native';
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
-  const [nameVerify, setNameVerify] =useState('');
+  const [nameVerify, setNameVerify] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [mobileVerify, setMobileVerify] = useState('');
   const [address, setAddress] = useState('');
   const [addVerify, setAddVerify] = useState('');
- 
+
 
   // const handleSave = () => {
   //   onSave(customerName, mobileNumber, address);
@@ -24,6 +25,32 @@ const OpenModal = ({ visible, onClose, onSave }) => {
   //   setAddress('');
   //   onClose();
   // };
+
+  const navigationState = useNavigationState(state => state);
+  useEffect(() => {
+    const backAction = () => {
+      if (navigationState.routes[navigationState.index].name === 'Home') {
+        Alert.alert(
+          'Exit App',
+          'Are you sure you want to exit?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => null,
+              style: 'cancel',
+            },
+            { text: 'Exit', onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: false }
+        );
+        return true;
+      }
+      return false;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, [navigationState]);
+
 
   const clearModalInputs = () => {
     setCustomerName('');
@@ -36,38 +63,38 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 
   const handleSave = () => {
     onSave(customerName, mobileNumber, address);
-    clearModalInputs(); 
+    clearModalInputs();
     onClose();
   };
 
- function handleName(e){
-  const nameVar=e.nativeEvent.text;
-  setCustomerName(nameVar);
-  setNameVerify(false);
-  const nameRegex = /^[A-Za-z]+(\s[A-Za-z]+)?$/;
+  function handleName(e) {
+    const nameVar = e.nativeEvent.text;
+    setCustomerName(nameVar);
+    setNameVerify(false);
+    const nameRegex = /^[A-Za-z]+(\s[A-Za-z]+)?$/;
     const nameVerify = nameVar.trim().length >= 2 && nameRegex.test(nameVar); // Minimum length of 2 characters and no spaces
     setNameVerify(nameVerify);
-   
- 
- }
- function handlemobile(e){
-  const mobileVar = e.nativeEvent.text;
-  setMobileNumber(mobileVar);
-  setMobileVerify(false);
-  if(/[7-9]{1}[0-9]{9}/.test(mobileVar)){
-    setMobileNumber(mobileVar);
-    setMobileVerify(true);
-  }
-}
 
- function handleAddress(e){
-  const addressVar=e.nativeEvent.text;
-  setAddress(addressVar);
-  setAddVerify(false);
-  if(addressVar.length > 1){
-    setAddVerify(true);
+
   }
- }
+  function handlemobile(e) {
+    const mobileVar = e.nativeEvent.text;
+    setMobileNumber(mobileVar);
+    setMobileVerify(false);
+    if (/[7-9]{1}[0-9]{9}/.test(mobileVar)) {
+      setMobileNumber(mobileVar);
+      setMobileVerify(true);
+    }
+  }
+
+  function handleAddress(e) {
+    const addressVar = e.nativeEvent.text;
+    setAddress(addressVar);
+    setAddVerify(false);
+    if (addressVar.length > 1) {
+      setAddVerify(true);
+    }
+  }
   return (
     <Modal
       animationType="slide"
@@ -83,44 +110,44 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 
           <Text style={styles.modalText}>Customer Name:</Text>
           <View style={styles.modelerr}>
-          <TextInput
-           style={styles.input}
-            value={customerName}
-            onChange={e => handleName(e)}
-          />
-          {customerName.length < 1 ? null : nameVerify ? (
-            <Feather name="check-circle" color="green" size={20}/>
-          ):(
-            <MaterialIcons name="error" color="#C34A2C" size={20}/>
-          )}
+            <TextInput
+              style={styles.input}
+              value={customerName}
+              onChange={e => handleName(e)}
+            />
+            {customerName.length < 1 ? null : nameVerify ? (
+              <Feather name="check-circle" color="green" size={20} />
+            ) : (
+              <MaterialIcons name="error" color="#C34A2C" size={20} />
+            )}
           </View>
           <Text style={styles.modalText}>Customer Mobile Number:</Text>
           <View style={styles.modelerr}>
-          <TextInput
-            style={styles.input}
-            value={mobileNumber}
-            keyboardType="numeric"
-            maxLength={10}
-            onChange={e => handlemobile(e)}
-          />
-          {mobileNumber.length < 1 ? null : mobileVerify ? (
-            <Feather name="check-circle" color="green" size={20}/>
-          ):(
-            <MaterialIcons name="error" color="#C34A2C" size={20}/>
-          )}
+            <TextInput
+              style={styles.input}
+              value={mobileNumber}
+              keyboardType="numeric"
+              maxLength={10}
+              onChange={e => handlemobile(e)}
+            />
+            {mobileNumber.length < 1 ? null : mobileVerify ? (
+              <Feather name="check-circle" color="green" size={20} />
+            ) : (
+              <MaterialIcons name="error" color="#C34A2C" size={20} />
+            )}
           </View>
           <Text style={styles.modalText}>Address:</Text>
           <View style={styles.modelerr}>
-          <TextInput
-            style={styles.input}
-            value={address}
-            onChange={e => handleAddress(e)}
-          />
-          {address.length < 1 ? null : addVerify ? (
-            <Feather name="check-circle" color="green" size={20}/>
-          ):(
-            <MaterialIcons name="error" color="#C34A2C" size={20}/>
-          )}
+            <TextInput
+              style={styles.input}
+              value={address}
+              onChange={e => handleAddress(e)}
+            />
+            {address.length < 1 ? null : addVerify ? (
+              <Feather name="check-circle" color="green" size={20} />
+            ) : (
+              <MaterialIcons name="error" color="#C34A2C" size={20} />
+            )}
           </View>
           <TouchableOpacity style={styles.button} onPress={handleSave}>
             <Text style={styles.buttonText}>Save</Text>
@@ -132,8 +159,8 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 };
 
 const HomeScreen = ({ navigation }) => {
-  
-  
+
+
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
@@ -157,7 +184,7 @@ const HomeScreen = ({ navigation }) => {
     console.log('Mobile Number:', mobileNumber);
     console.log('Address:', address);
 
-    registerNewUser(customerName,mobileNumber,address);
+    registerNewUser(customerName, mobileNumber, address);
 
   }
 
@@ -216,8 +243,8 @@ const HomeScreen = ({ navigation }) => {
     setSearch(itemName);
     handleSearch(itemName);
   };
-  
-  const registerNewUser = async (customerName,mobileNumber,address) => {
+
+  const registerNewUser = async (customerName, mobileNumber, address) => {
     setLoading(true);
     console.log("Hi")
 
@@ -225,9 +252,9 @@ const HomeScreen = ({ navigation }) => {
       const loginUrl = 'https://demo.raviscyber.in/public/register.php';
 
       const response = await axios.post(loginUrl, {
-        user_name:customerName,
-        mobile_number:mobileNumber,
-        address:address,
+        user_name: customerName,
+        mobile_number: mobileNumber,
+        address: address,
       },
         {
           headers: {
@@ -240,7 +267,7 @@ const HomeScreen = ({ navigation }) => {
       console.log('res', message);
 
       if (status === "success") {
-       
+
         ToastAndroid.show("Register Successfully", ToastAndroid.SHORT);
         ToastAndroid.show(message, ToastAndroid.SHORT);
       } else {
@@ -365,7 +392,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginTop:20
+    marginTop: 20
   },
   buttonText: {
     color: 'white',
@@ -378,11 +405,11 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
   },
-  modelerr:{
-    flexDirection:'row',
-    alignContent:'center',
-    alignItems:'center',
-    justifyContent:'center',
-    alignSelf:'center'
+  modelerr: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center'
   }
 });
