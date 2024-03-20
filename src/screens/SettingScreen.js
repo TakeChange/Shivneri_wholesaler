@@ -13,7 +13,7 @@ const SettingScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row', marginTop: '7%', justifyContent: 'space-between' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.text}>Show Catalog Page</Text>
         <ToggleSwitch
           isOn={isEnabled}
@@ -43,13 +43,12 @@ export default SettingScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    padding:'5%'
   },
   text: {
     color: 'black',
     fontWeight: '900',
     fontSize: 18,
-    marginLeft: '4%',
-
   },
 })
