@@ -90,7 +90,7 @@ const HomeScreen = ({ navigation }) => {
     console.log('Mobile Number:', mobileNumber);
     console.log('Address:', address);
 
-    registerNewUser();
+    registerNewUser(customerName,mobileNumber,address);
 
   }
 
@@ -150,9 +150,9 @@ const HomeScreen = ({ navigation }) => {
     handleSearch(itemName);
   };
   
-  const registerNewUser = async () => {
+  const registerNewUser = async (customerName,mobileNumber,address) => {
     setLoading(true);
-
+    console.log("Hi")
 
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/register.php';
@@ -165,16 +165,14 @@ const HomeScreen = ({ navigation }) => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-
           },
         }
       );
 
       const { status, message } = response.data;
-      console.log('res', response);
+      console.log('res', message);
 
       if (status === "success") {
-        setSession();
         ToastAndroid.show(message, ToastAndroid.SHORT);
       } else {
         console.error('Registation Failed:', message);
