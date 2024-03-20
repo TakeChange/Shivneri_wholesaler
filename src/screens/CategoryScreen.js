@@ -5,16 +5,31 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import DropDown from '../components/DropdownComponent';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import LeftArrow from 'react-native-vector-icons/AntDesign';
+import Search from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 const CategoryScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [showSearch, setShowSearch] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = (text) => {
+        setSearchQuery(text);
+    };
+    const toggleSearch = () => {
+        setShowSearch(!showSearch);
+    };
+    const clearSearch = () => {
+        setSearchQuery('');
+    };
 
     const renderItem = ({ item }) => {
         return (
             <View style={styles.listContainer}>
                 <TouchableOpacity style={styles.edit}>
-                    <FontAwesome name='edit' size={20} style={{color:'#23AA49'}} />
+                    <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                 </TouchableOpacity>
                 <View style={styles.imageContainer}>
                     <Image source={item.image} style={styles.image} />
@@ -32,6 +47,55 @@ const CategoryScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                {!showSearch && (
+                    <>
+                        <TouchableOpacity style={styles.lefticon}>
+                            <LeftArrow
+                                name='arrowleft'
+                                size={30}
+                                color='black'
+                            />
+                        </TouchableOpacity>
+                        <Text style={styles.category}>Category Screen</Text>
+                    </>
+                )}
+                {showSearch && (
+                    <View style={styles.searchContainer}>
+                        <TouchableOpacity style={styles.lefticon}>
+                            <LeftArrow
+                                name='arrowleft'
+                                size={30}
+                                color='black'
+                                onPress={toggleSearch}
+                            />
+                        </TouchableOpacity>
+                        <View style={styles.inputContainer}>
+                            <TextInput style={styles.searchInput}
+                                placeholder="Search...."
+                                onChangeText={handleSearch}
+                                value={searchQuery}
+                                autoFocus={true}
+                            />
+                            {searchQuery !== '' && (
+                                <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
+                                    <Icon name='close' size={20} color='#000' />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </View>
+                )}
+                {!showSearch && (
+                    <TouchableOpacity onPress={toggleSearch}>
+                        <Search
+                            name='search'
+                            size={30}
+                            color='#000'
+                            marginRight='2%'
+                        />
+                    </TouchableOpacity >
+                )}
+            </View>
             <FlatList
                 data={data}
                 renderItem={renderItem}
@@ -91,6 +155,40 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F7F9FD',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: '2%'
+    },
+    lefticon: {
+        width: 30,
+        height: 30,
+        marginLeft: '2%',
+        alignSelf: 'center',
+    },
+    category: {
+        color: '#000',
+        fontSize: 18,
+        fontWeight: '500'
+    },
+    searchContainer: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    inputContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    searchInput: {
+        height: 40,
+        width:"95%",
+        borderBottomWidth: 1,    
+    },
+    clearIconContainer: {
+        position: 'absolute',
+        right: 17,
     },
     listContainer: {
         flex: 1,
@@ -190,7 +288,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 50,
     },
-    edit:{
-        alignSelf:'flex-end',
+    edit: {
+        alignSelf: 'flex-end',
     }
 });
