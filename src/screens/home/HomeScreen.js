@@ -17,11 +17,26 @@ const OpenModal = ({ visible, onClose, onSave }) => {
   const [addVerify, setAddVerify] = useState('');
  
 
+  // const handleSave = () => {
+  //   onSave(customerName, mobileNumber, address);
+  //   setCustomerName('');
+  //   setMobileNumber('');
+  //   setAddress('');
+  //   onClose();
+  // };
+
+  const clearModalInputs = () => {
+    setCustomerName('');
+    setNameVerify(false);
+    setMobileNumber('');
+    setMobileVerify(false);
+    setAddress('');
+    setAddVerify(false);
+  };
+
   const handleSave = () => {
     onSave(customerName, mobileNumber, address);
-    setCustomerName('');
-    setMobileNumber('');
-    setAddress('');
+    clearModalInputs(); 
     onClose();
   };
 
@@ -63,7 +78,7 @@ const OpenModal = ({ visible, onClose, onSave }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <TouchableOpacity onPress={onClose} style={styles.closeIcon}>
-            <AntDesign name="close" size={25} color="black" />
+            <AntDesign name="close" size={25} color="black" onPress={clearModalInputs} />
           </TouchableOpacity>
 
           <Text style={styles.modalText}>Customer Name:</Text>
