@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
 import { StyleSheet, View,TextInput, FlatList, Text, TouchableOpacity, ScrollView,ToastAndroid} from 'react-native';
-=======
-import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,ToastAndroid,BackHandler,Alert } from 'react-native';
->>>>>>> f82d28a024964ffaca83d3402b6e9497e037ad40
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
