@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+<<<<<<< HEAD
 import { StyleSheet, View,TextInput, FlatList, Text, TouchableOpacity, ScrollView,ToastAndroid} from 'react-native';
+=======
+import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, ScrollView,ToastAndroid,BackHandler,Alert } from 'react-native';
+>>>>>>> f82d28a024964ffaca83d3402b6e9497e037ad40
 import { ListItem } from 'react-native-elements';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -117,6 +121,8 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 };
 
 const HomeScreen = ({ navigation }) => {
+  
+  
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
@@ -135,12 +141,12 @@ const HomeScreen = ({ navigation }) => {
     setModalVisible(false);
   };
 
-  const handleSaveUser = (customerName, mobileNumber,address) => {
+  const handleSaveUser = (customerName, mobileNumber, address) => {
     console.log('Customer Name:', customerName);
     console.log('Mobile Number:', mobileNumber);
     console.log('Address:', address);
 
-    registerNewUser();
+    registerNewUser(customerName,mobileNumber,address);
 
   }
 
@@ -200,9 +206,9 @@ const HomeScreen = ({ navigation }) => {
     handleSearch(itemName);
   };
   
-  const registerNewUser = async () => {
+  const registerNewUser = async (customerName,mobileNumber,address) => {
     setLoading(true);
-
+    console.log("Hi")
 
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/register.php';
@@ -215,17 +221,17 @@ const HomeScreen = ({ navigation }) => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-
           },
         }
       );
 
       const { status, message } = response.data;
-      console.log('res', response);
+      console.log('res', message);
 
       if (status === "success") {
        
         ToastAndroid.show("Register Successfully", ToastAndroid.SHORT);
+        ToastAndroid.show(message, ToastAndroid.SHORT);
       } else {
         console.error('Registation Failed:', message);
         ToastAndroid.show(message, ToastAndroid.SHORT);
