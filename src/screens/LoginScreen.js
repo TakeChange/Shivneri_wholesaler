@@ -97,13 +97,13 @@ const LoginScreen = ({ navigation }) => {
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.head}>
-                    <TouchableOpacity style={styles.lefticon}>
+                    {/* <TouchableOpacity style={styles.lefticon}>
                         <LeftArrow
                             name='chevron-small-left'
                             size={35}
                             color='black'
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.logo}>
                     <Image

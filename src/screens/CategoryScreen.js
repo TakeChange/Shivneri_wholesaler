@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Modal } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ActivityIndicator, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Modal } from 'react-native';
 import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DropDown from '../components/DropdownComponent';
@@ -8,13 +8,21 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LeftArrow from 'react-native-vector-icons/AntDesign';
 import Search from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CategoryScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
+
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
+    const Product_list = useSelector((state) => state.product.data?.data);
+    const moreLoading = useSelector((state) => state.product.isLoader);
+    console.log('Product_list',Product_list[6]);
+    // console.log('moreLoading',moreLoading);
+    
     const handleSearch = (text) => {
         setSearchQuery(text);
     };
@@ -25,6 +33,12 @@ const CategoryScreen = ({ navigation }) => {
         setSearchQuery('');
     };
 
+    const BillScreenNavigate = () => {
+        navigation.navigate('BillScreen')
+
+
+    }
+
     const renderItem = ({ item }) => {
         return (
             <View style={styles.listContainer}>
@@ -32,9 +46,9 @@ const CategoryScreen = ({ navigation }) => {
                     <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                 </TouchableOpacity>
                 <View style={styles.imageContainer}>
-                    <Image source={item.image} style={styles.image} />
+                    <Image source={require('../assets/chilli.jpg')} style={styles.image} />
                 </View>
-                <Text style={styles.nameText}>{item.name}</Text>
+                <Text style={styles.nameText}>{item.product_name_eng}</Text>
                 <Text style={styles.total}>{item.Qty}</Text>
                 <Text style={styles.total}>{item.BoxPrice}</Text>
                 <Text style={styles.total}>{item.Total}</Text>
@@ -96,13 +110,18 @@ const CategoryScreen = ({ navigation }) => {
                     </TouchableOpacity >
                 )}
             </View>
-            <FlatList
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={item => item.id.toString()}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-            />
+            {moreLoading ? (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            ) : (
+                <FlatList
+                    data={Product_list}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.product_id}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                />)}
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -142,7 +161,7 @@ const CategoryScreen = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
-            <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('BillScreen')}>
+            <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
                 <AntDesign name="arrowright" size={25} color="white" />
             </TouchableOpacity>
         </View>
@@ -183,8 +202,8 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         height: 40,
-        width:"95%",
-        borderBottomWidth: 1,    
+        width: "95%",
+        borderBottomWidth: 1,
     },
     clearIconContainer: {
         position: 'absolute',
@@ -208,7 +227,8 @@ const styles = StyleSheet.create({
     nameText: {
         color: 'black',
         fontWeight: 'bold',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize:18
     },
     total: {
         color: 'red',
@@ -290,5 +310,10 @@ const styles = StyleSheet.create({
     },
     edit: {
         alignSelf: 'flex-end',
-    }
+    },
+    loaderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 });

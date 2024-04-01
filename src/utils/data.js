@@ -63,6 +63,5 @@ const data = [
         Total:0,
         image:require("../assets/chilli.jpg"),
     },
-
 ];
 export default data;

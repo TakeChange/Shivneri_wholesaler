@@ -15,27 +15,27 @@ const PlaceOrderScreen = () => {
         { label: 'Credit card' },
     ];
 
-    const placeOrder = () => {
-        Alert.alert(
-            'Place Your Order',
-            'Are you sure you want to place your order?',
-            [
-                {
-                    text: 'No',
-                    style: 'cancel',
+    // const placeOrder = () => {
+    //     Alert.alert(
+    //         'Place Your Order',
+    //         'Are you sure you want to place your order?',
+    //         [
+    //             {
+    //                 text: 'No',
+    //                 style: 'cancel',
 
-                },
-                {
-                    text: 'Yes',
-                    onPress: () => {
+    //             },
+    //             {
+    //                 text: 'Yes',
+    //                 onPress: () => {
 
-                        console.log('Order placed successfully!');
-                    },
-                },
-            ],
-            { cancelable: false }
-        );
-    };
+    //                     console.log('Order placed successfully!');
+    //                 },
+    //             },
+    //         ],
+    //         { cancelable: false }
+    //     );
+    // };
 
     return (
         <View style={styles.container}>

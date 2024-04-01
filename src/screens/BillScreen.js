@@ -50,7 +50,6 @@ const BillScreen = () => {
   }, []);
 
   useEffect(() => {
-    // Update key when productList changes to re-render FlatList
     setKey(Date.now());
   }, [productList]);
 
@@ -188,7 +187,7 @@ const BillScreen = () => {
       </View>
       
       <TouchableOpacity style={styles.btn}>
-        <Text style={styles.text}>LOGIN</Text>
+        <Text style={styles.text}>Order Now</Text>
       </TouchableOpacity>
     </ScrollView>
   )

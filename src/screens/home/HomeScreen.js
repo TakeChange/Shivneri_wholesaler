@@ -8,6 +8,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Modal from "react-native-modal";
 import { useNavigationState } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { FetchProduct } from '../../api/FetchProduct';
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
@@ -26,30 +28,30 @@ const OpenModal = ({ visible, onClose, onSave }) => {
   //   onClose();
   // };
 
-  const navigationState = useNavigationState(state => state);
-  useEffect(() => {
-    const backAction = () => {
-      if (navigationState.routes[navigationState.index].name === 'Home') {
-        Alert.alert(
-          'Exit App',
-          'Are you sure you want to exit?',
-          [
-            {
-              text: 'Cancel',
-              onPress: () => null,
-              style: 'cancel',
-            },
-            { text: 'Exit', onPress: () => BackHandler.exitApp() },
-          ],
-          { cancelable: false }
-        );
-        return true;
-      }
-      return false;
-    };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () => backHandler.remove();
-  }, [navigationState]);
+  // const navigationState = useNavigationState(state => state);
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     if (navigationState.routes[navigationState.index].name === 'Home') {
+  //       Alert.alert(
+  //         'Exit App',
+  //         'Are you sure you want to exit?',
+  //         [
+  //           {
+  //             text: 'Cancel',
+  //             onPress: () => null,
+  //             style: 'cancel',
+  //           },
+  //           { text: 'Exit', onPress: () => BackHandler.exitApp() },
+  //         ],
+  //         { cancelable: false }
+  //       );
+  //       return true;
+  //     }
+  //     return false;
+  //   };
+  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  //   return () => backHandler.remove();
+  // }, [navigationState]);
 
 
   const clearModalInputs = () => {
@@ -159,8 +161,7 @@ const OpenModal = ({ visible, onClose, onSave }) => {
 };
 
 const HomeScreen = ({ navigation }) => {
-
-
+  const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
   const [data, setData] = useState([]);
@@ -222,7 +223,6 @@ const HomeScreen = ({ navigation }) => {
       setData([]);
     } else {
       const filtered = sortedData.filter(item =>
-        item.user_name.toLowerCase().includes(text.toLowerCase()) ||
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
@@ -230,10 +230,10 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} ${item.user_name}`)}>
+    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} `)}>
       <ListItem>
         <ListItem.Content>
-          <ListItem.Title>{`${item.user_name} ${item.user_name}`}</ListItem.Title>
+          <ListItem.Title>{`${item.user_name}`}</ListItem.Title>
         </ListItem.Content>
       </ListItem>
     </TouchableOpacity>
@@ -270,6 +270,7 @@ const HomeScreen = ({ navigation }) => {
 
         ToastAndroid.show("Register Successfully", ToastAndroid.SHORT);
         ToastAndroid.show(message, ToastAndroid.SHORT);
+        fetchData();
       } else {
         console.error('Registation Failed:', message);
         ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -280,6 +281,13 @@ const HomeScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+  const NextScreen=()=>{
+    console.log('Search',search);
+    console.log('data',data);
+    dispatch(FetchProduct());
+    navigation.navigate('CategoryScreen');
+  }
 
   return (
     <View style={styles.container}>
@@ -299,7 +307,7 @@ const HomeScreen = ({ navigation }) => {
           />
         )}
       </View>
-      <TouchableOpacity style={styles.buttonbox} onPress={() => navigation.navigate('CategoryScreen')}>
+      <TouchableOpacity style={styles.buttonbox} onPress={NextScreen}>
         <Text style={styles.buttontxt}>NEXT</Text>
       </TouchableOpacity>
 
