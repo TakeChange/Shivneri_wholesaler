@@ -9,10 +9,20 @@ import LeftArrow from 'react-native-vector-icons/AntDesign';
 import Search from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
- 
+import { Dropdown } from 'react-native-element-dropdown';
+
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
-
+    const [value, setValue] = useState(null);
+    const [formData, setFormData] = useState({});
+    const data = [
+        { label: 'Item 1', value: '1' },
+        { label: 'Item 2', value: '2' },
+        { label: 'Item 3', value: '3' },
+        { label: 'Item 4', value: '4' },
+        { label: 'Item 5', value: '5' },
+    ];
+ 
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showSearch, setShowSearch] = useState(false);
@@ -38,6 +48,12 @@ const CategoryScreen = ({ navigation }) => {
 
 
     }
+    const handleChange = (key, value) => {
+        setFormData(prevState => ({
+          ...prevState,
+          [key]: value
+        }));
+      };
 
     const renderItem = ({ item }) => {
         return (
@@ -47,7 +63,7 @@ const CategoryScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); handleChange('unit_type',item.unit_type) }}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
@@ -57,7 +73,7 @@ const CategoryScreen = ({ navigation }) => {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.total}>Qty : 0</Text>
                     <Text style={styles.total}>Total : 0</Text>
-                </View> 
+                </View>
             </View>
         );
     };
@@ -143,7 +159,20 @@ const CategoryScreen = ({ navigation }) => {
                                     <Text style={styles.names}>Available Box:</Text>
                                     <View style={styles.boxcontain}>
                                         <Text style={styles.names}>Type:</Text>
-                                        <DropDown />
+                                        <Dropdown
+                                            style={styles.dropdown}
+                                            placeholderStyle={styles.placeholderStyle}
+                                            selectedTextStyle={styles.selectedTextStyle}
+                                            data={formData} 
+                                            maxHeight={100}
+                                            labelField="label"
+                                            valueField="value"
+                                            placeholder="Select item"
+                                            value={value}
+                                            onChange={item => {
+                                                setValue(item.value);
+                                            }}
+                                        />
                                         <Text style={styles.types}>Qty:</Text>
                                         <TextInput style={styles.input} />
                                     </View>
@@ -316,4 +345,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    dropdown: {
+        width: '35%',
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
+        alignSelf: 'center',
+    },
+    selectedTextStyle: {
+        color: 'black',
+        fontSize: 15,
+    },
+    placeholderStyle: {
+        color: '#000',
+        fontSize: 14,
+    }
+
 });
