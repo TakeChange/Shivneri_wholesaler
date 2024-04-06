@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, ActivityIndicator, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { FlatList, ActivityIndicator, StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput, Modal } from 'react-native';
 import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DropDown from '../components/DropdownComponent';
@@ -20,9 +20,9 @@ const CategoryScreen = ({ navigation }) => {
 
     const Product_list = useSelector((state) => state.product.data?.data);
     const moreLoading = useSelector((state) => state.product.isLoader);
-    console.log('Product_list',Product_list[6]);
+    console.log('Product_list', Product_list[6]);
     // console.log('moreLoading',moreLoading);
-    
+
     const handleSearch = (text) => {
         setSearchQuery(text);
     };
@@ -42,19 +42,22 @@ const CategoryScreen = ({ navigation }) => {
     const renderItem = ({ item }) => {
         return (
             <View style={styles.listContainer}>
-                <TouchableOpacity style={styles.edit}>
-                    <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
-                </TouchableOpacity>
                 <View style={styles.imageContainer}>
-                    <Image source={require('../assets/chilli.jpg')} style={styles.image} />
+                    <ImageBackground source={require('../assets/chilli.jpg')} style={styles.image}>
+                        <TouchableOpacity style={styles.edit}>
+                            <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
+                            <Ionicons name='add-circle' size={38} style={styles.addIcon} />
+                        </TouchableOpacity>
+                    </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name_eng}</Text>
-                <Text style={styles.total}>{item.Qty}</Text>
-                <Text style={styles.total}>{item.BoxPrice}</Text>
-                <Text style={styles.total}>{item.Total}</Text>
-                <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
-                    <Ionicons name='add-circle' size={38} style={styles.addIcon} />
-                </TouchableOpacity>
+                <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.total}>Qty : 0</Text>
+                    <Text style={styles.total}>Total : 0</Text>
+                </View> 
             </View>
         );
     };
@@ -225,14 +228,11 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
     },
     nameText: {
-        color: 'black',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        fontSize:18
+        color: '#000',
+        fontWeight: '500',
     },
     total: {
-        color: 'red',
-        fontWeight: '500',
+        color: '#000',
         paddingLeft: '5%'
     },
     floatIcon: {
@@ -315,5 +315,5 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-      },
+    },
 });
