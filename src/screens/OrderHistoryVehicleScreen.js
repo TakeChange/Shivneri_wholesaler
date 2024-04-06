@@ -1,7 +1,7 @@
 import { FlatList, ScrollView, StyleSheet, Text, View, } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const FlatlistScreen = () => {
+const OrderHistoryVechicleScreen = () => {
 
   const users = [
     {
@@ -72,7 +72,7 @@ const UserData = (props) => {
   )
 }
 
-export default FlatlistScreen
+export default OrderHistoryVechicleScreen
 
 const styles = StyleSheet.create({
   Container: {
