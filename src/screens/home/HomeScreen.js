@@ -20,13 +20,13 @@ const OpenModal = ({ visible, onClose, onSave }) => {
   const [addVerify, setAddVerify] = useState('');
 
 
-  // const handleSave = () => {
-  //   onSave(customerName, mobileNumber, address);
-  //   setCustomerName('');
-  //   setMobileNumber('');
-  //   setAddress('');
-  //   onClose();
-  // };
+  const handleSave = () => {
+    onSave(customerName, mobileNumber, address);
+    setCustomerName('');
+    setMobileNumber('');
+    setAddress('');
+    onClose();
+  };
 
   // const navigationState = useNavigationState(state => state);
   // useEffect(() => {
@@ -54,20 +54,20 @@ const OpenModal = ({ visible, onClose, onSave }) => {
   // }, [navigationState]);
 
 
-  const clearModalInputs = () => {
-    setCustomerName('');
-    setNameVerify(false);
-    setMobileNumber('');
-    setMobileVerify(false);
-    setAddress('');
-    setAddVerify(false);
-  };
+  // const clearModalInputs = () => {
+  //   setCustomerName('');
+  //   setNameVerify(false);
+  //   setMobileNumber('');
+  //   setMobileVerify(false);
+  //   setAddress('');
+  //   setAddVerify(false);
+  // };
 
-  const handleSave = () => {
-    onSave(customerName, mobileNumber, address);
-    clearModalInputs();
-    onClose();
-  };
+  // const handleSave = () => {
+  //   onSave(customerName, mobileNumber, address);
+  //   clearModalInputs();
+  //   onClose();
+  // };
 
   function handleName(e) {
     const nameVar = e.nativeEvent.text;
@@ -107,7 +107,7 @@ const OpenModal = ({ visible, onClose, onSave }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <TouchableOpacity onPress={onClose} style={styles.closeIcon}>
-            <AntDesign name="close" size={25} color="black" onPress={clearModalInputs} />
+            <AntDesign name="close" size={25} color="black" onPress={handleSave} />
           </TouchableOpacity>
 
           <Text style={styles.modalText}>Customer Name:</Text>
@@ -337,6 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   textstyle: {
+    color:'#000000',
     fontSize: 18,
     fontWeight: '600',
     borderWidth: 1,
@@ -394,6 +395,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 2,
     paddingHorizontal: 10,
+    color:'black'
   },
   button: {
     backgroundColor: '#483d8b',
