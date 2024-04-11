@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, ActivityIndicator, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { FlatList, ActivityIndicator, StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput, Modal } from 'react-native';
 import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DropDown from '../components/DropdownComponent';
@@ -9,22 +9,24 @@ import LeftArrow from 'react-native-vector-icons/AntDesign';
 import Search from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [showSearch, setShowSearch] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false); 
+    const [selectedItem, setSelectedItem] = useState(null); 
+    const [showSearch, setShowSearch] = useState(false); 
     const [searchQuery, setSearchQuery] = useState('');
 
     const Product_list = useSelector((state) => state.product.data?.data);
     const moreLoading = useSelector((state) => state.product.isLoader);
-    console.log('Product_list',Product_list[6]);
+    console.log('Product_list', Product_list[6]);
     // console.log('moreLoading',moreLoading);
-    
+
+    // const handleSearch = (text) => { 
     const handleSearch = (text) => {
-        setSearchQuery(text);
+        setSearchQuery(text); 
     };
     const toggleSearch = () => {
         setShowSearch(!showSearch);
@@ -38,15 +40,25 @@ const CategoryScreen = ({ navigation }) => {
 
 
     }
+    const handleChange = (key, value) => {
+        setFormData(prevState => ({
+          ...prevState,
+          [key]: value
+        }));
+      };
 
     const renderItem = ({ item }) => {
         return (
             <View style={styles.listContainer}>
-                <TouchableOpacity style={styles.edit}>
-                    <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
-                </TouchableOpacity>
                 <View style={styles.imageContainer}>
-                    <Image source={require('../assets/chilli.jpg')} style={styles.image} />
+                    <ImageBackground source={require('../assets/chilli.jpg')} style={styles.image}>
+                        <TouchableOpacity style={styles.edit}>
+                            <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); handleChange('unit_type',item.unit_type) }}>
+                            <Ionicons name='add-circle' size={38} style={styles.addIcon} />
+                        </TouchableOpacity>
+                    </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name_eng}</Text>
                 <Text style={styles.total}>{item.Qty}</Text>
@@ -54,12 +66,17 @@ const CategoryScreen = ({ navigation }) => {
                 <Text style={styles.total}>{item.Total}</Text>
                 <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
                     <Ionicons name='add-circle' size={38} style={styles.addIcon} />
-                </TouchableOpacity>
+                </TouchableOpacity> 
+                <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.total}>Qty : 0</Text>
+                    <Text style={styles.total}>Total : 0</Text>
+                </View>
             </View>
-        );
-    };
-
-    return (
+        );     
+    };   
+     
+    return (  
         <View style={styles.container}>
             <View style={styles.header}>
                 {!showSearch && (
@@ -76,16 +93,16 @@ const CategoryScreen = ({ navigation }) => {
                 )}
                 {showSearch && (
                     <View style={styles.searchContainer}>
-                        <TouchableOpacity style={styles.lefticon}>
+                        <TouchableOpacity style={styles.lefticon}> 
                             <LeftArrow
-                                name='arrowleft'
+                                name='arrowleft' 
                                 size={30}
-                                color='black'
-                                onPress={toggleSearch}
+                                color='black'  
+                                onPress={toggleSearch} 
                             />
-                        </TouchableOpacity>
+                        </TouchableOpacity> 
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.searchInput}
+                            <TextInput style={styles.searchInput} 
                                 placeholder="Search...."
                                 onChangeText={handleSearch}
                                 value={searchQuery}
@@ -140,7 +157,20 @@ const CategoryScreen = ({ navigation }) => {
                                     <Text style={styles.names}>Available Box:</Text>
                                     <View style={styles.boxcontain}>
                                         <Text style={styles.names}>Type:</Text>
-                                        <DropDown />
+                                        <Dropdown
+                                            style={styles.dropdown}
+                                            placeholderStyle={styles.placeholderStyle}
+                                            selectedTextStyle={styles.selectedTextStyle}
+                                            data={formData} 
+                                            maxHeight={100}
+                                            labelField="label"
+                                            valueField="value"
+                                            placeholder="Select item"
+                                            value={value}
+                                            onChange={item => {
+                                                setValue(item.value);
+                                            }}
+                                        />
                                         <Text style={styles.types}>Qty:</Text>
                                         <TextInput style={styles.input} />
                                     </View>
@@ -225,14 +255,11 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
     },
     nameText: {
-        color: 'black',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        fontSize:18
+        color: '#000',
+        fontWeight: '500',
     },
     total: {
-        color: 'red',
-        fontWeight: '500',
+        color: '#000',
         paddingLeft: '5%'
     },
     floatIcon: {
@@ -253,7 +280,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         elevation: 1,
         borderRadius: 10,
-        padding: 20,
+        padding: 20, 
     },
     product: {
         fontWeight: '500',
@@ -315,5 +342,20 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-      },
+    },
+    dropdown: {
+        width: '35%',
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
+        alignSelf: 'center',
+    },
+    selectedTextStyle: {
+        color: 'black',
+        fontSize: 15,
+    },
+    placeholderStyle: {
+        color: '#000',
+        fontSize: 14,
+    }
+
 });
