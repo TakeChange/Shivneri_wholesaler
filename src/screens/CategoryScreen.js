@@ -9,7 +9,7 @@ import LeftArrow from 'react-native-vector-icons/AntDesign';
 import Search from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dropdown } from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown'; 
 
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
