@@ -246,7 +246,7 @@ const HomeScreen = ({ navigation }) => {
 
   const registerNewUser = async (customerName, mobileNumber, address) => {
     setLoading(true);
-    console.log("Hi")
+    // console.log("Hi")
 
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/register.php';

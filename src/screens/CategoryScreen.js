@@ -13,17 +13,17 @@ import { useDispatch, useSelector } from 'react-redux';
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [showSearch, setShowSearch] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false); 
+    const [selectedItem, setSelectedItem] = useState(null); 
+    const [showSearch, setShowSearch] = useState(false); 
     const [searchQuery, setSearchQuery] = useState('');
 
     const Product_list = useSelector((state) => state.product.data?.data);
     const moreLoading = useSelector((state) => state.product.isLoader);
     console.log('Product_list',Product_list[6]);
     // console.log('moreLoading',moreLoading);
-    
-    const handleSearch = (text) => {
+
+    const handleSearch = (text) => { 
         setSearchQuery(text);
     };
     const toggleSearch = () => {
@@ -54,12 +54,12 @@ const CategoryScreen = ({ navigation }) => {
                 <Text style={styles.total}>{item.Total}</Text>
                 <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
                     <Ionicons name='add-circle' size={38} style={styles.addIcon} />
-                </TouchableOpacity>
+                </TouchableOpacity> 
             </View>
-        );
-    };
-
-    return (
+        );     
+    };   
+     
+    return (  
         <View style={styles.container}>
             <View style={styles.header}>
                 {!showSearch && (
@@ -76,16 +76,16 @@ const CategoryScreen = ({ navigation }) => {
                 )}
                 {showSearch && (
                     <View style={styles.searchContainer}>
-                        <TouchableOpacity style={styles.lefticon}>
+                        <TouchableOpacity style={styles.lefticon}> 
                             <LeftArrow
-                                name='arrowleft'
+                                name='arrowleft' 
                                 size={30}
-                                color='black'
-                                onPress={toggleSearch}
+                                color='black'  
+                                onPress={toggleSearch} 
                             />
-                        </TouchableOpacity>
+                        </TouchableOpacity> 
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.searchInput}
+                            <TextInput style={styles.searchInput} 
                                 placeholder="Search...."
                                 onChangeText={handleSearch}
                                 value={searchQuery}
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         elevation: 1,
         borderRadius: 10,
-        padding: 20,
+        padding: 20, 
     },
     product: {
         fontWeight: '500',
