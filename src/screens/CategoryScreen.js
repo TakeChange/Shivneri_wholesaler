@@ -24,9 +24,9 @@ const CategoryScreen = ({ navigation }) => {
     console.log('Product_list', Product_list[6]);
     // console.log('moreLoading',moreLoading);
 
-    const handleSearch = (text) => { 
+    // const handleSearch = (text) => { 
     const handleSearch = (text) => {
-        setSearchQuery(text);
+        setSearchQuery(text); 
     };
     const toggleSearch = () => {
         setShowSearch(!showSearch);
