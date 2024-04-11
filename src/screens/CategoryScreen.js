@@ -190,7 +190,7 @@ const CategoryScreen = ({ navigation }) => {
                                 </TouchableOpacity>
                             </>
                         )}
-                    </View>
+                    </View> 
                 </View>
             </Modal>
             <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
