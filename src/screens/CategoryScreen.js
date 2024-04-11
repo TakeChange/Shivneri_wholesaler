@@ -146,7 +146,7 @@ const CategoryScreen = ({ navigation }) => {
                                     </View>
                                 </View>
                                 <View style={styles.avai}>
-                                    <View style={styles.boxcontain}>
+                                    <View style={styles.boxcontain}> 
                                         <Text style={styles.names}>PerPrice:</Text>
                                         <TextInput style={styles.input} />
                                         <Text style={styles.names}>Total:</Text>
