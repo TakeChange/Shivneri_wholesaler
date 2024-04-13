@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { FlatList, ActivityIndicator, StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput, Modal } from 'react-native';
-import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DropDown from '../components/DropdownComponent';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,11 +17,9 @@ const CategoryScreen = ({ navigation }) => {
     const [selectedItem, setSelectedItem] = useState(null); 
     const [showSearch, setShowSearch] = useState(false); 
     const [searchQuery, setSearchQuery] = useState('');
-
     const Product_list = useSelector((state) => state.product.data?.data);
     const moreLoading = useSelector((state) => state.product?.isLoader);
 
-    // const handleSearch = (text) => { 
     const handleSearch = (text) => {
         setSearchQuery(text); 
     };
@@ -36,11 +33,6 @@ const CategoryScreen = ({ navigation }) => {
     const BillScreenNavigate = () => {
         navigation.navigate('BillScreen');
     }
-
-    // const unitTypeOptions = unitValue1.map(unitType => ({
-    //     label: unitType,
-    //     value: unitType,
-    // }));
 
     const renderItem = ({ item }) => {
         return (

@@ -35,8 +35,6 @@ const OpenModal = ({ visible, onClose, onSave }) => {
     const nameRegex = /^[A-Za-z]+(\s[A-Za-z]+)?$/;
     const nameVerify = nameVar.trim().length >= 2 && nameRegex.test(nameVar); // Minimum length of 2 characters and no spaces
     setNameVerify(nameVerify);
-
-
   }
   function handlemobile(e) {
     const mobileVar = e.nativeEvent.text;
@@ -123,6 +121,7 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
+  const [temp, setTemp] = useState('');
   const [data, setData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -185,6 +184,7 @@ const HomeScreen = ({ navigation }) => {
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
+      console.log('filtered',filtered)
     }
   };
 
@@ -201,11 +201,11 @@ const HomeScreen = ({ navigation }) => {
   const handleItemClick = itemName => {
     setSearch(itemName);
     handleSearch(itemName);
+    setTemp(itemName);
   };
 
   const registerNewUser = async (customerName, mobileNumber, address) => {
     setLoading(true);
-    // console.log("Hi")
 
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/register.php';
@@ -242,10 +242,21 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const NextScreen=()=>{
-    console.log('Search',search);
-    console.log('data',data);
-    dispatch(FetchProduct());
-    navigation.navigate('CategoryScreen');
+    console.log('search',search);
+    console.log('temp',temp);
+    console.log('.length',search.length);
+    if(search.length!=0 && search===temp)
+    {
+      dispatch(FetchProduct());
+      navigation.navigate('CategoryScreen');
+      ToastAndroid.show("start the "+temp+" billing", ToastAndroid.SHORT);
+    }
+    else
+    {
+      ToastAndroid.show("New user!! Register the user", ToastAndroid.SHORT);
+    }
+    // dispatch(FetchProduct());
+    // navigation.navigate('CategoryScreen');
   }
 
   return (
