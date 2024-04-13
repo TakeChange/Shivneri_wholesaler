@@ -43,15 +43,18 @@ const AppNavigation = () => {
                     component={BillScreen}
                     options={{ headerShown: true }}
                 />
+              
                 
             </Stack.Navigator>
 
             <CheckInternet
 
-                name="checkinternet"
+                name="CheckInternet"
                 component={CheckInternet}
                 options={{ headerShown: false }}
             />
+
+           
         </NavigationContainer>
     );
 };

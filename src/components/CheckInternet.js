@@ -4,10 +4,12 @@ import NetInfo from "@react-native-community/netinfo";
 
 const CheckInternet = () => {
     const [isConnected, setIsConnected] = useState(true);
+    const [showPopup, setShowPopup] = useState(false);
 
     const checkInternetConnection = async () => {
         const state = await NetInfo.fetch();
         setIsConnected(state.isConnected);
+        setShowPopup(!state.isConnected);
     };
 
     useEffect(() => {
@@ -15,17 +17,21 @@ const CheckInternet = () => {
 
         const unsubscribe = NetInfo.addEventListener(state => {
             setIsConnected(state.isConnected);
+            setShowPopup(!state.isConnected);
         });
 
         return () => unsubscribe();
     }, []);
 
     const handleRetry = () => {
-        checkInternetConnection();
+        setShowPopup(true);
+
     };
 
-    return !isConnected ? (
+    return !isConnected && showPopup ? (
+
         <View style={styles.container}>
+
             <View style={styles.popup}>
                 <Text style={styles.boldText}>No Connection</Text>
                 <Text style={styles.message}>Please check your internet connectivity</Text>
@@ -68,3 +74,7 @@ const styles = StyleSheet.create({
 });
 
 export default CheckInternet;
+
+
+
+
