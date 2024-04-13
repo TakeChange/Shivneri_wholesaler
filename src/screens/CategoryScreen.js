@@ -13,22 +13,18 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
-    const [value, setValue] = useState(null);
-    const [formData, setFormData] = useState({});
 
-    let unitValue = []; // Sample array of unit types
-    const [selectedUnitType, setSelectedUnitType] = useState('');
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [showSearch, setShowSearch] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false); 
+    const [selectedItem, setSelectedItem] = useState(null); 
+    const [showSearch, setShowSearch] = useState(false); 
     const [searchQuery, setSearchQuery] = useState('');
 
     const Product_list = useSelector((state) => state.product.data?.data);
     const moreLoading = useSelector((state) => state.product?.isLoader);
 
+    // const handleSearch = (text) => { 
     const handleSearch = (text) => {
-        setSearchQuery(text);
+        setSearchQuery(text); 
     };
     const toggleSearch = () => {
         setShowSearch(!showSearch);
@@ -41,10 +37,10 @@ const CategoryScreen = ({ navigation }) => {
         navigation.navigate('BillScreen');
     }
 
-    const unitTypeOptions = unitValue.map(unitType => ({
-        label: unitType,
-        value: unitType,
-    }));
+    // const unitTypeOptions = unitValue1.map(unitType => ({
+    //     label: unitType,
+    //     value: unitType,
+    // }));
 
     const renderItem = ({ item }) => {
         return (
@@ -54,22 +50,28 @@ const CategoryScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true);unitValue.push(item.unit_type);}}>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true);}}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name_eng}</Text>
+                <Text style={styles.total}>{item.Qty}</Text>
+                <Text style={styles.total}>{item.BoxPrice}</Text>
+                <Text style={styles.total}>{item.Total}</Text>
+                <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
+                    <Ionicons name='add-circle' size={38} style={styles.addIcon} />
+                </TouchableOpacity> 
                 <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.total}>Qty : 0</Text>
                     <Text style={styles.total}>Total : 0</Text>
                 </View>
             </View>
-        );
-    };
-
-    return (
+        );     
+    };   
+     
+    return (  
         <View style={styles.container}>
             <View style={styles.header}>
                 {!showSearch && (
@@ -86,16 +88,16 @@ const CategoryScreen = ({ navigation }) => {
                 )}
                 {showSearch && (
                     <View style={styles.searchContainer}>
-                        <TouchableOpacity style={styles.lefticon}>
+                        <TouchableOpacity style={styles.lefticon}> 
                             <LeftArrow
-                                name='arrowleft'
+                                name='arrowleft' 
                                 size={30}
-                                color='black'
-                                onPress={toggleSearch}
+                                color='black'  
+                                onPress={toggleSearch} 
                             />
-                        </TouchableOpacity>
+                        </TouchableOpacity> 
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.searchInput}
+                            <TextInput style={styles.searchInput} 
                                 placeholder="Search...."
                                 onChangeText={handleSearch}
                                 value={searchQuery}
@@ -273,7 +275,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         elevation: 1,
         borderRadius: 10,
-        padding: 20,
+        padding: 20, 
     },
     product: {
         fontWeight: '500',
