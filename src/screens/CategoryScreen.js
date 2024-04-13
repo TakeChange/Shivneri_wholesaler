@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { FlatList, ActivityIndicator, StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput, Modal } from 'react-native';
-import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DropDown from '../components/DropdownComponent';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,13 +17,9 @@ const CategoryScreen = ({ navigation }) => {
     const [selectedItem, setSelectedItem] = useState(null); 
     const [showSearch, setShowSearch] = useState(false); 
     const [searchQuery, setSearchQuery] = useState('');
-
     const Product_list = useSelector((state) => state.product.data?.data);
-    const moreLoading = useSelector((state) => state.product.isLoader);
-    console.log('Product_list', Product_list[6]);
-    // console.log('moreLoading',moreLoading);
+    const moreLoading = useSelector((state) => state.product?.isLoader);
 
-    // const handleSearch = (text) => { 
     const handleSearch = (text) => {
         setSearchQuery(text); 
     };
@@ -36,16 +31,8 @@ const CategoryScreen = ({ navigation }) => {
     };
 
     const BillScreenNavigate = () => {
-        navigation.navigate('BillScreen')
-
-
+        navigation.navigate('BillScreen');
     }
-    const handleChange = (key, value) => {
-        setFormData(prevState => ({
-          ...prevState,
-          [key]: value
-        }));
-      };
 
     const renderItem = ({ item }) => {
         return (
@@ -55,7 +42,7 @@ const CategoryScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); handleChange('unit_type',item.unit_type) }}>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true);}}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
@@ -161,14 +148,14 @@ const CategoryScreen = ({ navigation }) => {
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
-                                            data={formData} 
+                                            data={unitTypeOptions} 
                                             maxHeight={100}
                                             labelField="label"
                                             valueField="value"
-                                            placeholder="Select item"
-                                            value={value}
+                                            placeholder="Select unit type"
+                                            value={selectedUnitType}
                                             onChange={item => {
-                                                setValue(item.value);
+                                                setSelectedUnitType(item.value);
                                             }}
                                         />
                                         <Text style={styles.types}>Qty:</Text>
@@ -344,10 +331,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dropdown: {
-        width: '35%',
+        width: '50%',
         borderBottomWidth: 1,
         borderBottomColor: 'black',
         alignSelf: 'center',
+        color:'black'
     },
     selectedTextStyle: {
         color: 'black',
