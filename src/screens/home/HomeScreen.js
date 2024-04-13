@@ -28,47 +28,6 @@ const OpenModal = ({ visible, onClose, onSave }) => {
     onClose();
   };
 
-  // const navigationState = useNavigationState(state => state);
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     if (navigationState.routes[navigationState.index].name === 'Home') {
-  //       Alert.alert(
-  //         'Exit App',
-  //         'Are you sure you want to exit?',
-  //         [
-  //           {
-  //             text: 'Cancel',
-  //             onPress: () => null,
-  //             style: 'cancel',
-  //           },
-  //           { text: 'Exit', onPress: () => BackHandler.exitApp() },
-  //         ],
-  //         { cancelable: false }
-  //       );
-  //       return true;
-  //     }
-  //     return false;
-  //   };
-  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-  //   return () => backHandler.remove();
-  // }, [navigationState]);
-
-
-  // const clearModalInputs = () => {
-  //   setCustomerName('');
-  //   setNameVerify(false);
-  //   setMobileNumber('');
-  //   setMobileVerify(false);
-  //   setAddress('');
-  //   setAddVerify(false);
-  // };
-
-  // const handleSave = () => {
-  //   onSave(customerName, mobileNumber, address);
-  //   clearModalInputs();
-  //   onClose();
-  // };
-
   function handleName(e) {
     const nameVar = e.nativeEvent.text;
     setCustomerName(nameVar);
@@ -201,8 +160,8 @@ const HomeScreen = ({ navigation }) => {
       );
 
       const { status, data } = response.data;
-      console.log('res', response);
-      console.log('const sorted = response.data.user_name', data)
+      // console.log('res', response);
+      // console.log('const sorted = response.data.user_name', data)
       const sorted = data.sort((a, b) => {
         const nameA = a.user_name.toLowerCase();
         const nameB = b.user_name.toLowerCase();

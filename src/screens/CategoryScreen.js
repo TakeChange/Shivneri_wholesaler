@@ -15,23 +15,17 @@ const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const [value, setValue] = useState(null);
     const [formData, setFormData] = useState({});
-    const data = [
-        { label: 'Item 1', value: '1' },
-        { label: 'Item 2', value: '2' },
-        { label: 'Item 3', value: '3' },
-        { label: 'Item 4', value: '4' },
-        { label: 'Item 5', value: '5' },
-    ];
- 
+
+    let unitValue = []; // Sample array of unit types
+    const [selectedUnitType, setSelectedUnitType] = useState('');
+
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null); 
+    const [selectedItem, setSelectedItem] = useState(null);
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const Product_list = useSelector((state) => state.product.data?.data);
-    const moreLoading = useSelector((state) => state.product.isLoader);
-    console.log('Product_list', Product_list[6]);
-    // console.log('moreLoading',moreLoading);
+    const moreLoading = useSelector((state) => state.product?.isLoader);
 
     const handleSearch = (text) => {
         setSearchQuery(text);
@@ -44,16 +38,13 @@ const CategoryScreen = ({ navigation }) => {
     };
 
     const BillScreenNavigate = () => {
-        navigation.navigate('BillScreen')
-
-
+        navigation.navigate('BillScreen');
     }
-    const handleChange = (key, value) => {
-        setFormData(prevState => ({
-          ...prevState,
-          [key]: value
-        }));
-      };
+
+    const unitTypeOptions = unitValue.map(unitType => ({
+        label: unitType,
+        value: unitType,
+    }));
 
     const renderItem = ({ item }) => {
         return (
@@ -63,7 +54,7 @@ const CategoryScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); handleChange('unit_type',item.unit_type) }}>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true);unitValue.push(item.unit_type);}}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
@@ -163,14 +154,14 @@ const CategoryScreen = ({ navigation }) => {
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
-                                            data={formData} 
+                                            data={unitTypeOptions} 
                                             maxHeight={100}
                                             labelField="label"
                                             valueField="value"
-                                            placeholder="Select item"
-                                            value={value}
+                                            placeholder="Select unit type"
+                                            value={selectedUnitType}
                                             onChange={item => {
-                                                setValue(item.value);
+                                                setSelectedUnitType(item.value);
                                             }}
                                         />
                                         <Text style={styles.types}>Qty:</Text>
@@ -346,10 +337,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dropdown: {
-        width: '35%',
+        width: '50%',
         borderBottomWidth: 1,
         borderBottomColor: 'black',
         alignSelf: 'center',
+        color:'black'
     },
     selectedTextStyle: {
         color: 'black',
