@@ -56,5 +56,9 @@ Toggle-Switch :
     plugin:
         npm i toggle-switch-react-native
 
+Network status :
+    plugin :
+        npm i @react-native-community/netinfo
+
 
 

@@ -28,47 +28,6 @@ const OpenModal = ({ visible, onClose, onSave }) => {
     onClose();
   };
 
-  // const navigationState = useNavigationState(state => state);
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     if (navigationState.routes[navigationState.index].name === 'Home') {
-  //       Alert.alert(
-  //         'Exit App',
-  //         'Are you sure you want to exit?',
-  //         [
-  //           {
-  //             text: 'Cancel',
-  //             onPress: () => null,
-  //             style: 'cancel',
-  //           },
-  //           { text: 'Exit', onPress: () => BackHandler.exitApp() },
-  //         ],
-  //         { cancelable: false }
-  //       );
-  //       return true;
-  //     }
-  //     return false;
-  //   };
-  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-  //   return () => backHandler.remove();
-  // }, [navigationState]);
-
-
-  // const clearModalInputs = () => {
-  //   setCustomerName('');
-  //   setNameVerify(false);
-  //   setMobileNumber('');
-  //   setMobileVerify(false);
-  //   setAddress('');
-  //   setAddVerify(false);
-  // };
-
-  // const handleSave = () => {
-  //   onSave(customerName, mobileNumber, address);
-  //   clearModalInputs();
-  //   onClose();
-  // };
-
   function handleName(e) {
     const nameVar = e.nativeEvent.text;
     setCustomerName(nameVar);
@@ -76,8 +35,6 @@ const OpenModal = ({ visible, onClose, onSave }) => {
     const nameRegex = /^[A-Za-z]+(\s[A-Za-z]+)?$/;
     const nameVerify = nameVar.trim().length >= 2 && nameRegex.test(nameVar); // Minimum length of 2 characters and no spaces
     setNameVerify(nameVerify);
-
-
   }
   function handlemobile(e) {
     const mobileVar = e.nativeEvent.text;
@@ -164,6 +121,7 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
+  const [temp, setTemp] = useState('');
   const [data, setData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -201,8 +159,8 @@ const HomeScreen = ({ navigation }) => {
       );
 
       const { status, data } = response.data;
-      console.log('res', response);
-      console.log('const sorted = response.data.user_name', data)
+      // console.log('res', response);
+      // console.log('const sorted = response.data.user_name', data)
       const sorted = data.sort((a, b) => {
         const nameA = a.user_name.toLowerCase();
         const nameB = b.user_name.toLowerCase();
@@ -226,6 +184,7 @@ const HomeScreen = ({ navigation }) => {
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
+      console.log('filtered',filtered)
     }
   };
 
@@ -242,11 +201,11 @@ const HomeScreen = ({ navigation }) => {
   const handleItemClick = itemName => {
     setSearch(itemName);
     handleSearch(itemName);
+    setTemp(itemName);
   };
 
   const registerNewUser = async (customerName, mobileNumber, address) => {
     setLoading(true);
-    console.log("Hi")
 
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/register.php';
@@ -283,10 +242,21 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const NextScreen=()=>{
-    console.log('Search',search);
-    console.log('data',data);
-    dispatch(FetchProduct());
-    navigation.navigate('CategoryScreen');
+    console.log('search',search);
+    console.log('temp',temp);
+    console.log('.length',search.length);
+    if(search.length!=0 && search===temp)
+    {
+      dispatch(FetchProduct());
+      navigation.navigate('CategoryScreen');
+      ToastAndroid.show("start the "+temp+" billing", ToastAndroid.SHORT);
+    }
+    else
+    {
+      ToastAndroid.show("New user!! Register the user", ToastAndroid.SHORT);
+    }
+    // dispatch(FetchProduct());
+    // navigation.navigate('CategoryScreen');
   }
 
   return (

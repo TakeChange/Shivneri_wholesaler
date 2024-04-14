@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList,} from 'react-native';
 import LeftArrow from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
 import Dec from '../components/Dec';
 import Inc from '../components/Inc';
+import axios from 'axios';
+import { ListItem } from 'react-native-elements';
+import Modal from "react-native-modal";
+
 
 const BillScreen = () => {
   const [searchText, setSearchText] = useState('');
@@ -42,6 +46,69 @@ const BillScreen = () => {
       counter: 1
     },
   ]);
+  const [search, setSearch] = useState('');
+  const [data, setData] = useState([]);
+  const [sortedData, setSortedData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
+      const response = await axios.post(getUser,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const { status, data } = response.data;
+      console.log('res', response);
+      console.log('const sorted = response.data.user_name', data)
+      const sorted = data.sort((a, b) => {
+        const nameA = a.user_name.toLowerCase();
+        const nameB = b.user_name.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
+      setData(sorted);
+      setSortedData(sorted);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const handleSearch = text => {
+    setSearch(text);
+    if (text.trim() === '') {
+      setData([]);
+    } else {
+      const filtered = sortedData.filter(item =>
+        item.user_name.toLowerCase().includes(text.toLowerCase())
+      );
+      setData(filtered);
+    }
+  };
+  const renderItem1 = ({ item }) => (
+    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} `)}>
+      <ListItem>
+        <ListItem.Content>
+          <ListItem.Title>{`${item.user_name}`}</ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
+    </TouchableOpacity>
+  );
+
+  const handleItemClick = itemName => {
+    setSearch(itemName);
+    handleSearch(itemName);
+  };
+
   const [totalAmount, setTotalAmount] = useState(0);
   const [key, setKey] = useState(Date.now()); // Unique key for FlatList re-render
  
@@ -151,30 +218,36 @@ const BillScreen = () => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <Modal visible={true} style={styles.container}>
+
       <View style={styles.custnameview}>
+     
         <Text style={styles.custtext}>Customer name</Text>
       </View>
       <View style={styles.rempenview}>
         <Text style={{ color: 'black', fontSize: 15, fontWeight: '600' }}>Remaining:0000</Text>
         <Text style={{ color: 'black', fontSize: 15, fontWeight: '600' }}>Pending:000000</Text>
       </View>
-
+    
       <View style={styles.searchbar}>
         <TouchableOpacity onPress={() => console.log('Search')}>
           <Icon name="search" size={25} color="black" style={styles.icon} />
         </TouchableOpacity>
+        <View style={styles.modelbox}>
         <TextInput
-          style={styles.input}
           placeholder="Search..."
-          value={searchText}
-          onChangeText={(text) => setSearchText(text)}
+          onChangeText={handleSearch}
+          style={styles.textinput}
+          value={search}
         />
-        {searchText !== '' && (
-          <TouchableOpacity onPress={handleClearSearch}>
-            <Icon name="close" size={25} color="black" style={styles.icon} />
-          </TouchableOpacity>
+        {search.trim() !== '' && (
+          <FlatList
+            data={data}
+            renderItem={renderItem1}
+            keyExtractor={(item, index) => index.toString()}
+          />
         )}
+      </View>
       </View>
       <FlatList
         key={key} // Pass key to FlatList
@@ -185,11 +258,12 @@ const BillScreen = () => {
       <View style={{ marginTop: '10%', alignItems: 'flex-end' }}>
         <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 16 }}>Total : {totalAmount}/-</Text>
       </View>
-      
       <TouchableOpacity style={styles.btn}>
         <Text style={styles.text}>Order Now</Text>
       </TouchableOpacity>
-    </ScrollView>
+       
+    </Modal>
+    
   )
 }
 
@@ -199,7 +273,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 45,
+    
   },
   //// header
  
@@ -238,15 +313,17 @@ const styles = StyleSheet.create({
   },
   //////Searchbar
   searchbar: {
+    color:'black',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    // backgroundColor: '#f0f0f0',
     borderRadius: 10,
-    marginVertical: '5%'
+    marginVertical: '2%'
   },
-  input: {
+  textinput: {
+    color:'black',
     flex: 1,
-    marginLeft: 5,
+    
   },
   icon: {
     padding: 10,
@@ -306,12 +383,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
-    marginTop: '10%',
+    // marginTop: '10%',
     marginBottom: '10%'
   },
   text: {
-    color: 'white',
+    // color: 'white',
     fontSize: 15,
     fontWeight: 'bold'
   },
+  modelbox: {
+    width: '80%',
+    // backgroundColor: '#fff',
+   
+  },
+  
 });

@@ -6,7 +6,7 @@ import DrawerNavigation from './drawer_navi/DrawerNavigation';
 import LoginScreen from '../screens/LoginScreen';
 import CategoryScreen from '../screens/CategoryScreen';
 import BillScreen from '../screens/BillScreen';
-
+import CheckInternet from '../components/CheckInternet';
 const Stack = createStackNavigator();
 
 const AppNavigation = () => {
@@ -43,8 +43,18 @@ const AppNavigation = () => {
                     component={BillScreen}
                     options={{ headerShown: true }}
                 />
-
+              
+                
             </Stack.Navigator>
+
+            <CheckInternet
+
+                name="CheckInternet"
+                component={CheckInternet}
+                options={{ headerShown: false }}
+            />
+
+           
         </NavigationContainer>
     );
 };
