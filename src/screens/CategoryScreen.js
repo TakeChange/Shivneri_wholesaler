@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, ActivityIndicator, StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput, Modal } from 'react-native';
 import data from '../utils/data';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import DropDown from '../components/DropdownComponent';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LeftArrow from 'react-native-vector-icons/AntDesign';
@@ -15,6 +14,7 @@ const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const [value, setValue] = useState(null);
     const [formData, setFormData] = useState({});
+    const [showListing, setShowListing] = useState(false);
     const data = [
         { label: 'Item 1', value: '1' },
         { label: 'Item 2', value: '2' },
@@ -22,9 +22,9 @@ const CategoryScreen = ({ navigation }) => {
         { label: 'Item 4', value: '4' },
         { label: 'Item 5', value: '5' },
     ];
- 
+
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null); 
+    const [selectedItem, setSelectedItem] = useState(null);
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -45,17 +45,21 @@ const CategoryScreen = ({ navigation }) => {
 
     const BillScreenNavigate = () => {
         navigation.navigate('BillScreen')
-
-
     }
     const handleChange = (key, value) => {
         setFormData(prevState => ({
-          ...prevState,
-          [key]: value
+            ...prevState,
+            [key]: value
         }));
-      };
+    }; 
 
-    const renderItem = ({ item }) => {
+    const renderItem2 = ({ item }) => (
+        <View style={styles.itemContainer}>
+            <Text>{item.label}</Text>
+        </View>
+    );
+
+    const renderItem1 = ({ item }) => {
         return (
             <View style={styles.listContainer}>
                 <View style={styles.imageContainer}>
@@ -63,7 +67,7 @@ const CategoryScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); handleChange('unit_type',item.unit_type) }}>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); handleChange('unit_type', item.unit_type) }}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
@@ -91,6 +95,7 @@ const CategoryScreen = ({ navigation }) => {
                             />
                         </TouchableOpacity>
                         <Text style={styles.category}>Category Screen</Text>
+
                     </>
                 )}
                 {showSearch && (
@@ -117,6 +122,7 @@ const CategoryScreen = ({ navigation }) => {
                             )}
                         </View>
                     </View>
+
                 )}
                 {!showSearch && (
                     <TouchableOpacity onPress={toggleSearch}>
@@ -128,6 +134,22 @@ const CategoryScreen = ({ navigation }) => {
                         />
                     </TouchableOpacity >
                 )}
+                <TouchableOpacity onPress={() => setShowListing(!showListing)}>
+                    <Ionicons
+                        name='filter'
+                        size={30}
+                        color='black'
+                        marginRight='2%'
+                    />
+                </TouchableOpacity>
+                {showListing && (
+                <FlatList
+                    data={data}
+                    renderItem={renderItem2}
+                    keyExtractor={item => item.id}
+                    style={styles.list}
+                />
+            )}
             </View>
             {moreLoading ? (
                 <View style={styles.loaderContainer}>
@@ -136,7 +158,7 @@ const CategoryScreen = ({ navigation }) => {
             ) : (
                 <FlatList
                     data={Product_list}
-                    renderItem={renderItem}
+                    renderItem={renderItem1}
                     keyExtractor={item => item.product_id}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
@@ -163,7 +185,7 @@ const CategoryScreen = ({ navigation }) => {
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
-                                            data={formData} 
+                                            data={formData}
                                             maxHeight={100}
                                             labelField="label"
                                             valueField="value"
@@ -190,7 +212,7 @@ const CategoryScreen = ({ navigation }) => {
                                 </TouchableOpacity>
                             </>
                         )}
-                    </View> 
+                    </View>
                 </View>
             </Modal>
             <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
@@ -358,6 +380,18 @@ const styles = StyleSheet.create({
     placeholderStyle: {
         color: '#000',
         fontSize: 14,
-    }
+    }, 
+    itemContainer: {
+        // Styles for each list item
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+         
+    }, 
+    list: {
+        marginTop: 20,
+        
+    },
+
 
 });
