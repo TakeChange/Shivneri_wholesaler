@@ -1,4 +1,4 @@
-import React, {useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, ActivityIndicator, StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput, Modal } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -9,18 +9,28 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dropdown } from 'react-native-element-dropdown';
 
+
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
 
-    const [modalVisible, setModalVisible] = useState(false); 
-    const [selectedItem, setSelectedItem] = useState(null); 
-    const [showSearch, setShowSearch] = useState(false); 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showListing, setShowListing] = useState(false);
     const Product_list = useSelector((state) => state.product.data?.data);
     const moreLoading = useSelector((state) => state.product?.isLoader);
 
+    const data = [
+        { label: 'Item 1', value: '1' },
+        { label: 'Item 2', value: '2' },
+        { label: 'Item 3', value: '3' },
+        { label: 'Item 4', value: '4' },
+        { label: 'Item 5', value: '5' },
+    ];
+
     const handleSearch = (text) => {
-        setSearchQuery(text); 
+        setSearchQuery(text);
     };
     const toggleSearch = () => {
         setShowSearch(!showSearch);
@@ -47,28 +57,25 @@ const CategoryScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true);}}>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name_eng}</Text>
-                <Text style={styles.total}>{item.Qty}</Text>
+                {/* <Text style={styles.total}>{item.Qty}</Text>
                 <Text style={styles.total}>{item.BoxPrice}</Text>
-                <Text style={styles.total}>{item.Total}</Text>
-                <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
-                    <Ionicons name='add-circle' size={38} style={styles.addIcon} />
-                </TouchableOpacity> 
+                <Text style={styles.total}>{item.Total}</Text> */}
                 <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.total}>Qty : 0</Text>
                     <Text style={styles.total}>Total : 0</Text>
                 </View>
             </View>
-        );     
-    };   
-     
-    return (  
+        );
+    };
+
+    return (
         <View style={styles.container}>
             <View style={styles.header}>
                 {!showSearch && (
@@ -86,16 +93,16 @@ const CategoryScreen = ({ navigation }) => {
                 )}
                 {showSearch && (
                     <View style={styles.searchContainer}>
-                        <TouchableOpacity style={styles.lefticon}> 
+                        <TouchableOpacity style={styles.lefticon}>
                             <LeftArrow
-                                name='arrowleft' 
+                                name='arrowleft'
                                 size={30}
-                                color='black'  
-                                onPress={toggleSearch} 
+                                color='black'
+                                onPress={toggleSearch}
                             />
-                        </TouchableOpacity> 
+                        </TouchableOpacity>
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.searchInput} 
+                            <TextInput style={styles.searchInput}
                                 placeholder="Search...."
                                 onChangeText={handleSearch}
                                 value={searchQuery}
@@ -120,22 +127,24 @@ const CategoryScreen = ({ navigation }) => {
                         />
                     </TouchableOpacity >
                 )}
-                <TouchableOpacity onPress={() => setShowListing(!showListing)}>
-                    <Ionicons
-                        name='filter'
-                        size={30}
-                        color='black'
-                        marginRight='2%'
-                    />
-                </TouchableOpacity>
+                <View>
+                    <TouchableOpacity onPress={() => setShowListing(!showListing)}>
+                        <Ionicons
+                            name='filter'
+                            size={30}
+                            color='black'
+                            marginRight='2%'
+                        />
+                    </TouchableOpacity>
+                </View>
                 {showListing && (
-                <FlatList
-                    data={data}
-                    renderItem={renderItem2}
-                    keyExtractor={item => item.id}
-                    style={styles.list}
-                />
-            )}
+                    <FlatList
+                        data={data}
+                        renderItem={renderItem2}
+                        keyExtractor={item => item.id}
+                        style={styles.list}
+                    />
+                )}
             </View>
             {moreLoading ? (
                 <View style={styles.loaderContainer}>
@@ -171,7 +180,7 @@ const CategoryScreen = ({ navigation }) => {
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
-                                            data={unitTypeOptions} 
+                                            data={unitTypeOptions}
                                             maxHeight={100}
                                             labelField="label"
                                             valueField="value"
@@ -186,7 +195,7 @@ const CategoryScreen = ({ navigation }) => {
                                     </View>
                                 </View>
                                 <View style={styles.avai}>
-                                    <View style={styles.boxcontain}> 
+                                    <View style={styles.boxcontain}>
                                         <Text style={styles.names}>PerPrice:</Text>
                                         <TextInput style={styles.input} />
                                         <Text style={styles.names}>Total:</Text>
@@ -252,7 +261,7 @@ const styles = StyleSheet.create({
     listContainer: {
         flex: 1,
         backgroundColor: 'white',
-        margin: 8,
+        //margin: 8,
         borderRadius: 10,
     },
     imageContainer: {
@@ -267,6 +276,7 @@ const styles = StyleSheet.create({
     nameText: {
         color: '#000',
         fontWeight: '500',
+        paddingLeft: '5%'
     },
     total: {
         color: '#000',
@@ -290,7 +300,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         elevation: 1,
         borderRadius: 10,
-        padding: 20, 
+        padding: 20,
     },
     product: {
         fontWeight: '500',
@@ -358,7 +368,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: 'black',
         alignSelf: 'center',
-        color:'black'
+        color: 'black'
     },
     selectedTextStyle: {
         color: 'black',
@@ -367,18 +377,13 @@ const styles = StyleSheet.create({
     placeholderStyle: {
         color: '#000',
         fontSize: 14,
-    }, 
+    },
     itemContainer: {
-        // Styles for each list item
-        padding: 10,
+        // padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
-         
-    }, 
+    },
     list: {
         marginTop: 20,
-        
     },
-
-
 });
