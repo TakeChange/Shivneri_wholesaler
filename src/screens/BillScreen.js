@@ -111,7 +111,7 @@ const BillScreen = () => {
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [key, setKey] = useState(Date.now()); // Unique key for FlatList re-render
-
+ 
   useEffect(() => {
     calculateTotal();
   }, []);
