@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList,} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList, } from 'react-native';
 import LeftArrow from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
@@ -111,7 +111,7 @@ const BillScreen = () => {
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [key, setKey] = useState(Date.now()); // Unique key for FlatList re-render
- 
+
   useEffect(() => {
     calculateTotal();
   }, []);
@@ -221,33 +221,33 @@ const BillScreen = () => {
     <Modal visible={true} style={styles.container}>
 
       <View style={styles.custnameview}>
-     
+
         <Text style={styles.custtext}>Customer name</Text>
       </View>
       <View style={styles.rempenview}>
         <Text style={{ color: 'black', fontSize: 15, fontWeight: '600' }}>Remaining:0000</Text>
         <Text style={{ color: 'black', fontSize: 15, fontWeight: '600' }}>Pending:000000</Text>
       </View>
-    
+
       <View style={styles.searchbar}>
         <TouchableOpacity onPress={() => console.log('Search')}>
           <Icon name="search" size={25} color="black" style={styles.icon} />
         </TouchableOpacity>
         <View style={styles.modelbox}>
-        <TextInput
-          placeholder="Search..."
-          onChangeText={handleSearch}
-          style={styles.textinput}
-          value={search}
-        />
-        {search.trim() !== '' && (
-          <FlatList
-            data={data}
-            renderItem={renderItem1}
-            keyExtractor={(item, index) => index.toString()}
+          <TextInput
+            placeholder="Search..."
+            onChangeText={handleSearch}
+            style={styles.textinput}
+            value={search}
           />
-        )}
-      </View>
+          {search.trim() !== '' && (
+            <FlatList
+              data={data}
+              renderItem={renderItem1}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          )}
+        </View>
       </View>
       <FlatList
         key={key} // Pass key to FlatList
@@ -261,9 +261,9 @@ const BillScreen = () => {
       <TouchableOpacity style={styles.btn}>
         <Text style={styles.text}>Order Now</Text>
       </TouchableOpacity>
-       
+
     </Modal>
-    
+
   )
 }
 
@@ -274,10 +274,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 45,
-    
+
   },
   //// header
- 
+
   headtext: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
 
   ////remaining & pending
   rempenview: {
-    marginTop:'5%',
+    marginTop: '5%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   },
   //////Searchbar
   searchbar: {
-    color:'black',
+    color: 'black',
     flexDirection: 'row',
     alignItems: 'center',
     // backgroundColor: '#f0f0f0',
@@ -321,9 +321,9 @@ const styles = StyleSheet.create({
     marginVertical: '2%'
   },
   textinput: {
-    color:'black',
+    color: 'black',
     flex: 1,
-    
+
   },
   icon: {
     padding: 10,
@@ -394,9 +394,9 @@ const styles = StyleSheet.create({
   modelbox: {
     width: '80%',
     // backgroundColor: '#fff',
-   
+
   },
-  
+
 });
 
 
