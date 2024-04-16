@@ -15,6 +15,7 @@ import ProductRunningScreen from '../../screens/ProductRunningScreen';
 import SettingScreen from '../../screens/SettingScreen';
 import CategoryScreen from '../../screens/CategoryScreen';
 import AddProduct from '../../screens/AddProduct';
+import EditProductScreen from '../../screens/EditProductScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -93,6 +94,19 @@ const DrawerNavigation = () => {
           title: 'Setting',
           drawerIcon: ({ focused, size }) => (
             <AntDesign name='setting' size={22} color='#000'
+              style={{ height: 25, width: 25, }} />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="EditProduct"
+        component={EditProductScreen}
+        options={{
+          headerShown: true,
+          title: 'EditProduct',
+          drawerIcon: ({ focused, size }) => (
+            <MaterialCommunityIcons name='book-edit' size={22} color='#000'
               style={{ height: 25, width: 25, }} />
           ),
         }}

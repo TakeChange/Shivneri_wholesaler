@@ -22,7 +22,7 @@ const CategoryScreen = ({ navigation }) => {
     const moreLoading = useSelector((state) => state.product?.isLoader);
 
     const data = [
-        { label: 'Item 1', value: '1' },
+        { label: 'Item 1', value: '1' }, 
         { label: 'Item 2', value: '2' },
         { label: 'Item 3', value: '3' },
         { label: 'Item 4', value: '4' },
@@ -180,12 +180,12 @@ const CategoryScreen = ({ navigation }) => {
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
-                                            data={unitTypeOptions}
+                                            data={data}
                                             maxHeight={100}
                                             labelField="label"
                                             valueField="value"
                                             placeholder="Select unit type"
-                                            value={selectedUnitType}
+                                            value={data}
                                             onChange={item => {
                                                 setSelectedUnitType(item.value);
                                             }}
