@@ -61,4 +61,6 @@ Network status :
         npm i @react-native-community/netinfo
 
 
-
+TextArea :
+    plugin :
+        npm i react-native-textarea

@@ -159,8 +159,6 @@ const HomeScreen = ({ navigation }) => {
       );
 
       const { status, data } = response.data;
-      // console.log('res', response);
-      // console.log('const sorted = response.data.user_name', data)
       const sorted = data.sort((a, b) => {
         const nameA = a.user_name.toLowerCase();
         const nameB = b.user_name.toLowerCase();
@@ -184,9 +182,9 @@ const HomeScreen = ({ navigation }) => {
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
-      console.log('filtered',filtered)
     }
   };
+  
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} `)}>
@@ -241,15 +239,13 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const NextScreen=()=>{
-    if(search.length!=0 && search===temp)
-    {
+  const NextScreen = () => {
+    if (search.length != 0 && search === temp) {
       dispatch(FetchProduct());
-      navigation.navigate('CategoryScreen',username=temp);
-      ToastAndroid.show("start the "+temp+" billing", ToastAndroid.SHORT);
+      navigation.navigate('CategoryScreen', username = temp);
+      ToastAndroid.show("start the " + temp + " billing", ToastAndroid.SHORT);
     }
-    else
-    {
+    else {
       ToastAndroid.show("New user!! Register the user", ToastAndroid.SHORT);
     }
   }
@@ -261,9 +257,11 @@ const HomeScreen = ({ navigation }) => {
         <TextInput
           placeholder="Enter customer name"
           onChangeText={handleSearch}
+          onSubmitEditing={() => handleSearch(search)}
           style={styles.textstyle}
           value={search}
         />
+
         {search.trim() !== '' && (
           <FlatList
             data={data}
@@ -302,7 +300,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   textstyle: {
-    color:'#000000',
+    color: '#000000',
     fontSize: 18,
     fontWeight: '600',
     borderWidth: 1,
@@ -360,7 +358,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 2,
     paddingHorizontal: 10,
-    color:'black'
+    color: 'black'
   },
   button: {
     backgroundColor: '#483d8b',
