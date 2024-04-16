@@ -53,7 +53,7 @@ const CategoryScreen = ({ navigation }) => {
         return (
             <View style={styles.listContainer}>
                 <View style={styles.imageContainer}>
-                    <ImageBackground source={require('../assets/chilli.jpg')} style={styles.image}>
+                    <ImageBackground source={{uri: item.product_image==null?'https://reactjs.org/logo-og.png':item.product_image}} style={styles.image}>
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
@@ -61,11 +61,8 @@ const CategoryScreen = ({ navigation }) => {
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
-                </View>
+                </View> 
                 <Text style={styles.nameText}>{item.product_name_eng}</Text>
-                {/* <Text style={styles.total}>{item.Qty}</Text>
-                <Text style={styles.total}>{item.BoxPrice}</Text>
-                <Text style={styles.total}>{item.Total}</Text> */}
                 <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.total}>Qty : 0</Text>
