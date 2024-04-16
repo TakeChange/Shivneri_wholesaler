@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   textstyle: {
-    color: '#000000',
+   color:'black',
     fontSize: 18,
     fontWeight: '600',
     borderWidth: 1,
