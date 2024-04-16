@@ -1,156 +1,25 @@
 
-// import React, { useState, useEffect, useRef } from 'react';
-// import { StyleSheet, TextInput, FlatList, TouchableOpacity, View, Text } from 'react-native';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-// import axios from 'axios';
 
-// const CreditBalanceScreen = () => {
-//     const [search, setSearch] = useState('');
-//     const [data, setData] = useState([]);
-//     const [sortedData, setSortedData] = useState([]);
-//     const [itemClicked, setItemClicked] = useState(false);
-//     const flatListRef = useRef(null);
-
-//     useEffect(() => {
-//         fetchData();
-//     }, []);
-
-//     const fetchData = async () => {
-//         try {
-//             const response = await axios.get('https://demo.raviscyber.in/public/customerlist.php');
-//             const { data } = response.data;
-//             console.log('response', response.data);
-//             const sorted = data.sort((a, b) => {
-//                 const nameA = a.user_name.toLowerCase();
-//                 const nameB = b.user_name.toLowerCase();
-//                 if (nameA < nameB) return -1;
-//                 if (nameA > nameB) return 1;
-//                 return 0;
-//             });
-//             setData(sorted);
-//             setSortedData(sorted);
-//         } catch (error) {
-//             console.error('Error fetching data:', error);
-//         }
-//     };
-
-//     const handleSearch = text => {
-//         setSearch(text);
-//         if (text.trim() === '') {
-//             setData(sortedData);
-//             setItemClicked(false); // Reset itemClicked state when search bar is cleared
-//         } else {
-//             const filtered = sortedData.filter(item =>
-//                 item.user_name.toLowerCase().includes(text.toLowerCase())
-//             );
-//             setData(filtered);
-//             setItemClicked(false); // Reset itemClicked state when new search is performed
-//         }
-//     };
-
-//     const renderItem = ({ item }) => {
-//         // Add guard clause to check if item exists
-//         if (!item || !item.user_name) return null;
-
-//         return (
-//             <TouchableOpacity onPress={() => handleItemClick(item.user_name)}>
-//                 <View style={styles.item}>
-//                     <Text>{item.user_name}</Text>
-//                 </View>
-//             </TouchableOpacity>
-//         );
-//     };
-
-//     const handleItemClick = itemName => {
-//         console.log("Item clicked:", itemName);
-//         // Set the clicked item's name in the search bar
-//         setSearch(itemName);
-//         // Clear the list of items
-//         setData([]);
-//         // Set itemClicked to true
-//         setItemClicked(true);
-//     };
-
-//     const handleClearSearch = () => {
-//         // Clear the search bar and reset the itemClicked state
-//         setSearch('');
-//         setItemClicked(false);
-//     };
-
-//     return (
-//         <View style={styles.container}>
-//             <View style={styles.searchbar}>
-//                 <Ionicons name="search" size={24} color="gray" style={styles.searchIcon} />
-//                 <TextInput
-//                     placeholder="Search..."
-//                     onChangeText={handleSearch}
-//                     style={styles.textinput}
-//                     value={search}
-//                 />
-//                 {search !== '' && itemClicked && (
-//                     <TouchableOpacity onPress={handleClearSearch} style={styles.clearIcon}>
-//                         <Ionicons name="close" size={24} color="gray" />
-//                     </TouchableOpacity>
-//                 )}
-//             </View>
-//             {data.length > 0 && (
-//                 <FlatList
-//                     ref={flatListRef}
-//                     data={data}
-//                     renderItem={renderItem}
-//                     keyExtractor={(item, index) => index.toString()}
-//                 />
-//             )}
-//         </View>
-//     );
-// };
-
-// export default CreditBalanceScreen;
-
-// const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: 'red',
-//         padding: 10,
-//         flex: 1,
-//     },
-//     searchbar: {
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         backgroundColor: '#f0f0f0',
-//         borderRadius: 10,
-//         marginVertical: '2%',
-//         paddingHorizontal: 10,
-//     },
-//     searchIcon: {
-//         marginRight: 10,
-//     },
-//     textinput: {
-//         flex: 1,
-//     },
-//     item: {
-//         borderBottomWidth: 1,
-//         borderBottomColor: '#cccccc',
-//         marginBottom: 10,
-//         paddingBottom: 10,
-//     },
-//     clearIcon: {
-//         marginLeft: 10,
-//     },
-// });
-
-
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, TextInput, FlatList, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-
+import { ListItem } from 'react-native-elements';
+import Textarea from 'react-native-textarea';
 const CreditBalanceScreen = () => {
-    const [search, setSearch] = useState('');
+    const [searchInput, setSearchInput] = useState('');
     const [data, setData] = useState([]);
     const [sortedData, setSortedData] = useState([]);
-    const [itemClicked, setItemClicked] = useState(false);
-    const [loading, setLoading] = useState(true); // Add loading state
-    const flatListRef = useRef(null);
+    const [selectedCustomerName, setSelectedCustomerName] = useState('');
+    const [selectedCustomerMobile, setSelectedCustomerMobile] = useState('');
+    const [selectedCustomerAddress, setSelectedCustomerAddress] = useState('');
+
+    const clearSearch = () => {
+        setSearchInput("");
+        setSelectedCustomerName("")
+        setSelectedCustomerMobile("")
+        setSelectedCustomerAddress("")
+    };
 
     useEffect(() => {
         fetchData();
@@ -158,9 +27,14 @@ const CreditBalanceScreen = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('https://demo.raviscyber.in/public/customerlist.php');
-            const { data } = response.data;
-            console.log('response', response.data);
+            const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
+            const response = await axios.post(getUser, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            const { status, data } = response.data;
             const sorted = data.sort((a, b) => {
                 const nameA = a.user_name.toLowerCase();
                 const nameB = b.user_name.toLowerCase();
@@ -170,83 +44,120 @@ const CreditBalanceScreen = () => {
             });
             setData(sorted);
             setSortedData(sorted);
+            console.log(sorted)
         } catch (error) {
             console.error('Error fetching data:', error);
-        } finally {
-            setLoading(false); // Set loading to false regardless of success or failure
         }
     };
 
+    const renderItem = ({ item }) => (
+        <TouchableOpacity onPress={() => handleItemClick(item)}>
+            <ListItem>
+                <ListItem.Content>
+                    <ListItem.Title>{item.user_name}</ListItem.Title>
+                </ListItem.Content>
+            </ListItem>
+        </TouchableOpacity>
+    );
+
+    const handleItemClick = item => {
+        if (item) {
+            setSelectedCustomerName(item.user_name ? item.user_name.trim() : '');
+            setSelectedCustomerMobile(item.mobile_number ? item.mobile_number.trim() : '');
+            setSelectedCustomerAddress(item.address ? item.address.trim() : '');
+            setSearchInput(item.user_name ? item.user_name.trim() : '');
+            handleSearch(item.user_name ? item.user_name.trim() : '');
+            setData([]);
+        }
+    };
+
+
     const handleSearch = text => {
-        setSearch(text);
+        setSearchInput(text);
         if (text.trim() === '') {
-            setData(sortedData);
-            setItemClicked(false); // Reset itemClicked state when search bar is cleared
+            setData([]);
         } else {
             const filtered = sortedData.filter(item =>
                 item.user_name.toLowerCase().includes(text.toLowerCase())
             );
             setData(filtered);
-            setItemClicked(false); // Reset itemClicked state when new search is performed
         }
     };
 
-    const renderItem = ({ item }) => {
-        // Add guard clause to check if item exists
-        if (!item || !item.user_name) return null;
-
-        return (
-            <TouchableOpacity onPress={() => handleItemClick(item.user_name)}>
-                <View style={styles.item}>
-                    <Text>{item.user_name}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    };
-
-    const handleItemClick = itemName => {
-        console.log("Item clicked:", itemName);
-        // Set the clicked item's name in the search bar
-        setSearch(itemName);
-        // Clear the list of items
-        setData([]);
-        // Set itemClicked to true
-        setItemClicked(true);
-    };
-
-    const handleClearSearch = () => {
-        // Clear the search bar and reset the itemClicked state
-        setSearch('');
-        setItemClicked(false);
-    };
-
     return (
-        <View style={styles.container}>
-            <View style={styles.searchbar}>
-                <Ionicons name="search" size={24} color="gray" style={styles.searchIcon} />
-                <TextInput
-                    placeholder="Search..."
-                    onChangeText={handleSearch}
-                    style={styles.textinput}
-                    value={search}
-                />
-                {search !== '' && itemClicked && (
-                    <TouchableOpacity onPress={handleClearSearch} style={styles.clearIcon}>
-                        <Ionicons name="close" size={24} color="gray" />
+        <ScrollView style={styles.container}>
+            <View style={styles.search}>
+                <Icon name="search" size={22} color="black" style={{ padding: 10 }} />
+                <View style={{ flex: 1 }}>
+                    <TextInput
+                        placeholder="Search Customer Name"
+                        value={searchInput}
+                        onChangeText={(text) => {
+                            setSearchInput(text);
+                            handleSearch(text);
+                        }}
+                        style={{ paddingHorizontal: 10 }}
+                    />
+                </View>
+                {searchInput.length > 0 && (
+                    <TouchableOpacity onPress={clearSearch}>
+                        <Icon name="close" size={25} color="black" style={{ marginHorizontal: 10 }} />
                     </TouchableOpacity>
                 )}
             </View>
-            {loading ? (
-                <ActivityIndicator style={styles.loader} size="large" color="gray" />
-            ) : (
+            {searchInput.trim() !== '' && (
                 <FlatList
-                    ref={flatListRef}
                     data={data}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
                 />
             )}
-        </View>
+            <View>
+                <Text style={styles.txt}>Customer name:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    value={selectedCustomerName}
+                    onChangeText={setSelectedCustomerName}
+                />
+
+                <Text style={styles.txt}>Customer Mobile:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    value={selectedCustomerMobile}
+                    onChangeText={setSelectedCustomerMobile}
+                />
+
+                <Text style={styles.txt}>Customer Address:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    value={selectedCustomerAddress}
+                    onChangeText={setSelectedCustomerAddress}
+                />
+
+                <Text style={styles.txt}>Pending Amount:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                />
+
+                <Text style={styles.txt}>Add new credit amount:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                />
+
+                <Text style={styles.txt}>Description:</Text>
+                <Textarea
+                    containerStyle={styles.textareaContainer}
+                    style={styles.textarea} 
+                    maxLength={120}
+                    placeholderTextColor={'#c7c7c7'}
+                    underlineColorAndroid={'transparent'}
+                />
+
+                <TouchableOpacity style={styles.btn}>
+                    <Text style={styles.text}>Update Customer</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     );
 };
 
@@ -254,36 +165,52 @@ export default CreditBalanceScreen;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'red',
-        padding: 10,
-        flex: 1,
+        padding: 20
     },
-    searchbar: {
+    search: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        borderRadius: 10,
-        marginVertical: '2%',
-        paddingHorizontal: 10,
+        borderColor: 'grey',
+        borderWidth: 1,
     },
-    searchIcon: {
-        marginRight: 10,
+    txt: {
+        color: 'black',
+        marginTop: '5%',
+        fontSize: 15,
+        fontWeight: 'bold'
     },
-    textinput: {
-        flex: 1,
-    },
-    item: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#cccccc',
+    textinput1: {
+        borderColor: 'grey',
+        borderWidth: 1,
         marginBottom: 10,
-        paddingBottom: 10,
+        padding: 5,
     },
-    clearIcon: {
-        marginLeft: 10,
-    },
-    loader: {
-        flex: 1,
+    btn: {
+        backgroundColor: '#23AA49',
+        height: 55,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 25,
+        marginTop: '10%',
+        marginBottom: '10%'
     },
+    text: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+
+    /////textarea
+    textareaContainer: {
+        height: 180,
+        padding: 5,
+        borderColor: 'grey',
+        borderWidth: 1,
+      },
+      textarea: {
+        textAlignVertical: 'top',  // hack android
+        height: 170,
+        fontSize: 14,
+        color: '#333',
+      },
 });
