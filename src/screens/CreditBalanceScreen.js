@@ -91,12 +91,13 @@ const CreditBalanceScreen = () => {
                 <View style={{ flex: 1 }}>
                     <TextInput
                         placeholder="Search Customer Name"
+                        placeholderTextColor={'black'}
                         value={searchInput}
                         onChangeText={(text) => {
                             setSearchInput(text);
                             handleSearch(text);
                         }}
-                        style={{ paddingHorizontal: 10 }}
+                        style={{ paddingHorizontal: 10,color:'black' }}
                     />
                 </View>
                 {searchInput.length > 0 && (
@@ -184,6 +185,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 10,
         padding: 5,
+        color:'black',
     },
     btn: {
         backgroundColor: '#23AA49',

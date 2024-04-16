@@ -15,6 +15,7 @@ import ProductRunningScreen from '../../screens/ProductRunningScreen';
 import SettingScreen from '../../screens/SettingScreen';
 import CategoryScreen from '../../screens/CategoryScreen';
 import AddProduct from '../../screens/AddProduct';
+import CreditBalanceScreen from '../../screens/CreditBalanceScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -79,6 +80,18 @@ const DrawerNavigation = () => {
         options={{
           headerShown: true,
           title: 'AddProduct',
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons name='bag-add' size={22} color='#000'
+              style={{ height: 25, width: 25, }} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="CustomerMaster"
+        component={CreditBalanceScreen}
+        options={{
+          headerShown: true,
+          title: 'Customer Master',
           drawerIcon: ({ focused, size }) => (
             <Ionicons name='bag-add' size={22} color='#000'
               style={{ height: 25, width: 25, }} />
