@@ -242,21 +242,16 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const NextScreen=()=>{
-    console.log('search',search);
-    console.log('temp',temp);
-    console.log('.length',search.length);
     if(search.length!=0 && search===temp)
     {
       dispatch(FetchProduct());
-      navigation.navigate('CategoryScreen');
+      navigation.navigate('CategoryScreen',username=temp);
       ToastAndroid.show("start the "+temp+" billing", ToastAndroid.SHORT);
     }
     else
     {
       ToastAndroid.show("New user!! Register the user", ToastAndroid.SHORT);
     }
-    // dispatch(FetchProduct());
-    // navigation.navigate('CategoryScreen');
   }
 
   return (
