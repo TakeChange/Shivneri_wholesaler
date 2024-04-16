@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, Image, FlatList,} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Image, FlatList,ScrollView} from 'react-native';
 import LeftArrow from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
@@ -7,11 +7,8 @@ import Dec from '../components/Dec';
 import Inc from '../components/Inc';
 import axios from 'axios';
 import { ListItem } from 'react-native-elements';
-import Modal from "react-native-modal";
-
 
 const BillScreen = () => {
-  const [searchText, setSearchText] = useState('');
   const [productList, setProductList] = useState([
     {
       id: 1,
@@ -50,7 +47,7 @@ const BillScreen = () => {
   const [data, setData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
   const [loading, setLoading] = useState(false);
-
+ 
   useEffect(() => {
     fetchData();
   }, []);
@@ -107,11 +104,12 @@ const BillScreen = () => {
   const handleItemClick = itemName => {
     setSearch(itemName);
     handleSearch(itemName);
+   
   };
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [key, setKey] = useState(Date.now()); // Unique key for FlatList re-render
- 
+
   useEffect(() => {
     calculateTotal();
   }, []);
@@ -216,12 +214,11 @@ const BillScreen = () => {
       </View>
     )
   }
-
   return (
-    <Modal visible={true} style={styles.container}>
-
+    <ScrollView>
+    <View style={styles.container}>
       <View style={styles.custnameview}>
-     
+
         <Text style={styles.custtext}>Customer name</Text>
       </View>
       <View style={styles.rempenview}>
@@ -234,10 +231,9 @@ const BillScreen = () => {
           <Icon name="search" size={25} color="black" style={styles.icon} />
         </TouchableOpacity>
         <View style={styles.modelbox}>
-        <TextInput
-          placeholder="Search..."
+        <TextInput style={styles.textinput}
+         placeholder='Search...'
           onChangeText={handleSearch}
-          style={styles.textinput}
           value={search}
         />
         {search.trim() !== '' && (
@@ -245,25 +241,26 @@ const BillScreen = () => {
             data={data}
             renderItem={renderItem1}
             keyExtractor={(item, index) => index.toString()}
+           
           />
         )}
       </View>
       </View>
+    
       <FlatList
-        key={key} // Pass key to FlatList
-        data={productList}
-        keyExtractor={(item) => item.id.toString()} // Convert id to string
-        renderItem={({ item, index }) => <Product item={item} index={index} />}
-      />
+      key={key} // Pass key to FlatList
+      data={productList}
+      keyExtractor={(item) => item.id.toString()} // Convert id to string
+      renderItem={({ item, index }) => <Product item={item} index={index} />}
+    />
       <View style={{ marginTop: '10%', alignItems: 'flex-end' }}>
         <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 16 }}>Total : {totalAmount}/-</Text>
       </View>
       <TouchableOpacity style={styles.btn}>
         <Text style={styles.text}>Order Now</Text>
-      </TouchableOpacity>
-       
-    </Modal>
-    
+      </TouchableOpacity> 
+    </View>
+    </ScrollView>
   )
 }
 
@@ -273,8 +270,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 45,
-    
+    paddingTop: 10,
   },
   //// header
  
@@ -300,7 +296,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: 'black',
-
+    
   },
 
   ////remaining & pending
@@ -319,6 +315,7 @@ const styles = StyleSheet.create({
     // backgroundColor: '#f0f0f0',
     borderRadius: 10,
     marginVertical: '2%'
+    
   },
   textinput: {
     color:'black',
@@ -392,9 +389,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   modelbox: {
-    width: '80%',
+    width: '100%',
     // backgroundColor: '#fff',
-   
+    // marginBottom: 20,
+
   },
   
 });
