@@ -1,11 +1,12 @@
-import { StyleSheet, TouchableOpacity, View, TextInput, Text, ScrollView, Button, FlatList } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, TextInput, Text,ScrollView, FlatList,Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
 import { ListItem } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { launchImageLibrary } from 'react-native-image-picker';
+//import { ScrollView } from 'react-native-virtualized-view'
 const data = [
     { label: 'Item 1', value: '1' },
     { label: 'Item 2', value: '2' },
@@ -17,46 +18,138 @@ const data = [
 const EditProductScreen = () => {
 
     const [value, setValue] = useState(null);
+    const [searchInput, setSearchInput] = useState('');
+    const [sortedData, setSortedData] = useState([]);
+    const [data, setData] = useState([]);
+    const [selectedProductName, setSelectedProductName] = useState('');
+    const [selectedSellingRate, setSelectedSellingRate] = useState('');
+    const [selectedPurchesRate, setSelectedPurchesRate] = useState('');
+    const [selectedStack,setSelectedStack] = useState('');
+    const [selectedProductType,setSelectedProductType] = useState('');
+    const [selectedBoxPrice,setSelectedBoxPrice] = useState('');
+    const [filePath, setFilePath] = useState();
 
     const Product_list = useSelector((state) => state.product.data?.data);
-    console.log('All product data:',Product_list);//product_list product name 
+    console.log('All product data:', Product_list);//product_list product name 
+
+    const clearSearch = () => {
+        setSearchInput("");
+        setSelectedCustomerName("")
+        setSelectedCustomerMobile("")
+        setSelectedCustomerAddress("")
+    };
+
+    const chooseFile = (type) => {
+        let options = {
+            mediaType: type,
+            maxWidth: 300,
+            maxHeight: 550,
+            quality: 1,
+        };
+        launchImageLibrary(options, (response) => {
+            // console.log('Response1 = ', response);
+
+            if (response.didCancel) {
+                //alert('User cancelled image picker');
+                return;
+            } else {
+                const imageURI = response.assets[0].uri;
+                console.log(imageURI);
+                setFilePath(imageURI);
+            }
+        });
+    };
+
+    const renderItem = ({ item }) => (
+        <TouchableOpacity onPress={() => handleItemClick(item)}>
+            <ListItem>
+                <ListItem.Content>
+                    <ListItem.Title>{item.product_name_eng}</ListItem.Title>
+                </ListItem.Content>
+            </ListItem>
+        </TouchableOpacity>
+    );
+
+    const handleItemClick = item => {
+        if (item) {
+            setSelectedProductName(item.product_name_eng ? item.product_name_eng.trim() : '');
+            setSelectedStack(item.quantity ? item.quantity.trim() : '');
+            setSelectedBoxPrice(item.price_per_unit ? item.price_per_unit.trim() : '');
+            setSearchInput(item.product_name_eng ? item.product_name_eng.trim() : '');
+            handleSearch(item.product_name_eng ? item.product_name_eng.trim() : '');
+            setData([]);
+        }
+    };
+
+    const handleSearch = text => {
+        setSearchInput(text);
+        if (text.trim() === '') {
+            setData([]);
+        } else {
+            const filtered = sortedData.filter(item =>
+                item.product_name_eng.toLowerCase().includes(text.toLowerCase())
+            );
+            setData(filtered);
+        }
+    };
 
     return (
-
-        <View style={styles.container}>
-            <View style={styles.searchbar}>
-                <TouchableOpacity>
-                    <Icon name="search" size={25} color="black" style={styles.icon} />
-                </TouchableOpacity>
-                <View style={styles.modelbox}>
+        <ScrollView style={styles.container}>
+            <View style={styles.search}>
+                <Icon name="search" size={22} color="black" style={{ padding: 10 }} />
+                <View style={{ flex: 1 }}>
                     <TextInput
-                        placeholder="Search..."
-                        style={styles.textinput}
+                        placeholder="Search Product Name"
+                        placeholderTextColor={'black'}
+                        style={{ paddingHorizontal: 10, color: 'black' }}
+                        onChangeText={(text) => {
+                            setSearchInput(text);
+                            handleSearch(text);
+                        }}
                     />
-
                 </View>
+                {searchInput.length > 0 && (
+                    <TouchableOpacity onPress={clearSearch}>
+                        <Icon name="close" size={25} color="black" style={{ marginHorizontal: 10 }} />
+                    </TouchableOpacity>
+                )}
             </View>
+            {searchInput.trim() !== '' && (
+                <FlatList
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+            )}
+            <View>
+            <Text style={styles.txt}>Product Name:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    value={selectedProductName}
+                    onChangeText={setSelectedProductName}
+                />
+                <Text style={styles.txt}>Selling Rate:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    value={selectedSellingRate}
+                    onChangeText={setSelectedSellingRate}
+                />
 
+                <Text style={styles.txt}>Purchase Rate:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    value={selectedPurchesRate}
+                    onChangeText={setSelectedPurchesRate}
+                />
 
-            <View style={styles.text}>
-                <Text style={styles.name}>Product Name : </Text>
+                <Text style={styles.txt}>Stack / Quantity:</Text>
                 <TextInput
-                    style={styles.input}
+                    style={styles.textinput1}
+                    value={selectedStack}
+                    onChangeText={setSelectedStack}
                 />
-                <Text style={styles.name}>Selling Rate :      </Text>
-                <TextInput
-                    style={styles.input}
-                />
-                <Text style={styles.name}>Purchase Rate : </Text>
-                <TextInput
-                    style={styles.input}
-                />
-                <Text style={styles.name}>Stock/quantity : </Text>
-                <TextInput
-                    style={styles.input}
-                />
-                <View style={{ flexDirection: 'row', marginBottom: '8%' }}>
-                    <Text style={styles.proType}>Product Type : </Text>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.txt}>Product Type:</Text>
                     <Dropdown
                         style={styles.dropdown}
                         placeholderStyle={styles.placeholderStyle}
@@ -68,21 +161,45 @@ const EditProductScreen = () => {
                         placeholder="Select item"
                         value={value}
                         onChange={item => {
-                            setValue(item.value);
+                            setValue(item.unit_type);
                         }}
                     />
                 </View>
-                <Text style={styles.name}>Box Price : </Text>
+
+                <Text style={styles.txt}>Box Price:</Text>
                 <TextInput
-                    style={styles.input}
+                    style={styles.textinput1}
+                    value={selectedBoxPrice}
+                    onChangeText={setSelectedBoxPrice}
                 />
-                <View>
-                    <TouchableOpacity style={styles.addBut}>
-                        <Text style={styles.img}>Update Product</Text>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.txt}>Upload Product Image :</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        style={styles.buttonStyle}
+                        onPress={() => chooseFile('photo')}>
+                        <Text style={styles.img}>Choose Image</Text>
                     </TouchableOpacity>
                 </View>
+                <Text></Text>
+                    {filePath == null ? <Image
+                        style={styles.imageStyle}
+                        source={{
+                            uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
+                        }}
+                    /> :
+                        <Image
+                            source={{ uri: filePath }}
+                            style={styles.imageStyle}
+                        />}
+
+                <TouchableOpacity style={styles.btn}>
+                    <Text style={styles.text}>Update Product</Text>
+                </TouchableOpacity>
             </View>
-        </View>
+        </ScrollView>
+
 
     )
 }
@@ -91,52 +208,47 @@ export default EditProductScreen
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        padding: 20
     },
-    searchbar: {
-        color: 'black',
+    search: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 10,
-        marginVertical: '2%'
+        borderColor: 'grey',
+        borderWidth: 1,
     },
-    modelbox: {
-        width: '80%',
-    },
-    icon: {
-        padding: 10,
-    },
-    textinput: {
+    txt: {
         color: 'black',
-        flex: 1,
-    },
-    input: {
-        height: 40,
-        alignSelf: 'center',
-        borderBottomWidth: 1,
-        padding: '2%',
-        width: '90%',
-        justifyContent: 'flex-end',
+        marginTop: '5%',
         fontSize: 15,
-        marginBottom: '5%'
+        fontWeight: 'bold'
     },
-    name: {
-        color: '#000',
-        marginLeft: '5%',
-        fontWeight: '700',
+    textinput1: {
+        borderColor: 'grey',
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 5,
+        color: 'black',
     },
-    proType: {
-        color: '#000',
-        marginLeft: '5%',
-        fontWeight: '700',
-        alignSelf: 'center'
+    btn: {
+        backgroundColor: '#23AA49',
+        height: 55,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 25,
+        marginTop: '10%',
+        marginBottom: '10%'
+    },
+    text: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: 'white',
     },
     dropdown: {
         width: '63%',
-        borderBottomWidth: 1,
-        borderBottomColor: 'black',
+        borderWidth: 1,
         alignSelf: 'center',
-        marginLeft: '2%'
+        marginLeft: '2%',
+        marginTop: '3%'
     },
     selectedTextStyle: {
         color: 'black',
@@ -146,24 +258,22 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 14,
     },
-    button: {
-        borderRadius: '20%',
-        width: 50
-    },
-    addBut: {
+    buttonStyle: {
         backgroundColor: '#23AA49',
-        padding: 15,
-        width: '95%',
-        alignSelf: 'center',
-        marginTop: '20%',
-        marginBottom: '5%',
-        borderRadius: 20
+        padding: 8,
+        width: '35%',
+        borderRadius: 15,
+        marginTop:'2%'
     },
     img: {
         fontWeight: '700',
         alignSelf: 'center',
         color: "#FFF"
     },
-
+    imageStyle: {
+        width: 200,
+        height: 200,
+        alignSelf: 'center'
+    },
 
 })
