@@ -16,10 +16,10 @@ const SplashScreen = ({ navigation }) => {
     const checkSession = async () => {
         try {
             const value = await AsyncStorage.getItem('login');
-            if (value=="yes") {
+            if (value == "yes") {
                 console.log(value);
                 navigation.navigate('DrawerNavigation');
-            }else{
+            } else {
                 navigation.navigate('LoginScreen');
             }
         } catch (error) {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-      
+
         justifyContent: 'center'
     },
 })
