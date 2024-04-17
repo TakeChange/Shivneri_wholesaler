@@ -17,6 +17,7 @@ import CategoryScreen from '../../screens/CategoryScreen';
 import AddProduct from '../../screens/AddProduct';
 import CreditBalanceScreen from '../../screens/CreditBalanceScreen';
 import EditProductScreen from '../../screens/EditProductScreen';
+import FlatlistDemo from '../../screens/FlatListDemo';
 
 
 const Drawer = createDrawerNavigator();
@@ -111,7 +112,7 @@ const DrawerNavigation = () => {
           ),
         }}
       />
-      
+
       <Drawer.Screen
         name="Setting"
         component={SettingScreen}
@@ -124,7 +125,18 @@ const DrawerNavigation = () => {
           ),
         }}
       />
-
+      <Drawer.Screen
+        name="FlastListDemo"
+        component={FlatlistDemo}
+        options={{
+          headerShown: false,
+          title: 'Flast List Demo',
+          drawerIcon: ({ focused, size }) => (
+            <AntDesign name='setting' size={22} color='#000'
+              style={{ height: 25, width: 25, }} />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   )
 }

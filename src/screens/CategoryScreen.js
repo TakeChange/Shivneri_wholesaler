@@ -45,7 +45,7 @@ const CategoryScreen = ({ navigation }) => {
 
     const renderItem2 = ({ item }) => (
         <View style={styles.itemContainer}>
-            <Text>{item.label}</Text>
+            <Text style={{color:'black'}}>{item.label}</Text>
         </View>
     );
 
@@ -128,7 +128,7 @@ const CategoryScreen = ({ navigation }) => {
                     <TouchableOpacity onPress={() => setShowListing(!showListing)}>
                         <Ionicons
                             name='filter'
-                            size={30}
+                            size={25}
                             color='black'
                             marginRight='2%'
                         />
@@ -382,5 +382,7 @@ const styles = StyleSheet.create({
     },
     list: {
         marginTop: 20,
+        color:'black',
+
     },
 });
