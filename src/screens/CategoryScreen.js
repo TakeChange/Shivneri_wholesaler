@@ -12,15 +12,15 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
-
+    var noImageFoundUrl = 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png';
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [showListing, setShowListing] = useState(false);
-    const Product_list = useSelector((state) => state.product.data?.data);
+    const Product_list = useSelector((state) => state.product.data);
     const moreLoading = useSelector((state) => state.product?.isLoader);
-
+    console.log('Product_list',Product_list[0])
     const data = [
         { label: 'Item 1', value: '1' }, 
         { label: 'Item 2', value: '2' },
@@ -53,7 +53,7 @@ const CategoryScreen = ({ navigation }) => {
         return (
             <View style={styles.listContainer}>
                 <View style={styles.imageContainer}>
-                    <ImageBackground source={{uri: item.product_image==null?'https://reactjs.org/logo-og.png':item.product_image}} style={styles.image}>
+                    <ImageBackground source={{uri: item.product_image==null?'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png':item.product_image}} style={styles.image}>
                         <TouchableOpacity style={styles.edit}>
                             <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
                         </TouchableOpacity>
@@ -62,7 +62,7 @@ const CategoryScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </ImageBackground>
                 </View> 
-                <Text style={styles.nameText}>{item.product_name_eng}</Text>
+                <Text style={styles.nameText}>{item.product_name}</Text>
                 <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.total}>Qty : 0</Text>

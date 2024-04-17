@@ -29,8 +29,7 @@ const EditProductScreen = () => {
     const [selectedBoxPrice, setSelectedBoxPrice] = useState('');
     const [filePath, setFilePath] = useState();
 
-    const Product_list = useSelector((state) => state.product.data?.data);
-    console.log('All product data:', Product_list);//product_list product name 
+    const Product_list = useSelector((state) => state.product.data);
 
     const clearSearch = () => {
         setSearchInput("");
@@ -164,6 +163,8 @@ const EditProductScreen = () => {
         }
     }
     //////////////////////////////////////////
+    
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.search}>
