@@ -21,6 +21,8 @@ const EditProductScreen = () => {
     const Product_list = useSelector((state) => state.product.data?.data);
     console.log('All product data:',Product_list);//product_list product name 
 
+    
+
     return (
 
         <View style={styles.container}>

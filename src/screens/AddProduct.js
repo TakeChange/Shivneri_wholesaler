@@ -9,14 +9,59 @@ const AddProduct = () => {
     const [quantity, setQuantity] = useState('');
     const [total, setTotal] = useState('');
 
-    const addProd = () => {
-        console.log(productname);
-        console.log(boxprice);
-        console.log(quantity);
-        console.log(total);
-    }
+    const [filePatherr, setFilePathErr] = useState();
+    const [pnameerr, setpnameErr] = useState('');
+    const [boxpriceerr, setBoxPriceErr] = useState('');
+    const [quantityerr, setQuantityErr] = useState('');
+    const [totalerr, setTotalErr] = useState('');
 
-    const chooseFile = (type) => {
+
+const addProd = () => {
+        var isValid = true;
+        if (productname == '') {
+            setpnameErr('Product name do not empty');
+            isValid = false;
+        } else {
+            setpnameErr('');
+        }
+        if (boxprice == '') {
+            setBoxPriceErr('Box price do not empty');
+            isValid = false;
+        } else {
+            setBoxPriceErr('');
+        }
+        if (quantity == '') {
+            setQuantityErr('Quantity do not empty');
+            isValid = false;
+        } else {
+            setQuantityErr('');
+        }
+        if (total == '') {
+            setTotalErr('Total do not empty');
+            isValid = false;
+        } else {
+            setTotalErr('');
+        }
+        if (filePath == '') {
+            setFilePathErr('File path do not empty');
+            isValid = false;
+        } else {
+            setFilePathErr('');
+        }
+        if (isValid) {
+
+            console.log(productname);
+            console.log(boxprice);
+            console.log(quantity);
+            console.log(total);
+
+            setProductname('');
+            setBoxPrice('');
+            setQuantity('');
+            setTotal('');
+        }
+      }
+ const chooseFile = (type) => {
         let options = {
             mediaType: type,
             maxWidth: 300,
@@ -44,23 +89,35 @@ const AddProduct = () => {
                     <Text style={styles.name}>Enter Product Name :</Text>
                     <TextInput
                         style={styles.input}
+                        value={productname}
                         onChangeText={(text) => setProductname(text)}
                     />
+                    <Text style={styles.error}>{pnameerr}</Text>
+
                     <Text style={styles.name}>Enter Box Price :</Text>
                     <TextInput
                         style={styles.input}
+                        value={boxprice}
                         onChangeText={(text) => setBoxPrice(text)}
                     />
+                    <Text style={styles.error}>{boxpriceerr}</Text>
+
                     <Text style={styles.name}>Quantity :</Text>
                     <TextInput
                         style={styles.input}
+                        value={quantity}
                         onChangeText={(text) => setQuantity(text)}
                     />
+                    <Text style={styles.error}>{quantityerr}</Text>
+
                     <Text style={styles.name}>Total :</Text>
                     <TextInput
                         style={styles.input}
+                        value={total}
                         onChangeText={(text) => setTotal(text)}
                     />
+                    <Text style={styles.error}>{totalerr}</Text>
+
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                         <Text style={styles.Upload}>Upload Product Image :</Text>
                         <TouchableOpacity
@@ -117,7 +174,7 @@ const styles = StyleSheet.create({
         width: '90%',
         justifyContent: 'flex-end',
         fontSize: 15,
-        marginBottom: '5%'
+        marginBottom: '1%'
     },
     Upload: {
         color: '#000',
@@ -147,5 +204,13 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: '5%',
         borderRadius: 25
+    },
+    error: {
+        color: 'red',
+        marginHorizontal: 10,
+        marginBottom: '1%',
+        marginLeft: '5%',
+
     }
+
 });
