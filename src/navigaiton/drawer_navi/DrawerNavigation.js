@@ -125,18 +125,6 @@ const DrawerNavigation = () => {
           ),
         }}
       />
-      <Drawer.Screen
-        name="FlastListDemo"
-        component={FlatlistDemo}
-        options={{
-          headerShown: false,
-          title: 'Flast List Demo',
-          drawerIcon: ({ focused, size }) => (
-            <AntDesign name='setting' size={22} color='#000'
-              style={{ height: 25, width: 25, }} />
-          ),
-        }}
-      />
     </Drawer.Navigator>
   )
 }
