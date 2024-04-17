@@ -7,14 +7,13 @@ import LoginScreen from '../screens/LoginScreen';
 import CategoryScreen from '../screens/CategoryScreen';
 import BillScreen from '../screens/BillScreen';
 import CheckInternet from '../components/CheckInternet';
-import CreditBalanceScreen from '../screens/CreditBalanceScreen'
+import CreditBalanceScreen from '../screens/CreditBalanceScreen';
 const Stack = createStackNavigator();
 
 const AppNavigation = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator>
-
                 <Stack.Screen
                     name="Splash"
                     component={SplashScreen}
@@ -46,7 +45,7 @@ const AppNavigation = () => {
                 />
                 <Stack.Screen
                     name="CreditBalanceScreen"
-                    component={CreditBalanceScreen }
+                    component={CreditBalanceScreen}
                     options={{ headerShown: true }}
                 />
 

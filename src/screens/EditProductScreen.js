@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View, TextInput, Text,ScrollView, FlatList,Image } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, TextInput, Text, ScrollView, FlatList, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -24,9 +24,9 @@ const EditProductScreen = () => {
     const [selectedProductName, setSelectedProductName] = useState('');
     const [selectedSellingRate, setSelectedSellingRate] = useState('');
     const [selectedPurchesRate, setSelectedPurchesRate] = useState('');
-    const [selectedStack,setSelectedStack] = useState('');
-    const [selectedProductType,setSelectedProductType] = useState('');
-    const [selectedBoxPrice,setSelectedBoxPrice] = useState('');
+    const [selectedStack, setSelectedStack] = useState('');
+    const [selectedProductType, setSelectedProductType] = useState('');
+    const [selectedBoxPrice, setSelectedBoxPrice] = useState('');
     const [filePath, setFilePath] = useState();
 
     const Product_list = useSelector((state) => state.product.data);
@@ -92,6 +92,77 @@ const EditProductScreen = () => {
         }
     };
 
+    //////////////////////////Validation
+
+
+    const [searchError, setSearchError] = useState();
+    const [productNameError, setProductNameError] = useState();
+    const [sellingRateError, setSellingRateError] = useState();
+    const [purchaseRateError, setPurchaseRateError] = useState();
+    const [stackError, setStackError] = useState();
+    const [productTypeError, setProductTypeError] = useState();
+    const [boxPriceError, setBoxPriceError] = useState();
+    const [imageError, setImageError] = useState();
+    const [dropdownError, setDropdownError] = useState();
+    const Validation = () => {
+        var isValid = true;
+        if (searchInput == '') {
+            setSearchError('Please search product');
+            isValid = false;
+        } else {
+            setSearchError('');
+        }
+        if (selectedProductName == '') {
+            setProductNameError('Enter product name');
+            isValid = false;
+        } else {
+            setProductNameError('');
+        }
+
+        if (selectedSellingRate == '') {
+            setSellingRateError('Enter Selling rate');
+            isValid = false;
+        } else {
+            setSellingRateError('');
+        }
+
+        if (selectedPurchesRate == '') {
+            setPurchaseRateError('Enter Purchase rate ');
+            isValid = false;
+        } else {
+            setPurchaseRateError('');
+        }
+
+        if (selectedStack == '') {
+            setStackError(' Enter Stack/Quantity');
+            isValid = false;
+        } else {
+            setStackError('');
+        }
+        if (selectedProductType == '') {
+            setDropdownError('Select a product type');
+            isValid = false;
+        } else {
+            setDropdownError('');
+        }
+        if (selectedBoxPrice == '') {
+            setBoxPriceError('Enter Box Price');
+            isValid = false;
+        } else {
+            setBoxPriceError('');
+        }
+        if (!filePath) {
+            setImageError('Please choose an image');
+            isValid = false;
+        } else {
+            setImageError('');
+        }
+        if (isValid) {
+            //handleLogin();
+            console.log('success')
+        }
+    }
+    //////////////////////////////////////////
     
 
     return (
@@ -106,7 +177,9 @@ const EditProductScreen = () => {
                         onChangeText={(text) => {
                             setSearchInput(text);
                             handleSearch(text);
+                            setSearchError(""); // Clear search error on text change
                         }}
+                        value={searchInput}
                     />
                 </View>
                 {searchInput.length > 0 && (
@@ -123,32 +196,37 @@ const EditProductScreen = () => {
                 />
             )}
             <View>
-            <Text style={styles.txt}>Product Name:</Text>
+                <Text style={{ color: 'red', fontWeight: '600' }}>{searchError}</Text>
+                <Text style={styles.txt}>Product Name:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedProductName}
                     onChangeText={setSelectedProductName}
                 />
+
+                <Text style={{ color: 'red', fontWeight: '600' }}>{productNameError}</Text>
+
                 <Text style={styles.txt}>Selling Rate:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedSellingRate}
                     onChangeText={setSelectedSellingRate}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{sellingRateError}</Text>
                 <Text style={styles.txt}>Purchase Rate:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedPurchesRate}
                     onChangeText={setSelectedPurchesRate}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{purchaseRateError}</Text>
                 <Text style={styles.txt}>Stack / Quantity:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedStack}
                     onChangeText={setSelectedStack}
                 />
+                <Text style={{ color: 'red', fontWeight: '600' }}>{stackError}</Text>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={styles.txt}>Product Type:</Text>
                     <Dropdown
@@ -166,14 +244,14 @@ const EditProductScreen = () => {
                         }}
                     />
                 </View>
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{dropdownError}</Text>
                 <Text style={styles.txt}>Box Price:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedBoxPrice}
                     onChangeText={setSelectedBoxPrice}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{boxPriceError}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.txt}>Upload Product Image :</Text>
                     <TouchableOpacity
@@ -184,18 +262,18 @@ const EditProductScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <Text></Text>
-                    {filePath == null ? <Image
+                {filePath == null ? <Image
+                    style={styles.imageStyle}
+                    source={{
+                        uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
+                    }}
+                /> :
+                    <Image
+                        source={{ uri: filePath }}
                         style={styles.imageStyle}
-                        source={{
-                            uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
-                        }}
-                    /> :
-                        <Image
-                            source={{ uri: filePath }}
-                            style={styles.imageStyle}
-                        />}
-
-                <TouchableOpacity style={styles.btn}>
+                    />}
+                <Text style={{ color: 'red', fontWeight: '600' }}>{imageError}</Text>
+                <TouchableOpacity style={styles.btn} onPress={Validation} _>
                     <Text style={styles.text}>Update Product</Text>
                 </TouchableOpacity>
             </View>
@@ -264,7 +342,7 @@ const styles = StyleSheet.create({
         padding: 8,
         width: '35%',
         borderRadius: 15,
-        marginTop:'2%'
+        marginTop: '2%'
     },
     img: {
         fontWeight: '700',
