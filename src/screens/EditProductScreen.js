@@ -30,6 +30,7 @@ const EditProductScreen = () => {
     const [filePath, setFilePath] = useState();
 
     const Product_list = useSelector((state) => state.product.data);
+    console.log('Product_list:',Product_list);
 
     const clearSearch = () => {
         setSearchInput("");
