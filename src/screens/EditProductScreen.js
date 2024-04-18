@@ -6,14 +6,6 @@ import axios from 'axios';
 import { ListItem } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
-//import { ScrollView } from 'react-native-virtualized-view'
-const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-];
 
 const EditProductScreen = () => {
 
@@ -34,9 +26,12 @@ const EditProductScreen = () => {
 
     const clearSearch = () => {
         setSearchInput("");
-        setSelectedCustomerName("")
-        setSelectedCustomerMobile("")
-        setSelectedCustomerAddress("")
+        setSelectedProductName("")
+        setSelectedSellingRate("")
+        setSelectedPurchesRate("")
+        setSelectedStack("")
+        setSelectedProductType("")
+        setSelectedBoxPrice("")
     };
 
     const chooseFile = (type) => {
@@ -76,17 +71,17 @@ const EditProductScreen = () => {
             setSelectedStack(item.quantity ? item.quantity.trim() : '');
             setSelectedBoxPrice(item.price_per_unit ? item.price_per_unit.trim() : '');
             setSearchInput(item.product_name_eng ? item.product_name_eng.trim() : '');
-            handleSearch(item.product_name_eng ? item.product_name_eng.trim() : '');
             setData([]);
         }
     };
+    
 
     const handleSearch = text => {
         setSearchInput(text);
         if (text.trim() === '') {
             setData([]);
         } else {
-            const filtered = sortedData.filter(item =>
+            const filtered = Product_list.filter(item =>
                 item.product_name_eng.toLowerCase().includes(text.toLowerCase())
             );
             setData(filtered);
@@ -178,7 +173,6 @@ const EditProductScreen = () => {
                         onChangeText={(text) => {
                             setSearchInput(text);
                             handleSearch(text);
-                            setSearchError(""); // Clear search error on text change
                         }}
                         value={searchInput}
                     />
