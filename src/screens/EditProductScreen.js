@@ -6,6 +6,7 @@ import axios from 'axios';
 import { ListItem } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { useFocusEffect } from '@react-navigation/native';
 
 const EditProductScreen = () => {
 
@@ -14,12 +15,14 @@ const EditProductScreen = () => {
     const [sortedData, setSortedData] = useState([]);
     const [data, setData] = useState([]);
     const [selectedProductName, setSelectedProductName] = useState('');
+    const [selectedProductNameMarathi, setSelectedProductNameMarathi] = useState('');
     const [selectedSellingRate, setSelectedSellingRate] = useState('');
     const [selectedPurchesRate, setSelectedPurchesRate] = useState('');
     const [selectedStack, setSelectedStack] = useState('');
     const [selectedProductType, setSelectedProductType] = useState('');
     const [selectedBoxPrice, setSelectedBoxPrice] = useState('');
     const [filePath, setFilePath] = useState();
+    const [selectImage,setSelectedImage] = useState('')
 
     const Product_list = useSelector((state) => state.product.data);
     console.log('Product_list:',Product_list);
@@ -27,6 +30,7 @@ const EditProductScreen = () => {
     const clearSearch = () => {
         setSearchInput("");
         setSelectedProductName("")
+        setSelectedProductNameMarathi("")
         setSelectedSellingRate("")
         setSelectedPurchesRate("")
         setSelectedStack("")
@@ -68,10 +72,15 @@ const EditProductScreen = () => {
     const handleItemClick = item => {
         if (item) {
             setSelectedProductName(item.product_name_eng ? item.product_name_eng.trim() : '');
+            setSelectedProductNameMarathi(item.product_name ? item.product_name.trim() : '');
+            setSelectedSellingRate(item.sell_price_credit_per_box ? item.sell_price_credit_per_box.trim() : '');
             setSelectedStack(item.quantity ? item.quantity.trim() : '');
+            setSelectedImage(item.product_image ? item.product_image.trim() : '');
             setSelectedBoxPrice(item.price_per_unit ? item.price_per_unit.trim() : '');
             setSearchInput(item.product_name_eng ? item.product_name_eng.trim() : '');
             setData([]);
+
+            console.log("selected image",selectImage)
         }
     };
     
@@ -114,7 +123,7 @@ const EditProductScreen = () => {
         } else {
             setProductNameError('');
         }
-
+        
         if (selectedSellingRate == '') {
             setSellingRateError('Enter Selling rate');
             isValid = false;
@@ -130,7 +139,7 @@ const EditProductScreen = () => {
         }
 
         if (selectedStack == '') {
-            setStackError(' Enter Stack/Quantity');
+            setStackError(' Enter Stock/Quantity');
             isValid = false;
         } else {
             setStackError('');
@@ -159,7 +168,29 @@ const EditProductScreen = () => {
         }
     }
     //////////////////////////////////////////
-    
+    const resetErrors = () => {
+        setSearchError('');
+        setProductNameError('');
+        setSellingRateError('');
+        setPurchaseRateError('');
+        setStackError('');
+        setProductTypeError('');
+        setBoxPriceError('');
+        setImageError('');
+        setDropdownError('');
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            return () => {
+                // Reset errors when navigating away from screen
+                resetErrors();
+            };
+        }, [])
+    );
+
+
+   
 
     return (
         <ScrollView style={styles.container}>
@@ -176,6 +207,7 @@ const EditProductScreen = () => {
                         }}
                         value={searchInput}
                     />
+                    
                 </View>
                 {searchInput.length > 0 && (
                     <TouchableOpacity onPress={clearSearch}>
@@ -193,6 +225,11 @@ const EditProductScreen = () => {
             <View>
                 <Text style={{ color: 'red', fontWeight: '600' }}>{searchError}</Text>
                 <Text style={styles.txt}>Product Name:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    value={selectedProductNameMarathi}
+                    onChangeText={setSelectedProductNameMarathi}
+                />
                 <TextInput
                     style={styles.textinput1}
                     value={selectedProductName}
@@ -215,7 +252,7 @@ const EditProductScreen = () => {
                     onChangeText={setSelectedPurchesRate}
                 />
                 <Text style={{ color: 'red', fontWeight: '600' }}>{purchaseRateError}</Text>
-                <Text style={styles.txt}>Stack / Quantity:</Text>
+                <Text style={styles.txt}>Stock / Quantity:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedStack}
@@ -257,14 +294,15 @@ const EditProductScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <Text></Text>
-                {filePath == null ? <Image
+                {selectImage == null ? <Image
                     style={styles.imageStyle}
                     source={{
                         uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
                     }}
+                   
                 /> :
                     <Image
-                        source={{ uri: filePath }}
+                        source={{ uri: selectImage }}
                         style={styles.imageStyle}
                     />}
                 <Text style={{ color: 'red', fontWeight: '600' }}>{imageError}</Text>
