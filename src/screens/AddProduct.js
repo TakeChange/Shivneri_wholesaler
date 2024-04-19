@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     input: {
+        color:'black',
         height: '7%',
         alignSelf: 'center',
         borderBottomWidth: 1,
