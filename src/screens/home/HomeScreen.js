@@ -182,6 +182,8 @@ const HomeScreen = ({ navigation }) => {
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
+      console.log("data",data);
+      console.log("sortedData",sortedData)
     }
   };
   
