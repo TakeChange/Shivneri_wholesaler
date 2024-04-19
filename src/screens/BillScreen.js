@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Image, FlatList,ScrollView} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Image, FlatList, ScrollView } from 'react-native';
 import LeftArrow from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
@@ -7,8 +7,11 @@ import Dec from '../components/Dec';
 import Inc from '../components/Inc';
 import axios from 'axios';
 import { ListItem } from 'react-native-elements';
-
+import { useDispatch, useSelector } from 'react-redux';
 const BillScreen = () => {
+  const Product_list = useSelector((state) => state.product.data);
+  console.log('Product_list:', Product_list);
+
   const [productList, setProductList] = useState([
     {
       id: 1,
@@ -47,55 +50,26 @@ const BillScreen = () => {
   const [data, setData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
   const [loading, setLoading] = useState(false);
- 
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const fetchData = async () => {
-    try {
-      const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
-      const response = await axios.post(getUser,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
 
-      const { status, data } = response.data;
-      console.log('res', response);
-      console.log('const sorted = response.data.user_name', data)
-      const sorted = data.sort((a, b) => {
-        const nameA = a.user_name.toLowerCase();
-        const nameB = b.user_name.toLowerCase();
-        if (nameA < nameB) return -1;
-        if (nameA > nameB) return 1;
-        return 0;
-      });
-      setData(sorted);
-      setSortedData(sorted);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+
 
   const handleSearch = text => {
     setSearch(text);
     if (text.trim() === '') {
       setData([]);
     } else {
-      const filtered = sortedData.filter(item =>
-        item.user_name.toLowerCase().includes(text.toLowerCase())
+      const filtered = Product_list.filter(item =>
+        item.product_name_eng.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
     }
   };
   const renderItem1 = ({ item }) => (
-    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} `)}>
+    <TouchableOpacity onPress={() => handleItemClick(`${item.product_name_eng} `)}>
       <ListItem>
         <ListItem.Content>
-          <ListItem.Title>{`${item.user_name}`}</ListItem.Title>
+          <ListItem.Title>{`${item.product_name_eng}`}</ListItem.Title>
         </ListItem.Content>
       </ListItem>
     </TouchableOpacity>
@@ -104,8 +78,14 @@ const BillScreen = () => {
   const handleItemClick = itemName => {
     setSearch(itemName);
     handleSearch(itemName);
-   
+
   };
+  const clearSearch = () => {
+    setSearch("");
+    // setSelectedCustomerName("")
+    // setSelectedCustomerMobile("")
+    // setSelectedCustomerAddress("")
+};
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [key, setKey] = useState(Date.now()); // Unique key for FlatList re-render
@@ -184,7 +164,7 @@ const BillScreen = () => {
         <View style={styles.flatimageview}>
           <Image
             source={item.image}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%' ,alignSelf:'center',}}
           />
         </View>
         <View style={styles.flatdataview}>
@@ -205,10 +185,11 @@ const BillScreen = () => {
           </View>
           <View style={styles.id}>
             <Inc onPress1={handleClick1} />
-            <View style={{ marginHorizontal: '5%' }}>
+            <View style={{ marginHorizontal: '10%' }}>
               <Text style={{ color: 'black' }}>{item.counter}</Text>
             </View>
             <Dec onPress2={handleClick2} />
+
           </View>
         </View>
       </View>
@@ -216,50 +197,58 @@ const BillScreen = () => {
   }
   return (
     <ScrollView>
-    <View style={styles.container}>
-      <View style={styles.custnameview}>
+      <View style={styles.container}>
+        <View style={styles.custnameview}>
 
-        <Text style={styles.custtext}>Customer name</Text>
-      </View>
-      <View style={styles.rempenview}>
-        <Text style={{ color: 'black', fontSize: 15, fontWeight: '600' }}>Remaining:0000</Text>
-        <Text style={{ color: 'black', fontSize: 15, fontWeight: '600' }}>Pending:000000</Text>
-      </View>
-    
-      <View style={styles.searchbar}>
-        <TouchableOpacity onPress={() => console.log('Search')}>
-          <Icon name="search" size={25} color="black" style={styles.icon} />
-        </TouchableOpacity>
-        <View style={styles.modelbox}>
-        <TextInput style={styles.textinput}
-         placeholder='Search...'
-          onChangeText={handleSearch}
-          value={search}
-        />
+          <Text style={styles.custtext}>Customer name</Text>
+        </View>
+        <View style={styles.penview}>
+        
+          <Text style={{ color: 'black', fontSize: 15, fontWeight: '600' }}>Pending:000000</Text>
+        </View>
+
+   
+        <View style={styles.search}>
+          <Icon name="search" size={22} color="black" style={{ padding: 10 }} />
+          <View style={{ flex: 1 }}>
+            <TextInput
+              placeholder="Search Product Name"
+              placeholderTextColor={'#ccc'}
+              style={{ paddingHorizontal: 10, color: 'black' }}
+              onChangeText={(text) => {
+                setSearch(text);
+                handleSearch(text);
+              }}
+              value={search}
+            />
+          </View>
+          {search.length > 0 && (
+            <TouchableOpacity onPress={clearSearch}>
+              <Icon name="close" size={25} color="black" style={{ marginHorizontal: 10 }} />
+            </TouchableOpacity>
+          )}
+        </View>
         {search.trim() !== '' && (
           <FlatList
             data={data}
             renderItem={renderItem1}
             keyExtractor={(item, index) => index.toString()}
-           
           />
         )}
+       
+        <FlatList
+          key={key} // Pass key to FlatList
+          data={productList}
+          keyExtractor={(item) => item.id.toString()} // Convert id to string
+          renderItem={({ item, index }) => <Product item={item} index={index} />}
+        />
+        <View style={{ marginTop: '5%', alignItems: 'flex-end' }}>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 16 }}>Total : {totalAmount}/-</Text>
+        </View>
+        <TouchableOpacity style={styles.btn}>
+          <Text style={styles.text}>Order Now</Text>
+        </TouchableOpacity>
       </View>
-      </View>
-    
-      <FlatList
-      key={key} // Pass key to FlatList
-      data={productList}
-      keyExtractor={(item) => item.id.toString()} // Convert id to string
-      renderItem={({ item, index }) => <Product item={item} index={index} />}
-    />
-      <View style={{ marginTop: '10%', alignItems: 'flex-end' }}>
-        <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 16 }}>Total : {totalAmount}/-</Text>
-      </View>
-      <TouchableOpacity style={styles.btn}>
-        <Text style={styles.text}>Order Now</Text>
-      </TouchableOpacity> 
-    </View>
     </ScrollView>
   )
 }
@@ -273,7 +262,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   //// header
- 
+
   headtext: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -296,39 +285,31 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: 'black',
-    
+
   },
 
   ////remaining & pending
-  rempenview: {
-    marginTop:'5%',
+  penview: {
+    marginTop: '5%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     width: '100%',
-    alignItems: 'center'
+   // alignItems: 'center'
   },
   //////Searchbar
-  searchbar: {
-    color:'black',
+  
+
+  search: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-    marginVertical: '2%'
-    
-  },
-  textinput: {
-    color:'black',
-    flex: 1,
-    
-  },
-  icon: {
-    padding: 10,
-  },
-
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginVertical:15,
+    borderRadius:15
+},
   ///flatlist
   flamainview: {
-    height: 150,
+    height: 120,
     flexDirection: 'row',
     borderRadius: 20,
     padding: 8,
@@ -339,34 +320,40 @@ const styles = StyleSheet.create({
   },
 
   flatimageview: {
-    backgroundColor: 'red',
+    backgroundColor:'red',
     width: '25%',
+    height:'75%',
+    alignSelf:'center',
+    justifyContent:'center'
 
   },
   flatdataview: {
-    //backgroundColor: 'yellow',
-    width: '50%'
+    backgroundColor: 'yellow',
+    width: '50%',
+    alignSelf:'center',
+    paddingLeft:10
   },
   delidview: {
     flexDirection: 'column',
-    //backgroundColor: 'pink',
+    backgroundColor: 'pink',
     width: '25%'
   },
   del: {
-    //backgroundColor: 'orange',
+   // backgroundColor: 'orange',
     height: 80,
     alignItems: 'flex-end'
   },
   id: {
-    //backgroundColor: 'green',
-    height: 50,
+    backgroundColor: 'green',
+    //height: '10%',
+   width:'100%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
   },
   flatdeleteicon: {
-    width: 30,
-    height: 30,
+    width: 26,
+    height: 26,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 30 / 2,
@@ -380,7 +367,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
-    // marginTop: '10%',
+    marginTop: '8%',
     marginBottom: '10%'
   },
   text: {
@@ -390,9 +377,9 @@ const styles = StyleSheet.create({
   },
   modelbox: {
     width: '100%',
-    // backgroundColor: '#fff',
-    // marginBottom: 20,
+    borderColor: 'grey',
+    borderWidth: 1,
 
   },
-  
+
 });

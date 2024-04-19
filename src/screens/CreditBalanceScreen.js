@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import { ListItem } from 'react-native-elements';
 import Textarea from 'react-native-textarea';
+import { useFocusEffect } from '@react-navigation/native';
 const CreditBalanceScreen = () => {
     const [searchInput, setSearchInput] = useState('');
     const [data, setData] = useState([]);
@@ -13,6 +14,9 @@ const CreditBalanceScreen = () => {
     const [selectedCustomerName, setSelectedCustomerName] = useState('');
     const [selectedCustomerMobile, setSelectedCustomerMobile] = useState('');
     const [selectedCustomerAddress, setSelectedCustomerAddress] = useState('');
+    const [pendingAmount, setPendingAmount] = useState('');
+    const [newAmount, setNewAmount] = useState('');
+    const [description, setDescription] = useState('');
 
     const clearSearch = () => {
         setSearchInput("");
@@ -84,6 +88,84 @@ const CreditBalanceScreen = () => {
         }
     };
 
+
+    //Validation
+    const [searchError, setSearchError] = useState();
+    const [customerNameError, setCustomerNameError] = useState();
+    const [customerMobileError, setMobileError] = useState();
+    const [customerAddError, setCustomerAddError] = useState();
+    const [pendingError, setPendingError] = useState();
+    const [newAmountError, setNewAmountError] = useState();
+    const [descriptionError, setDescriptiontError] = useState();
+
+    const Validation = () => {
+        var isValid = true;
+        if (searchInput == '') {
+            setSearchError('Please search product');
+            isValid = false;
+        } else {
+            setSearchError('');
+        }
+        if (selectedCustomerName == '') {
+            setCustomerNameError('Customer name do not empty');
+            isValid = false;
+        } else {
+            setCustomerNameError('');
+        }
+
+        if (selectedCustomerMobile == '') {
+            setMobileError('Mobile Number do not empty');
+            isValid = false;
+        } else {
+            setMobileError('');
+        }
+
+        if (selectedCustomerAddress == '') {
+            setCustomerAddError('Address do not empty');
+            isValid = false;
+        } else {
+            setCustomerAddError('');
+        }
+
+        if (pendingAmount == '') {
+            setPendingError(' Enter  Pending Amount');
+            isValid = false;
+        } else {
+            setPendingError('');
+        }
+        if (newAmount == '') {
+            setNewAmountError('Select New Amount');
+            isValid = false;
+        } else {
+            setNewAmountError('');
+        }
+        if (description == '') {
+            setDescriptiontError('Enter Desciption');
+            isValid = false;
+        } else {
+            setDescriptiontError('');
+        }
+        if (isValid) {
+            //handleLogin();
+            console.log('success')
+        }
+    }
+    
+    useFocusEffect(
+        React.useCallback(()=>{
+            return() =>{
+            setSearchError('');
+            setCustomerNameError('');
+            setMobileError('');
+            setCustomerAddError('');
+            setPendingError('');
+            setNewAmountError('');
+            setDescriptiontError('');
+            };
+        },[])
+    );
+
+    
     return (
         <ScrollView style={styles.container}>
             <View style={styles.search}>
@@ -114,37 +196,42 @@ const CreditBalanceScreen = () => {
                 />
             )}
             <View>
+            <Text style={{ color: 'red', fontWeight: '600' }}>{searchError}</Text>
                 <Text style={styles.txt}>Customer name:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedCustomerName}
                     onChangeText={setSelectedCustomerName}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600',}}>{customerNameError}</Text>
                 <Text style={styles.txt}>Customer Mobile:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedCustomerMobile}
                     onChangeText={setSelectedCustomerMobile}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{customerMobileError}</Text>
                 <Text style={styles.txt}>Customer Address:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedCustomerAddress}
                     onChangeText={setSelectedCustomerAddress}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{customerAddError}</Text>
                 <Text style={styles.txt}>Pending Amount:</Text>
                 <TextInput
                     style={styles.textinput1}
+                    value={pendingAmount}
+                    onChangeText={setPendingAmount}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{pendingError}</Text>
                 <Text style={styles.txt}>Add new credit amount:</Text>
                 <TextInput
                     style={styles.textinput1}
+                    value={newAmount}
+                    onChangeText={setNewAmount}
                 />
-
+                <Text style={{ color: 'red', fontWeight: '600' }}>{newAmountError}</Text>
                 <Text style={styles.txt}>Description:</Text>
                 <Textarea
                     containerStyle={styles.textareaContainer}
@@ -152,9 +239,11 @@ const CreditBalanceScreen = () => {
                     maxLength={120}
                     placeholderTextColor={'#c7c7c7'}
                     underlineColorAndroid={'transparent'}
+                    value={description}
+                    onChangeText={setDescription}
                 />
-
-                <TouchableOpacity style={styles.btn}>
+                <Text style={{ color: 'red', fontWeight: '600' }}>{descriptionError}</Text>
+                <TouchableOpacity style={styles.btn} onPress={Validation}>
                     <Text style={styles.text}>Update Customer</Text>
                 </TouchableOpacity>
             </View>
@@ -176,14 +265,13 @@ const styles = StyleSheet.create({
     },
     txt: {
         color: 'black',
-        marginTop: '5%',
+        marginTop: '3%',
         fontSize: 15,
         fontWeight: 'bold'
     },
     textinput1: {
         borderColor: 'grey',
         borderWidth: 1,
-        marginBottom: 10,
         padding: 5,
         color:'black',
     },
