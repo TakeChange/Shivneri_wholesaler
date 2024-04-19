@@ -73,14 +73,13 @@ const EditProductScreen = () => {
         if (item) {
             setSelectedProductName(item.product_name_eng ? item.product_name_eng.trim() : '');
             setSelectedProductNameMarathi(item.product_name ? item.product_name.trim() : '');
-            setSelectedSellingRate(item.sell_price_credit_per_box ? item.sell_price_credit_per_box.trim() : '');
             setSelectedStack(item.quantity ? item.quantity.trim() : '');
             setSelectedImage(item.product_image ? item.product_image.trim() : '');
             setSelectedBoxPrice(item.price_per_unit ? item.price_per_unit.trim() : '');
             setSearchInput(item.product_name_eng ? item.product_name_eng.trim() : '');
             setData([]);
 
-            console.log("selected image",selectImage)
+            //console.log("selected image",selectImage)
         }
     };
     
