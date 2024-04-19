@@ -1,69 +1,67 @@
-import {
-    View,
-    Text,
-    FlatList,
-    Image,
-    TextInput,
-    TouchableOpacity,
-    Modal,
-    StyleSheet,
-    ImageBackground,
-    ActivityIndicator
-} from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { FlatList, ActivityIndicator, StyleSheet, Text, View, ImageBackground, TouchableOpacity, TextInput, Modal } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-const CategoryScreen = ({navigation}) => {
-    const dispatch = useDispatch();
-    const [visible, setVisible] = useState(false);
-    const [data, setData] = useState([]);
-    const [search, setSearch] = useState('');
-    const searchRef = useRef();
-    const [oldData, setOldData] = useState([]);
-    const [selectedFilter, setSelectedFilter] = useState(0);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [catModalVisible, setCatModalVisible] = useState(false);
-    const Product_list = useSelector((state) => state.product?.data);
-    const moreLoading = useSelector((state) => state.product?.isLoader);
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import LeftArrow from 'react-native-vector-icons/AntDesign';
+import Search from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/AntDesign';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dropdown } from 'react-native-element-dropdown';
 
-    const data1 = [
-        { label: 'Item 1', value: '1' },
+
+const CategoryScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
+    var noImageFoundUrl = 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png';
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [showSearch, setShowSearch] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showListing, setShowListing] = useState(false);
+    const Product_list = useSelector((state) => state.product.data);
+    const moreLoading = useSelector((state) => state.product?.isLoader);
+    console.log('Product_list',Product_list[0])
+    const data = [
+        { label: 'Item 1', value: '1' }, 
         { label: 'Item 2', value: '2' },
         { label: 'Item 3', value: '3' },
         { label: 'Item 4', value: '4' },
         { label: 'Item 5', value: '5' },
     ];
 
-    useEffect(() => {
-        setData(Product_list);
-        setOldData(Product_list);
-    }, []);
-
-    const searchFilterFunction = text => {
-        if (text !== '') {
-            let tempData = data.filter(item => {
-                return item.product_name_eng.toLowerCase().indexOf(text.toLowerCase()) > -1;
-            });
-            console.log('tempData', tempData)
-            setData(tempData);
-        } else {
-            setData(oldData);
-        }
+    const handleSearch = (text) => {
+        setSearchQuery(text);
     };
+    const toggleSearch = () => {
+        setShowSearch(!showSearch);
+    };
+    const clearSearch = () => {
+        setSearchQuery('');
+    };
+
+    const BillScreenNavigate = () => {
+        navigation.navigate('BillScreen');
+    }
+
+    const renderItem2 = ({ item }) => (
+        <View style={styles.itemContainer}>
+            <Text style={{color:'black'}}>{item.label}</Text>
+        </View>
+    );
 
     const renderItem1 = ({ item }) => {
         return (
             <View style={styles.listContainer}>
                 <View style={styles.imageContainer}>
-                    <ImageBackground source={{ uri: item.product_image == null ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }} style={styles.image}>
+                    <ImageBackground source={{uri: item.product_image==null?'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png':item.product_image}} style={styles.image}>
+                        <TouchableOpacity style={styles.edit}>
+                            <FontAwesome name='edit' size={20} style={{ color: '#23AA49' }} />
+                        </TouchableOpacity>
                         <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); }}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
-                </View>
+                </View> 
                 <Text style={styles.nameText}>{item.product_name}</Text>
                 <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -74,100 +72,89 @@ const CategoryScreen = ({navigation}) => {
         );
     };
 
-    const renderCategoryWise = ({ item }) => {
-        return (
-            <View>
-                <TouchableOpacity onPress={() => setCatModalVisible(false)}>
-                    <View style={styles.categoryContainer}>
-                        <Text style={styles.categotyText}>{item.product_name}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-        );
-    };
-
-    const BillScreenNavigate = () => {
-        navigation.navigate('BillScreen');
-    }
-
     return (
-        <View style={{ flex: 1 }}>
-            <View
-                style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    height: 70,
-                    marginTop: 20,
-                    justifyContent: 'space-between',
-                }}>
-                <View
-                    style={{
-                        width: '80%',
-                        height: 50,
-                        borderRadius: 10,
-                        borderWidth: 0.2,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginLeft: 15,
-                    }}>
-                    <Image
-                        source={require('../assets/image/search.png')}
-                        style={{ width: 24, height: 24, marginLeft: 15, opacity: 0.5 }}
-                    />
-                    <TextInput
-                        ref={searchRef}
-                        placeholder="search item here..."
-                        placeholderTextColor={'black'}
-                        style={{ width: '76%', height: 50, color: 'black' }}
-                        value={search}
-                        onChangeText={txt => {
-                            searchFilterFunction(txt);
-                            setSearch(txt);
-                        }}
-                    />
-                    {search == '' ? null : (
-                        <TouchableOpacity
-                            style={{ marginRight: 15 }}
-                            onPress={() => {
-                                searchRef.current.clear();
-                                searchFilterFunction('');
-                                setSearch('');
-                            }}>
-                            <Image
-                                source={require('../assets/image/close.png')}
-                                style={{ width: 16, height: 16, opacity: 0.5 }}
+        <View style={styles.container}>
+            <View style={styles.header}>
+                {!showSearch && (
+                    <>
+                        <TouchableOpacity style={styles.lefticon}>
+                            <LeftArrow
+                                name='arrowleft'
+                                size={30}
+                                color='black'
                             />
                         </TouchableOpacity>
-                    )}
-                </View>
-                <TouchableOpacity
-                    style={{
-                        marginRight: 15,
-                    }}
-                    onPress={() => {
-                        setCatModalVisible(true);
-                    }}>
-                    <Image
-                        source={require('../assets/image/filter.png')}
-                        style={{ width: 24, height: 24 }}
-                    />
-                </TouchableOpacity>
-            </View>
+                        <Text style={styles.category}>Category Screen</Text>
 
+                    </>
+                )}
+                {showSearch && (
+                    <View style={styles.searchContainer}>
+                        <TouchableOpacity style={styles.lefticon}>
+                            <LeftArrow
+                                name='arrowleft'
+                                size={30}
+                                color='black'
+                                onPress={toggleSearch}
+                            />
+                        </TouchableOpacity>
+                        <View style={styles.inputContainer}>
+                            <TextInput style={styles.searchInput}
+                                placeholder="Search...."
+                                onChangeText={handleSearch}
+                                value={searchQuery}
+                                autoFocus={true}
+                            />
+                            {searchQuery !== '' && (
+                                <TouchableOpacity style={styles.clearIconContainer} onPress={clearSearch}>
+                                    <Icon name='close' size={20} color='#000' />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </View>
+
+                )}
+                {!showSearch && (
+                    <TouchableOpacity onPress={toggleSearch}>
+                        <Search
+                            name='search'
+                            size={30}
+                            color='#000'
+                            marginRight='2%'
+                        />
+                    </TouchableOpacity >
+                )}
+                <View>
+                    <TouchableOpacity onPress={() => setShowListing(!showListing)}>
+                        <Ionicons
+                            name='filter'
+                            size={25}
+                            color='black'
+                            marginRight='2%'
+                        />
+                    </TouchableOpacity>
+                </View>
+                {showListing && (
+                    <FlatList
+                        data={data}
+                        renderItem={renderItem2}
+                        keyExtractor={item => item.id}
+                        style={styles.list}
+                    />
+                )}
+            </View>
             {moreLoading ? (
                 <View style={styles.loaderContainer}>
                     <ActivityIndicator size="large" color="#0000ff" />
                 </View>
             ) : (
                 <FlatList
-                    data={data}
+                    data={Product_list}
                     renderItem={renderItem1}
                     keyExtractor={item => item.product_id}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
                 />)}
-
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -190,7 +177,7 @@ const CategoryScreen = ({navigation}) => {
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
-                                            data={data1}
+                                            data={data}
                                             maxHeight={100}
                                             labelField="label"
                                             valueField="value"
@@ -220,36 +207,6 @@ const CategoryScreen = ({navigation}) => {
                     </View>
                 </View>
             </Modal>
-
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={catModalVisible}
-                onRequestClose={() => setCatModalVisible(false)}>
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: 'rgba(0,0,0,.5)',
-                    }}>
-                    <View
-                        style={{
-                            width: '80%',
-                            height: '60%',
-                            borderRadius: 10,
-                            backgroundColor: '#fff',
-                        }}>
-                        <FlatList
-                            data={data}
-                            renderItem={renderCategoryWise}
-                            keyExtractor={item => item.product_id}
-                            numColumns={1}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    </View>
-                </View>
-            </Modal>
             <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
                 <AntDesign name="arrowright" size={25} color="white" />
             </TouchableOpacity>
@@ -258,6 +215,7 @@ const CategoryScreen = ({navigation}) => {
 };
 
 export default CategoryScreen;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -300,10 +258,8 @@ const styles = StyleSheet.create({
     listContainer: {
         flex: 1,
         backgroundColor: 'white',
-        margin: 2,
+        //margin: 8,
         borderRadius: 10,
-        borderColor: 'black',
-        borderRadius: 0.4
     },
     imageContainer: {
         margin: 5,
@@ -318,22 +274,6 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: '500',
         paddingLeft: '5%'
-    },
-    categoryContainer: {
-        padding: 5,
-        borderWidth: 0.5,
-        borderTopColor: 'white',
-        borderBottomColor: 'black',
-        borderRightColor: 'white',
-        borderLeftColor: 'white',
-        margin: 2
-    },
-    categotyText: {
-        color: '#000',
-        fontWeight: '500',
-        paddingLeft: '5%',
-        textAlign: 'center',
-        fontSize: 18,
     },
     total: {
         color: '#000',
@@ -442,7 +382,7 @@ const styles = StyleSheet.create({
     },
     list: {
         marginTop: 20,
-        color: 'black',
+        color:'black',
 
     },
 });

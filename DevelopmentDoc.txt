@@ -56,5 +56,15 @@ Toggle-Switch :
     plugin:
         npm i toggle-switch-react-native
 
+Network status :
+    plugin :
+        npm i @react-native-community/netinfo
+
+react-native-virtualized-view:
+    plugin:
+        npm install react-native-virtualized-view
 
 
+TextArea :
+    plugin :
+        npm i react-native-textarea

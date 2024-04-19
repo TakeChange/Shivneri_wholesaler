@@ -1,10 +1,13 @@
 import { View, StyleSheet, Image } from 'react-native'
 import React, { useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { FetchProduct } from '../api/FetchProduct';
 
 const SplashScreen = ({ navigation }) => {
-
+    const dispatch = useDispatch();
     useEffect(() => {
+        dispatch(FetchProduct());
         setTimeout(() => {
             checkSession();
         }, 2000);
@@ -13,10 +16,10 @@ const SplashScreen = ({ navigation }) => {
     const checkSession = async () => {
         try {
             const value = await AsyncStorage.getItem('login');
-            if (value=="yes") {
+            if (value == "yes") {
                 console.log(value);
                 navigation.navigate('DrawerNavigation');
-            }else{
+            } else {
                 navigation.navigate('LoginScreen');
             }
         } catch (error) {
@@ -38,7 +41,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-      
+
         justifyContent: 'center'
     },
 })

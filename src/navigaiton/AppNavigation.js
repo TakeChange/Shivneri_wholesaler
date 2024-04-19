@@ -6,14 +6,14 @@ import DrawerNavigation from './drawer_navi/DrawerNavigation';
 import LoginScreen from '../screens/LoginScreen';
 import CategoryScreen from '../screens/CategoryScreen';
 import BillScreen from '../screens/BillScreen';
-
+import CheckInternet from '../components/CheckInternet';
+import CreditBalanceScreen from '../screens/CreditBalanceScreen';
 const Stack = createStackNavigator();
 
 const AppNavigation = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator>
-
                 <Stack.Screen
                     name="Splash"
                     component={SplashScreen}
@@ -43,8 +43,22 @@ const AppNavigation = () => {
                     component={BillScreen}
                     options={{ headerShown: true }}
                 />
+                <Stack.Screen
+                    name="CreditBalanceScreen"
+                    component={CreditBalanceScreen}
+                    options={{ headerShown: true }}
+                />
 
             </Stack.Navigator>
+
+            <CheckInternet
+
+                name="CheckInternet"
+                component={CheckInternet}
+                options={{ headerShown: false }}
+            />
+
+
         </NavigationContainer>
     );
 };

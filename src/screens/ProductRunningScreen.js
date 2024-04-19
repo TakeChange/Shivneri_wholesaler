@@ -3,7 +3,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const ProductOutOfStockScreen = () => {
 
-  const users = [
+  const users = [ 
     {
       productName: 'Almond Barfi ₹2',
       companyName: 'Opening/General Company',

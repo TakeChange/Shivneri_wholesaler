@@ -15,6 +15,9 @@ import ProductRunningScreen from '../../screens/ProductRunningScreen';
 import SettingScreen from '../../screens/SettingScreen';
 import CategoryScreen from '../../screens/CategoryScreen';
 import AddProduct from '../../screens/AddProduct';
+import CreditBalanceScreen from '../../screens/CreditBalanceScreen';
+import EditProductScreen from '../../screens/EditProductScreen';
+import FlatlistDemo from '../../screens/FlatListDemo';
 
 
 const Drawer = createDrawerNavigator();
@@ -33,6 +36,42 @@ const DrawerNavigation = () => {
           title: 'Home',
           drawerIcon: ({ focused, size }) => (
             <FontAwesome name='home' size={22} color='#000'
+              style={{ height: 25, width: 25, }} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={{
+          headerShown: true,
+          title: 'AddProduct',
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons name='bag-add' size={22} color='#000'
+              style={{ height: 25, width: 25, }} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="CustomerMaster"
+        component={CreditBalanceScreen}
+        options={{
+          headerShown: true,
+          title: 'Customer Master',
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons name='bag-add' size={22} color='#000'
+              style={{ height: 25, width: 25, }} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="EditProduct"
+        component={EditProductScreen}
+        options={{
+          headerShown: true,
+          title: 'Product Master',
+          drawerIcon: ({ focused, size }) => (
+            <MaterialCommunityIcons name='book-edit' size={22} color='#000'
               style={{ height: 25, width: 25, }} />
           ),
         }}
@@ -73,18 +112,7 @@ const DrawerNavigation = () => {
           ),
         }}
       />
-      <Drawer.Screen
-        name="AddProduct"
-        component={AddProduct}
-        options={{
-          headerShown: true,
-          title: 'AddProduct',
-          drawerIcon: ({ focused, size }) => (
-            <Ionicons name='bag-add' size={22} color='#000'
-              style={{ height: 25, width: 25, }} />
-          ),
-        }}
-      />
+
       <Drawer.Screen
         name="Setting"
         component={SettingScreen}
@@ -97,7 +125,6 @@ const DrawerNavigation = () => {
           ),
         }}
       />
-
     </Drawer.Navigator>
   )
 }
