@@ -22,10 +22,10 @@ const EditProductScreen = () => {
     const [selectedProductType, setSelectedProductType] = useState('');
     const [selectedBoxPrice, setSelectedBoxPrice] = useState('');
     const [filePath, setFilePath] = useState();
-    const [selectImage,setSelectedImage] = useState('')
+    const [selectImage, setSelectedImage] = useState('')
 
     const Product_list = useSelector((state) => state.product.data);
-    console.log('Product_list:',Product_list);
+    console.log('Product_list:', Product_list);
 
     const clearSearch = () => {
         setSearchInput("");
@@ -75,14 +75,14 @@ const EditProductScreen = () => {
             setSelectedProductNameMarathi(item.product_name ? item.product_name.trim() : '');
             setSelectedStack(item.quantity ? item.quantity.trim() : '');
             setSelectedImage(item.product_image ? item.product_image.trim() : '');
-            setSelectedBoxPrice(item.price_per_unit ? item.price_per_unit.trim() : '');
+            setSelectedBoxPrice(item.sell_price_cash_per_box ? item.sell_price_cash_per_box.trim() : '');
             setSearchInput(item.product_name_eng ? item.product_name_eng.trim() : '');
             setData([]);
 
             //console.log("selected image",selectImage)
         }
     };
-    
+
 
     const handleSearch = text => {
         setSearchInput(text);
@@ -122,7 +122,7 @@ const EditProductScreen = () => {
         } else {
             setProductNameError('');
         }
-        
+
         if (selectedSellingRate == '') {
             setSellingRateError('Enter Selling rate');
             isValid = false;
@@ -189,7 +189,7 @@ const EditProductScreen = () => {
     );
 
 
-   
+
 
     return (
         <ScrollView style={styles.container}>
@@ -206,7 +206,7 @@ const EditProductScreen = () => {
                         }}
                         value={searchInput}
                     />
-                    
+
                 </View>
                 {searchInput.length > 0 && (
                     <TouchableOpacity onPress={clearSearch}>
@@ -293,12 +293,12 @@ const EditProductScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <Text></Text>
-                {selectImage == null ? <Image
+                {selectImage == "" ? <Image
                     style={styles.imageStyle}
                     source={{
                         uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
                     }}
-                   
+
                 /> :
                     <Image
                         source={{ uri: selectImage }}
