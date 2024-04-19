@@ -5,7 +5,6 @@ import { store } from './src/redux_toolkit/store';
 
 
 const App = () => {
-
   return (
     <Provider store={store}>
       <AppNavigation />
