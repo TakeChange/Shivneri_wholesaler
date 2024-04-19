@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image } from 'react-native'
 import React, { useState } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
-
+import { useFocusEffect } from '@react-navigation/native';
 const AddProduct = () => {
     const [filePath, setFilePath] = useState();
     const [productname, setProductname] = useState('');
@@ -16,7 +16,7 @@ const AddProduct = () => {
     const [totalerr, setTotalErr] = useState('');
 
 
-const addProd = () => {
+    const addProd = () => {
         var isValid = true;
         if (productname == '') {
             setpnameErr('Product name do not empty');
@@ -60,8 +60,8 @@ const addProd = () => {
             setQuantity('');
             setTotal('');
         }
-      }
- const chooseFile = (type) => {
+    }
+    const chooseFile = (type) => {
         let options = {
             mediaType: type,
             maxWidth: 300,
@@ -81,6 +81,20 @@ const addProd = () => {
             }
         });
     };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            return () => {
+                // Reset errors when navigating away from screen
+                setFilePathErr('');
+                setpnameErr('');
+                setBoxPriceErr('');
+                setQuantityErr('');
+                setTotalErr('');
+            };
+        }, [])
+    );
+
 
     return (
         <ScrollView>

@@ -1,6 +1,7 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Entypo from 'react-native-vector-icons/Entypo'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const OrderVehicleScreen = () => {
 
@@ -68,9 +69,11 @@ const UserData = (props) => {
         <Text style={styles.calender}>
           <FontAwesome name='calendar' size={16} color='#000000' /> 2024-03-06</Text>
 
-        <View>
+        <View style={styles.viewbill}>
           <Text style={styles.txt}>View Bill</Text>
+          <TouchableOpacity>
           <Entypo name='eye' size={22} color='#000000' />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -105,6 +108,10 @@ const styles = StyleSheet.create({
     padding: 8,
     width: '100%',
     marginVertical: 5,
-
+  },
+  viewbill:{
+    flexDirection:'row',
+    justifyContent:'space-between',
+    paddingTop:'2%'
   }
 })
