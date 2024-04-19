@@ -18,6 +18,7 @@ import AddProduct from '../../screens/AddProduct';
 import CreditBalanceScreen from '../../screens/CreditBalanceScreen';
 import EditProductScreen from '../../screens/EditProductScreen';
 import FlatlistDemo from '../../screens/FlatListDemo';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 
 const Drawer = createDrawerNavigator();
@@ -59,8 +60,8 @@ const DrawerNavigation = () => {
           headerShown: true,
           title: 'Customer Master',
           drawerIcon: ({ focused, size }) => (
-            <Ionicons name='bag-add' size={22} color='#000'
-              style={{ height: 25, width: 25, }} />
+            <FontAwesome5 name='user-edit' size={20} color='#000'
+              style={{ height: 22, width: 25,}} />
           ),
         }}
       />
