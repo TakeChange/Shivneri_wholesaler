@@ -328,14 +328,14 @@ const styles = StyleSheet.create({
 
   },
   flatdataview: {
-    backgroundColor: 'yellow',
+   // backgroundColor: 'yellow',
     width: '50%',
     alignSelf:'center',
     paddingLeft:10
   },
   delidview: {
     flexDirection: 'column',
-    backgroundColor: 'pink',
+    //backgroundColor: 'pink',
     width: '25%'
   },
   del: {
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   id: {
-    backgroundColor: 'green',
+    //backgroundColor: 'green',
     //height: '10%',
    width:'100%',
     flexDirection: 'row',
