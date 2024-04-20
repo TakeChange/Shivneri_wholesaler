@@ -29,36 +29,66 @@ const CreditBalanceScreen = () => {
         fetchData();
     }, []);
 
+    // const fetchData = async () => {
+    //     try {
+    //         //const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
+    //         const getUser = 'https://demo.raviscyber.in/public/customer_payment_list.php'
+    //         const response = await axios.post(getUser, {
+    //             headers: {
+    //                 "Content-Type": "multipart/form-data",
+    //             },
+    //         });
+
+    //         const { status, data } = response.data;
+    //         const sorted = data.sort((a, b) => {
+    //             const nameA = a.cust_name.toLowerCase();
+    //             const nameB = b.cust_name.toLowerCase();
+    //             if (nameA < nameB) return -1;
+    //             if (nameA > nameB) return 1;
+    //             return 0;
+    //         });
+    //         setData(sorted);
+    //         setSortedData(sorted);
+    //         console.log(sorted)
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //     }
+    // };
+
     const fetchData = async () => {
         try {
-            const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
+            const getUser = 'https://demo.raviscyber.in/public/customer_payment_list.php'
             const response = await axios.post(getUser, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-
-            const { status, data } = response.data;
-            const sorted = data.sort((a, b) => {
-                const nameA = a.user_name.toLowerCase();
-                const nameB = b.user_name.toLowerCase();
-                if (nameA < nameB) return -1;
-                if (nameA > nameB) return 1;
-                return 0;
-            });
-            setData(sorted);
-            setSortedData(sorted);
-            console.log(sorted)
+    
+            console.log("Response here:", response.data); // Log the response data
+    
+            // const { status, data } = response.data;
+            //         const sorted = data.sort((a, b) => {
+            //             const nameA = a.cust_name.toLowerCase();
+            //             const nameB = b.cust_name.toLowerCase();
+            //             if (nameA < nameB) return -1;
+            //             if (nameA > nameB) return 1;
+            //             return 0;
+                //    });
+                    setData(response.data);
+                    setSortedData(response.data);
+                    
+                    console.log(response.data)
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
+    
 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleItemClick(item)}>
             <ListItem>
                 <ListItem.Content>
-                    <ListItem.Title>{item.user_name}</ListItem.Title>
+                    <ListItem.Title>{item.cust_name}</ListItem.Title>
                 </ListItem.Content>
             </ListItem>
         </TouchableOpacity>
@@ -66,12 +96,14 @@ const CreditBalanceScreen = () => {
 
     const handleItemClick = item => {
         if (item) {
-            setSelectedCustomerName(item.user_name ? item.user_name.trim() : '');
-            setSelectedCustomerMobile(item.mobile_number ? item.mobile_number.trim() : '');
-            setSelectedCustomerAddress(item.address ? item.address.trim() : '');
-            setSearchInput(item.user_name ? item.user_name.trim() : '');
-            handleSearch(item.user_name ? item.user_name.trim() : '');
-            setData([]);
+            setSelectedCustomerName(item.cust_name ? item.cust_name.trim() : 'null');
+            setSearchInput(item.cust_name ? item.cust_name.trim() : ''); // Set the search input with the selected customer name
+             setSelectedCustomerMobile(item.mobile_number ? item.mobile_number.trim() : 'null');
+             setSelectedCustomerAddress(item.address ? item.address.trim() : 'null');
+             setPendingAmount(item.pending_amount ? item.pending_amount.trim() : '0'); 
+             setNewAmount(item.pending_amount ? item.pending_amount.trim() : '0');
+             handleSearch(item.cust_name ? item.cust_name.trim() : '');
+             setData([]);
         }
     };
 
@@ -82,7 +114,7 @@ const CreditBalanceScreen = () => {
             setData([]);
         } else {
             const filtered = sortedData.filter(item =>
-                item.user_name.toLowerCase().includes(text.toLowerCase())
+                item.cust_name.toLowerCase().includes(text.toLowerCase())
             );
             setData(filtered);
         }
@@ -304,3 +336,5 @@ const styles = StyleSheet.create({
         color: '#333',
       },
 });
+
+

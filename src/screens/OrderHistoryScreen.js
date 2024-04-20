@@ -1,10 +1,11 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 const OrderHistoryScreen = () => {
-
+ var cust_data=[];
   const users = [
     {
       Customer: "Mangesh Lilake",
@@ -48,38 +49,114 @@ const OrderHistoryScreen = () => {
       Total: 144
     }
   ];
+  const [data,setData] = useState([]);
+ const [loading,setLoading] = useState(false);
+  useEffect(() =>{
+    handleCustomerList();
+  },[]);
+   
+    const handleCustomerList = async () => {
+      setLoading(true);
+   
+      try {
+        const loginUrl = 'https://demo.raviscyber.in/public/customer_payment_list.php';
+   
+        const response = await axios.post(loginUrl, {
+          order_type: 1,
+        },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+          setData(response);
+          cust_data = response.data;
+        // const { status, message } = response.data;
+        console.log('res', cust_data);
+        // console.log('responce 1', response[0]);
+
+
+   
+        // if (status === "success") {
+        //   setSession();
+        //   ToastAndroid.show(message, ToastAndroid.SHORT);
+        //   navigation.navigate('DrawerNavigation');
+        // } else {
+        //   console.error('Login failed:', message);
+        //   ToastAndroid.show(message, ToastAndroid.SHORT);
+        // }
+      } catch (error) {
+        //ToastAndroid.show('Please enter valid username and password', ToastAndroid.SHORT);
+        console.log("error:",error);
+      } 
+      finally {
+        setLoading(false);
+      }
+    };
+  
+    const renderItem1 = ({ item }) => {
+      return (
+        <View style={styles.Container}>
+        <View style={styles.flatstyle}>
+          <Text style={styles.txt}>Customer Name: {item.cust_name}</Text>
+          <Text style={styles.txt}>Order ID: {item.order_id}</Text>
+          <Text style={styles.txt}>Total: ₹ {item.paid_amount}</Text>
+          <Text style={styles.calender}>
+            <FontAwesome name='calendar' size={16} color='#000000' />{item.date}</Text>
+  
+          <View style={styles.viewbill}>
+            <Text style={styles.txt}>View Bill</Text>
+            <TouchableOpacity>
+            <Entypo name='eye' size={25} color='#000000' />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+      );
+  };
 
   return (
     <View>
-      <FlatList
-        data={users}
-        renderItem={({ item }) => <UserData data={item} />}
-      />
+       {loading ? (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            ) : (
+                <FlatList
+                    data={cust_data}
+                    renderItem={renderItem1}
+                    keyExtractor={item => item.product_id}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                />)}
     </View>
   );
 };
-const UserData = (props) => {
-  const item = props.data
-  return (
-    <View style={styles.Container}>
-      <View style={styles.flatstyle}>
-        <Text style={styles.txt}>Customer Name: {item.Customer}</Text>
-        <Text style={styles.txt}>Order ID: {item.Order}</Text>
-        <Text style={styles.txt}>Total: ₹ {item.Total}</Text>
-        <Text style={styles.calender}>
-          <FontAwesome name='calendar' size={16} color='#000000' /> 2024-03-06</Text>
+// const UserData = (props) => {
+//   const item = props.cust_data
+//   console.log
+ 
+//   return (
+//     <View style={styles.Container}>
+//       <View style={styles.flatstyle}>
+//         <Text style={styles.txt}>Customer Name: {item.cust_name}</Text>
+//         <Text style={styles.txt}>Order ID: {item.order_id}</Text>
+//         <Text style={styles.txt}>Total: ₹ {item.paid_amount}</Text>
+//         <Text style={styles.calender}>
+//           <FontAwesome name='calendar' size={16} color='#000000' />{item.date}</Text>
 
-        <View style={styles.viewbill}>
-          <Text style={styles.txt}>View Bill</Text>
-          <TouchableOpacity>
-          <Entypo name='eye' size={25} color='#000000' />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+//         <View style={styles.viewbill}>
+//           <Text style={styles.txt}>View Bill</Text>
+//           <TouchableOpacity>
+//           <Entypo name='eye' size={25} color='#000000' />
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </View>
 
-  )
-}
+//   )
+// }
 
 export default OrderHistoryScreen
 
