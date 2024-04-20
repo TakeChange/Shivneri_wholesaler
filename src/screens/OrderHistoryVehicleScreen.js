@@ -15,7 +15,7 @@ const OrderVehicleScreen = () => {
   const handleCustomerList = async () => {
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/customer_payment_list.php';
-      const response = await axios.post(loginUrl, { order_type: 2 }, { headers: { "Content-Type": "multipart/form-data" } });
+      const response = await axios.post(loginUrl, { order_type: 1 }, { headers: { "Content-Type": "multipart/form-data" } });
       console.log('res', response);
 
       // Assuming your API response returns an array of customer objects with a 'cust_name' property
