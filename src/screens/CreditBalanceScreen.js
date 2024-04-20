@@ -96,11 +96,12 @@ const CreditBalanceScreen = () => {
 
     const handleItemClick = item => {
         if (item) {
-            setSelectedCustomerName(item.cust_name ? item.cust_name.trim() : '');
+            setSelectedCustomerName(item.cust_name ? item.cust_name.trim() : 'null');
             setSearchInput(item.cust_name ? item.cust_name.trim() : ''); // Set the search input with the selected customer name
-             setSelectedCustomerMobile(item.mobile_number ? item.mobile_number.trim() : '');
-             setSelectedCustomerAddress(item.address ? item.address.trim() : '');
-             setPendingAmount(item.pending_amount ? item.pending_amount.trim() : ''); 
+             setSelectedCustomerMobile(item.mobile_number ? item.mobile_number.trim() : 'null');
+             setSelectedCustomerAddress(item.address ? item.address.trim() : 'null');
+             setPendingAmount(item.pending_amount ? item.pending_amount.trim() : '0'); 
+             setNewAmount(item.pending_amount ? item.pending_amount.trim() : '0');
              handleSearch(item.cust_name ? item.cust_name.trim() : '');
              setData([]);
         }
