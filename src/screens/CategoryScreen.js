@@ -15,19 +15,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-const CategoryScreen = ({navigation}) => {
+import axios from 'axios';
+import { FetchFilterProduct } from '../api/FetchProduct';
+const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
     const [data, setData] = useState([]);
     const [search, setSearch] = useState('');
+    const [categories, setCategories] = useState([]);
     const searchRef = useRef();
     const [oldData, setOldData] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState(0);
     const [selectedItem, setSelectedItem] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [catModalVisible, setCatModalVisible] = useState(false);
-    const Product_list = useSelector((state) => state.product?.data);
-    const moreLoading = useSelector((state) => state.product?.isLoader);
+    // const Product_list = useSelector((state) => state.product?.data);
+    // const moreLoading = useSelector((state) => state.product?.isLoader);
+    const [moreLoading, setMoreLoading] = useState(false);
+    const [products, setProducts] = useState([]);
 
     const data1 = [
         { label: 'Item 1', value: '1' },
@@ -38,16 +43,67 @@ const CategoryScreen = ({navigation}) => {
     ];
 
     useEffect(() => {
-        setData(Product_list);
-        setOldData(Product_list);
+        // setData(Product_list);
+        // setOldData(Product_list);
+        fetchData();
+        fetchProd(0);
     }, []);
+
+    const fetchData = async () => {
+        
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
+            const responseJson = response.data;
+
+            if (responseJson.status === 'success') {
+                setCategories(responseJson.data);
+            } else {
+                console.error('Error: Response status is not success');
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const fetchProd = async (id) => {
+        setMoreLoading(true);
+        if(id==0)
+        {
+            try {
+                const response = await axios.get('https://demo.raviscyber.in/public/category_wise_productList.php');
+                setProducts(response.data);
+                setMoreLoading(false);
+              } catch (error) {
+                console.error('Error fetching data:', error);
+              }
+        }
+        else{
+            try {
+                const CategoryWiseUrl = 'https://demo.raviscyber.in/public/category_wise_productList.php';
+          
+                response = await axios.post(CategoryWiseUrl, {
+                    category_id: id,
+                },
+                 {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                );
+               res = response.data;
+               setProducts(res);
+               setMoreLoading(false);
+            } catch (error) {
+                ToastAndroid.show('category issue', ToastAndroid.SHORT);
+            } 
+        }
+    }
 
     const searchFilterFunction = text => {
         if (text !== '') {
             let tempData = data.filter(item => {
                 return item.product_name_eng.toLowerCase().indexOf(text.toLowerCase()) > -1;
             });
-            console.log('tempData', tempData)
             setData(tempData);
         } else {
             setData(oldData);
@@ -58,8 +114,8 @@ const CategoryScreen = ({navigation}) => {
         return (
             <View style={styles.listContainer}>
                 <View style={styles.imageContainer}>
-                    <ImageBackground source={{ uri: item.product_image == ""? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }} style={styles.image}>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true);()=>console.log('Image Path:',item.product_image)}}>
+                    <ImageBackground source={{ uri: item.product_image == "" ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }} style={styles.image}>
+                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); () => console.log('Image Path:', item.product_image) }}>
                             <Ionicons name='add-circle' size={38} style={styles.addIcon} />
                         </TouchableOpacity>
                     </ImageBackground>
@@ -74,12 +130,19 @@ const CategoryScreen = ({navigation}) => {
         );
     };
 
+    const dispatchCategoryWise=(id)=>{
+        setCatModalVisible(false);
+        console.log('id',id);
+        // dispatch(FetchFilterProduct(id));
+        fetchProd(id);
+    }
+
     const renderCategoryWise = ({ item }) => {
         return (
             <View>
-                <TouchableOpacity onPress={() => setCatModalVisible(false)}>
+                <TouchableOpacity onPress={()=>dispatchCategoryWise(item.id)}>
                     <View style={styles.categoryContainer}>
-                        <Text style={styles.categotyText}>{item.product_name}</Text>
+                        <Text style={styles.categotyText}>{item.category_name}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -161,7 +224,7 @@ const CategoryScreen = ({navigation}) => {
                 </View>
             ) : (
                 <FlatList
-                    data={data}
+                    data={products}
                     renderItem={renderItem1}
                     keyExtractor={item => item.product_id}
                     numColumns={2}
@@ -241,11 +304,9 @@ const CategoryScreen = ({navigation}) => {
                             backgroundColor: '#fff',
                         }}>
                         <FlatList
-                            data={data}
+                            data={categories}
                             renderItem={renderCategoryWise}
-                            keyExtractor={item => item.product_id}
-                            numColumns={1}
-                            showsVerticalScrollIndicator={false}
+                            keyExtractor={item => item.id.toString()}
                         />
                     </View>
                 </View>

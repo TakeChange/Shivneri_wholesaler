@@ -2,12 +2,12 @@ import { View, StyleSheet, Image } from 'react-native'
 import React, { useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
-import { FetchProduct } from '../api/FetchProduct';
+import { FetchFilterProduct, FetchProduct } from '../api/FetchProduct';
 
 const SplashScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(FetchProduct());
+        dispatch(FetchFilterProduct('0'));
         setTimeout(() => {
             checkSession();
         }, 2000);

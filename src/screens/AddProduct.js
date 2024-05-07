@@ -1,19 +1,64 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image } from 'react-native'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
+import { SelectList } from 'react-native-dropdown-select-list'
+import axios from 'axios';
 const AddProduct = () => {
     const [filePath, setFilePath] = useState();
     const [productname, setProductname] = useState('');
     const [boxprice, setBoxPrice] = useState('');
     const [quantity, setQuantity] = useState('');
     const [total, setTotal] = useState('');
-
+    const [categories, setCategories] = useState([]);
     const [filePatherr, setFilePathErr] = useState();
     const [pnameerr, setpnameErr] = useState('');
     const [boxpriceerr, setBoxPriceErr] = useState('');
     const [quantityerr, setQuantityErr] = useState('');
     const [totalerr, setTotalErr] = useState('');
+    // const [selected, setSelected] = React.useState("");
+    const [selected, setSelected] = React.useState("");
+    const [data,setData] = React.useState([]);
+    // const data = [
+    //     { key: '1', value: 'Mobiles' },
+    //     { key: '2', value: 'Appliances' },
+    //     { key: '3', value: 'Cameras' },
+    //     { key: '4', value: 'Computers'},
+    //     { key: '5', value: 'Vegetables' },
+    //     { key: '6', value: 'Diary Products' },
+    //     { key: '7', value: 'Drinks' },
+    // ];
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
+            const responseJson = response.data;
+    
+            console.log('Response data:', responseJson); // Log response data to check its structure
+    
+            if (responseJson.status === 'success') {
+                // Check if response data is an array
+                if (Array.isArray(responseJson.data)) {
+                    // If it's an array, proceed with mapping
+                    let newArray = responseJson.data.map((item) => ({
+                        key: item.id,
+                        value: item.category_name
+                    }));
+                    setData(newArray);
+                } else {
+                    console.error('Error: Response data is not an array');
+                }
+            } else {
+                console.error('Error: Response status is not success');
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
 
 
     const addProd = () => {
@@ -100,7 +145,7 @@ const AddProduct = () => {
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.All}>
-                    <Text style={styles.name}>Enter Product Name :</Text>
+                    <Text style={styles.name}>Product Name Marathi:</Text>
                     <TextInput
                         style={styles.input}
                         value={productname}
@@ -108,6 +153,25 @@ const AddProduct = () => {
                     />
                     <Text style={styles.error}>{pnameerr}</Text>
 
+                    <Text style={styles.name}>Product Name English:</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={productname}
+                        onChangeText={(text) => setProductname(text)}
+                    />
+                    <Text style={styles.error}>{pnameerr}</Text>
+
+                    <Text style={styles.name}>Min Quantity :</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={quantity}
+                        onChangeText={(text) => setQuantity(text)}
+                    />
+                    <Text style={styles.error}>{quantityerr}</Text>
+                    <Text style={styles.name}>Category :</Text>
+                    <View style={{margin:15}}>
+                    <SelectList setSelected={setSelected} data={data} onSelect={() => alert(selected)} />
+                    </View>
                     <Text style={styles.name}>Enter Box Price :</Text>
                     <TextInput
                         style={styles.input}
@@ -115,14 +179,6 @@ const AddProduct = () => {
                         onChangeText={(text) => setBoxPrice(text)}
                     />
                     <Text style={styles.error}>{boxpriceerr}</Text>
-
-                    <Text style={styles.name}>Quantity :</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={quantity}
-                        onChangeText={(text) => setQuantity(text)}
-                    />
-                    <Text style={styles.error}>{quantityerr}</Text>
 
                     <Text style={styles.name}>Total :</Text>
                     <TextInput
@@ -181,15 +237,15 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     input: {
-        color:'black',
-        height: '7%',
+        color: 'black',
+        height: '5%',
         alignSelf: 'center',
         borderBottomWidth: 1,
-        padding: '2%',
+        //padding: '2%',
         width: '90%',
         justifyContent: 'flex-end',
         fontSize: 15,
-        marginBottom: '1%'
+        //marginBottom: '1%'
     },
     Upload: {
         color: '#000',
@@ -222,7 +278,7 @@ const styles = StyleSheet.create({
     },
     error: {
         color: 'red',
-        marginHorizontal: 10,
+        //marginHorizontal: 10,
         marginBottom: '1%',
         marginLeft: '5%',
 

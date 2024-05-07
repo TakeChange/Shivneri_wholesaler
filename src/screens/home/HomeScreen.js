@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Modal from "react-native-modal";
 import { useNavigationState } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { FetchProduct } from '../../api/FetchProduct';
+import { FetchFilterProduct, FetchProduct } from '../../api/FetchProduct';
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
@@ -139,9 +139,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleSaveUser = (customerName, mobileNumber, address) => {
-    console.log('Customer Name:', customerName);
-    console.log('Mobile Number:', mobileNumber);
-    console.log('Address:', address);
+    // console.log('Customer Name:', customerName);
+    // console.log('Mobile Number:', mobileNumber);
+    // console.log('Address:', address);
 
     registerNewUser(customerName, mobileNumber, address);
 
@@ -182,8 +182,8 @@ const HomeScreen = ({ navigation }) => {
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
-      console.log("data",data);
-      console.log("sortedData",sortedData)
+      // console.log("data",data);
+      // console.log("sortedData",sortedData)
     }
   };
   
@@ -223,7 +223,7 @@ const HomeScreen = ({ navigation }) => {
       );
 
       const { status, message } = response.data;
-      console.log('res', message);
+      // console.log('res', message);
 
       if (status === "success") {
 
@@ -231,7 +231,7 @@ const HomeScreen = ({ navigation }) => {
         ToastAndroid.show(message, ToastAndroid.SHORT);
         fetchData();
       } else {
-        console.error('Registation Failed:', message);
+        // console.error('Registation Failed:', message);
         ToastAndroid.show(message, ToastAndroid.SHORT);
       }
     } catch (error) {
@@ -243,7 +243,7 @@ const HomeScreen = ({ navigation }) => {
 
   const NextScreen = () => {
     if (search.length != 0 && search === temp) {
-      dispatch(FetchProduct());
+      dispatch(FetchFilterProduct('0'));
       navigation.navigate('CategoryScreen', username = temp);
       ToastAndroid.show("start the " + temp + " billing", ToastAndroid.SHORT);
     }
