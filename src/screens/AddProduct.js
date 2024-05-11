@@ -4,41 +4,49 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import axios from 'axios';
+import { CheckBox } from 'react-native-elements';
 const AddProduct = () => {
     const [filePath, setFilePath] = useState();
     const [productname, setProductname] = useState('');
+    const [productname_marathi, setProductname_marathi] = useState('');
     const [boxprice, setBoxPrice] = useState('');
     const [quantity, setQuantity] = useState('');
     const [total, setTotal] = useState('');
-    const [categories, setCategories] = useState([]);
     const [filePatherr, setFilePathErr] = useState();
     const [pnameerr, setpnameErr] = useState('');
+    const [pnameerr_marathi, setpnameErr_marathi] = useState('');
+    const [img_error, setImageError] = useState('');
     const [boxpriceerr, setBoxPriceErr] = useState('');
     const [quantityerr, setQuantityErr] = useState('');
     const [totalerr, setTotalErr] = useState('');
-    // const [selected, setSelected] = React.useState("");
-    const [selected, setSelected] = React.useState("");
-    const [data,setData] = React.useState([]);
-    // const data = [
-    //     { key: '1', value: 'Mobiles' },
-    //     { key: '2', value: 'Appliances' },
-    //     { key: '3', value: 'Cameras' },
-    //     { key: '4', value: 'Computers'},
-    //     { key: '5', value: 'Vegetables' },
-    //     { key: '6', value: 'Diary Products' },
-    //     { key: '7', value: 'Drinks' },
-    // ];
+    const [selectedUnit, setSelectedUnit] = useState("");
+    const [selectedBoxUnit, setSelectedBoxUnit] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedCategoryError, setSelectedCategoryError] = useState("");
+    const [selectedBoxUnitError, setSelectedBoxUnitError] = useState("");
+    const [selectedUnitError, setSelectedUnitError] = useState("");
+    const [data, setData] = React.useState([]);
+    const [dataBoxUnit, setDataBoxUnit] = useState([]);
+    const [dataUnit, setDataUnit] = useState([]);
+    const [isChecked, setIsChecked] = useState(false);
+    const [inputText, setInputText] = useState('');
+
     useEffect(() => {
         fetchData();
+        fetchBoxUnit();
+        fetchUnit();
     }, []);
+
+    const toggleCheckbox = () => {
+        setIsChecked(!isChecked);
+        setInputText(''); // Reset input text when hiding the input field
+    };
 
     const fetchData = async () => {
         try {
             const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
             const responseJson = response.data;
-    
             console.log('Response data:', responseJson); // Log response data to check its structure
-    
             if (responseJson.status === 'success') {
                 // Check if response data is an array
                 if (Array.isArray(responseJson.data)) {
@@ -59,10 +67,51 @@ const AddProduct = () => {
         }
     };
 
+    const fetchBoxUnit = async () => {
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/box_unitList.php');
+            const responseJson = response.data;
+            console.log('Response data:', responseJson); // Log response data to check its structure
+            let newArray = responseJson.data.map((item, index) => ({
+                key: index,
+                value: item
+            }));
+            console.log("newArray :", newArray);
+            setDataBoxUnit(newArray);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
+    const fetchUnit = async () => {
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/product_unitList.php');
+            const responseJson = response.data;
+            console.log('Response data:', responseJson); // Log response data to check its structure
+            let newArray = responseJson.data.map((item, index) => ({
+                key: index,
+                value: item
+            }));
+            console.log("setDataUnit :", newArray);
+            setDataUnit(newArray);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     const addProd = () => {
         var isValid = true;
+        if (filePath == null) {
+            setImageError('Image is required')
+        } else {
+            setImageError('')
+        }
+        if (productname_marathi == '') {
+            setpnameErr_marathi('उत्पादनाचे नाव रिक्त करू नका');
+            isValid = false;
+        } else {
+            setpnameErr_marathi('');
+        }
         if (productname == '') {
             setpnameErr('Product name do not empty');
             isValid = false;
@@ -92,6 +141,26 @@ const AddProduct = () => {
             isValid = false;
         } else {
             setFilePathErr('');
+        }
+        if (selectedCategory == '') {
+            setSelectedCategoryError('Please select at once category');
+            isValid = false;
+        } else {
+            setSelectedCategoryError('');
+        }
+        if (selectedBoxUnit != 0 && selectedBoxUnit=='') {
+            console.log('selectedBoxUnit',selectedBoxUnit)
+            setSelectedBoxUnitError('Please select at once box unit');
+            isValid = false;
+        } else {
+            setSelectedBoxUnitError('');
+        }
+        if (selectedUnit == '' && selectedUnit!="0") {
+            
+            setSelectedUnitError('Please select at once unit');
+            isValid = false;
+        } else {
+            setSelectedUnitError('');
         }
         if (isValid) {
 
@@ -144,80 +213,108 @@ const AddProduct = () => {
     return (
         <ScrollView>
             <View style={styles.container}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <Text style={styles.Upload}>Upload Product Image :</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        style={styles.buttonStyle}
+                        onPress={() => chooseFile('photo')}>
+                        <Text style={styles.img}>Choose Image</Text>
+                    </TouchableOpacity>
+                </View>
+                <Text></Text>
+                {filePath == null ? <Image
+                    style={styles.imageStyle}
+                    source={{
+                        uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
+                    }}
+                /> :
+                    <Image
+                        source={{ uri: filePath }}
+                        style={styles.imageStyle}
+                    />}
+                <Text style={styles.error}>{img_error}</Text>
                 <View style={styles.All}>
-                    <Text style={styles.name}>Product Name Marathi:</Text>
+                    <Text style={styles.name}>उत्पादनाचे नाव मराठी प्रविष्ट करा </Text>
                     <TextInput
-                        style={styles.input}
+                        style={styles.inputfield_style}
+                        placeholder='उत्पादनाचे नाव मराठी प्रविष्ट करा '
+                        placeholderTextColor={'black'}
+                        value={productname_marathi}
+                        onChangeText={(text) => setProductname_marathi(text)}
+                    />
+                    <Text style={styles.error}>{pnameerr_marathi}</Text>
+
+                    <Text style={styles.name}>Product name english</Text>
+                    <TextInput
+                        style={styles.inputfield_style}
+                        placeholder='Product name english'
+                        placeholderTextColor={'black'}
                         value={productname}
                         onChangeText={(text) => setProductname(text)}
                     />
                     <Text style={styles.error}>{pnameerr}</Text>
 
-                    <Text style={styles.name}>Product Name English:</Text>
+                    <Text style={styles.name}>Min quantity</Text>
                     <TextInput
-                        style={styles.input}
-                        value={productname}
-                        onChangeText={(text) => setProductname(text)}
-                    />
-                    <Text style={styles.error}>{pnameerr}</Text>
-
-                    <Text style={styles.name}>Min Quantity :</Text>
-                    <TextInput
-                        style={styles.input}
+                        style={styles.inputfield_style}
+                        placeholder='Min quantity'
+                        placeholderTextColor={'black'}
                         value={quantity}
                         onChangeText={(text) => setQuantity(text)}
                     />
                     <Text style={styles.error}>{quantityerr}</Text>
                     <Text style={styles.name}>Category :</Text>
-                    <View style={{margin:15}}>
-                    <SelectList setSelected={setSelected} data={data} onSelect={() => alert(selected)} />
+
+                    <SelectList setSelected={setSelectedCategory} data={data} onSelect={() => alert(selectedCategory)} />
+                    <Text style={styles.error}>{selectedCategoryError}</Text>
+
+                    <Text style={styles.name}>Box Unit</Text>
+                    <SelectList setSelected={setSelectedBoxUnit} data={dataBoxUnit} onSelect={() => alert(selectedBoxUnit)} />
+                    <View>
+                        <Text style={styles.error}>{selectedBoxUnitError}</Text>
+                        <Text style={styles.name}>Sell price cash per box</Text>
+                        <TextInput
+                            style={styles.inputfield_style}
+                            placeholder='Sell price cash per box'
+                            placeholderTextColor={'black'}
+                            value={boxprice}
+                            onChangeText={(text) => setBoxPrice(text)}
+                        />
+                        <Text style={styles.error}>{boxpriceerr}</Text>
                     </View>
-                    <Text style={styles.name}>Enter Box Price :</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={boxprice}
-                        onChangeText={(text) => setBoxPrice(text)}
+                    <CheckBox
+                        title='Pack'
+                        checked={isChecked}
+                        onPress={toggleCheckbox}
+                        backgroundColor="red"
+                        backfaceVisibility={false}
+                        style={{ backfaceVisibility: false, backgroundColor: 'red' }}
                     />
-                    <Text style={styles.error}>{boxpriceerr}</Text>
-
-                    <Text style={styles.name}>Total :</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={total}
-                        onChangeText={(text) => setTotal(text)}
-                    />
-                    <Text style={styles.error}>{totalerr}</Text>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                        <Text style={styles.Upload}>Upload Product Image :</Text>
-                        <TouchableOpacity
-                            activeOpacity={0.5}
-                            style={styles.buttonStyle}
-                            onPress={() => chooseFile('photo')}>
-                            <Text style={styles.img}>Choose Image</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Text></Text>
-                    {filePath == null ? <Image
-                        style={styles.imageStyle}
-                        source={{
-                            uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
-                        }}
-                    /> :
-                        <Image
-                            source={{ uri: filePath }}
-                            style={styles.imageStyle}
-                        />}
-
+                    {isChecked && (
+                        <View>
+                            <Text style={styles.name1}>Unit</Text>
+                            <SelectList setSelected={setSelectedUnit} data={dataUnit} onSelect={() => alert(selectedUnit)} />
+                            <Text style={styles.error}>{selectedUnitError}</Text>
+                            <TextInput
+                                style={styles.inputfield_style}
+                                placeholder="Enter selected unit price"
+                                onChangeText={setInputText}
+                                placeholderTextColor={"black"}
+                                value={inputText}
+                            />
+                        </View>
+                    )}
                 </View>
-
-                <TouchableOpacity
-                    style={styles.addBut}
-                    onPress={addProd}
-                >
-                    <Text style={styles.img}>Add Product</Text>
-                </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+                style={styles.addBut}
+                onPress={addProd}
+            >
+                <Text style={styles.img}>Add Product</Text>
+            </TouchableOpacity>
+
         </ScrollView>
     )
 }
@@ -229,23 +326,32 @@ const styles = StyleSheet.create({
         flex: 1
     },
     All: {
-        marginTop: '13%',
+        margin: 15
     },
     name: {
         color: '#000',
-        marginLeft: '5%',
-        fontWeight: '700'
+        fontWeight: '700',
+    },
+    name1: {
+        color: '#000',
+        fontWeight: '700',
+        marginTop: 10
+    },
+    inputfield_style: {
+        borderWidth: 1,
+        borderColor: 'gray',
+        padding: 5,
+        marginTop: 5,
+        borderRadius: 5
     },
     input: {
         color: 'black',
         height: '5%',
         alignSelf: 'center',
         borderBottomWidth: 1,
-        //padding: '2%',
         width: '90%',
         justifyContent: 'flex-end',
         fontSize: 15,
-        //marginBottom: '1%'
     },
     Upload: {
         color: '#000',
@@ -280,8 +386,6 @@ const styles = StyleSheet.create({
         color: 'red',
         //marginHorizontal: 10,
         marginBottom: '1%',
-        marginLeft: '5%',
-
     }
 
 });
