@@ -29,8 +29,6 @@ const CategoryScreen = ({ navigation }) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [catModalVisible, setCatModalVisible] = useState(false);
-    // const Product_list = useSelector((state) => state.product?.data);
-    // const moreLoading = useSelector((state) => state.product?.isLoader);
     const [moreLoading, setMoreLoading] = useState(false);
     const [products, setProducts] = useState([]);
 
@@ -43,8 +41,7 @@ const CategoryScreen = ({ navigation }) => {
     ];
 
     useEffect(() => {
-        // setData(Product_list);
-        // setOldData(Product_list);
+        setOldData(data);
         fetchData();
         fetchProd(0);
     }, []);
@@ -72,6 +69,7 @@ const CategoryScreen = ({ navigation }) => {
             try {
                 const response = await axios.get('https://demo.raviscyber.in/public/category_wise_productList.php');
                 setProducts(response.data);
+                setData(response.data);
                 setMoreLoading(false);
               } catch (error) {
                 console.error('Error fetching data:', error);
@@ -92,6 +90,7 @@ const CategoryScreen = ({ navigation }) => {
                 );
                res = response.data;
                setProducts(res);
+               setData(res);
                setMoreLoading(false);
             } catch (error) {
                 ToastAndroid.show('category issue', ToastAndroid.SHORT);
@@ -101,12 +100,12 @@ const CategoryScreen = ({ navigation }) => {
 
     const searchFilterFunction = text => {
         if (text !== '') {
-            let tempData = data.filter(item => {
+            let tempData = products.filter(item => {
                 return item.product_name_eng.toLowerCase().indexOf(text.toLowerCase()) > -1;
             });
-            setData(tempData);
+            setProducts(tempData);
         } else {
-            setData(oldData);
+            setProducts(oldData);
         }
     };
 
@@ -258,9 +257,9 @@ const CategoryScreen = ({ navigation }) => {
                                             labelField="label"
                                             valueField="value"
                                             placeholder="Select unit type"
-                                            value={data}
+                                            //value={data}
                                             onChange={item => {
-                                                setSelectedUnitType(item.value);
+                                                //setSelectedUnitType(item.value);
                                             }}
                                         />
                                         <Text style={styles.types}>Qty:</Text>

@@ -76,7 +76,7 @@ const LoginScreen = ({ navigation }) => {
             );
 
             const { status, message } = response.data;
-            console.log('res',response);
+            console.log('res',response.data);
             
             if (status === "success") {
                 setSession();

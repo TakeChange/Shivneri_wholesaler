@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image } from 'react-native'
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,7 +11,6 @@ const AddProduct = () => {
     const [productname_marathi, setProductname_marathi] = useState('');
     const [boxprice, setBoxPrice] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [total, setTotal] = useState('');
     const [filePatherr, setFilePathErr] = useState();
     const [pnameerr, setpnameErr] = useState('');
     const [pnameerr_marathi, setpnameErr_marathi] = useState('');
@@ -29,7 +28,8 @@ const AddProduct = () => {
     const [dataBoxUnit, setDataBoxUnit] = useState([]);
     const [dataUnit, setDataUnit] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
-    const [inputText, setInputText] = useState('');
+    const [unitPriceInput, setUnitPriceInput] = useState('');
+    const [unitPriceInputError, setUnitPriceInputError] = useState('');
 
     useEffect(() => {
         fetchData();
@@ -39,7 +39,7 @@ const AddProduct = () => {
 
     const toggleCheckbox = () => {
         setIsChecked(!isChecked);
-        setInputText(''); // Reset input text when hiding the input field
+        setUnitPriceInput(''); // Reset input text when hiding the input field
     };
 
     const fetchData = async () => {
@@ -106,35 +106,33 @@ const AddProduct = () => {
         } else {
             setImageError('')
         }
+
         if (productname_marathi == '') {
             setpnameErr_marathi('उत्पादनाचे नाव रिक्त करू नका');
             isValid = false;
         } else {
             setpnameErr_marathi('');
         }
+        
         if (productname == '') {
             setpnameErr('Product name do not empty');
             isValid = false;
         } else {
             setpnameErr('');
         }
+       
         if (boxprice == '') {
             setBoxPriceErr('Box price do not empty');
             isValid = false;
         } else {
             setBoxPriceErr('');
         }
+       
         if (quantity == '') {
             setQuantityErr('Quantity do not empty');
             isValid = false;
         } else {
             setQuantityErr('');
-        }
-        if (total == '') {
-            setTotalErr('Total do not empty');
-            isValid = false;
-        } else {
-            setTotalErr('');
         }
         if (filePath == '') {
             setFilePathErr('File path do not empty');
@@ -142,39 +140,120 @@ const AddProduct = () => {
         } else {
             setFilePathErr('');
         }
+        console.log('isValid2',isValid)
         if (selectedCategory == '') {
             setSelectedCategoryError('Please select at once category');
             isValid = false;
         } else {
             setSelectedCategoryError('');
         }
-        if (selectedBoxUnit != 0 && selectedBoxUnit=='') {
-            console.log('selectedBoxUnit',selectedBoxUnit)
+
+        if (selectedBoxUnit === "") {
             setSelectedBoxUnitError('Please select at once box unit');
             isValid = false;
         } else {
             setSelectedBoxUnitError('');
         }
-        if (selectedUnit == '' && selectedUnit!="0") {
-            
-            setSelectedUnitError('Please select at once unit');
-            isValid = false;
+        
+        if (isChecked == true) {
+            if(selectedUnit === "" )
+            {
+                setSelectedUnitError('Please select at once unit');
+                isValid = false;
+            }else{
+                setSelectedUnitError('');
+            }
         } else {
             setSelectedUnitError('');
         }
+       
+        if (isChecked == true) {
+            if(unitPriceInput==="")
+            {
+                setUnitPriceInputError('Unit do not empty');
+                isValid = false;
+            }else{
+                setUnitPriceInputError('');
+            }
+        } else {
+            setUnitPriceInputError('');
+        }
+
+        if (isChecked == true) {
+            if(selectedUnit==="")
+            {
+                setSelectedUnitError('Product name do not empty');
+                isValid = false;
+            }
+        } else {
+            setSelectedUnitError('');
+        }
+
+        console.log('isValidL',isValid)
         if (isValid) {
-
+            console.log('filePath:',filePath);
+            console.log('productname_marathi:',productname_marathi);
             console.log(productname);
-            console.log(boxprice);
             console.log(quantity);
-            console.log(total);
-
-            setProductname('');
-            setBoxPrice('');
-            setQuantity('');
-            setTotal('');
+            console.log(selectedCategory);
+            console.log(selectedBoxUnit);
+            console.log(boxprice);
+            console.log(selectedUnit);
+            console.log(unitPriceInput);
+            
+            // setProductname('');
+            // setBoxPrice('');
+            // setQuantity('');
+            // setTotal('');
+            let obj = {
+                product_image:filePath,
+                product_name:productname_marathi,
+                product_name_eng:productname,
+                min_qty:quantity,
+                product_cateory_id:selectedCategory,
+                box_unit:selectedBoxUnit,
+                sell_price_cash_per_box:boxprice,
+                unit:selectedUnit,
+                sell_price_cash_per_pack:unitPriceInput
+            }   
+            handleAdd(obj);
         }
     }
+
+    const handleAdd = async (param) => {
+        //setLoading(true);
+        console.log('param :: ',param);
+        try {
+            const addProdUrl = 'https://demo.raviscyber.in/public/product.php';
+
+            const response = await axios.post(addProdUrl, param,
+             {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  
+                },
+              }
+            );
+
+            const { status, message } = response.data;
+            console.log('res',response);
+            ToastAndroid.show('Product added successfully!!', ToastAndroid.SHORT);
+            // if (status === "success") {
+            //     setSession();
+            //     ToastAndroid.show(message, ToastAndroid.SHORT);
+            //     navigation.navigate('DrawerNavigation');
+            // } else {
+            //     console.error('Login failed:', message);
+            //     ToastAndroid.show(message, ToastAndroid.SHORT);
+            // }
+        } catch (error) {
+            console.log('error',error)
+            ToastAndroid.show('Please enter valid username and password', ToastAndroid.SHORT);
+        } finally {
+            //setLoading(false);
+        }
+    };
+
     const chooseFile = (type) => {
         let options = {
             mediaType: type,
@@ -299,15 +378,15 @@ const AddProduct = () => {
                             <TextInput
                                 style={styles.inputfield_style}
                                 placeholder="Enter selected unit price"
-                                onChangeText={setInputText}
+                                onChangeText={setUnitPriceInput}
                                 placeholderTextColor={"black"}
-                                value={inputText}
+                                value={unitPriceInput}
                             />
+                            <Text style={styles.error}>{unitPriceInputError}</Text>
                         </View>
                     )}
                 </View>
             </View>
-
             <TouchableOpacity
                 style={styles.addBut}
                 onPress={addProd}
@@ -342,7 +421,8 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         padding: 5,
         marginTop: 5,
-        borderRadius: 5
+        borderRadius: 5,
+        color:'black'
     },
     input: {
         color: 'black',
@@ -389,3 +469,6 @@ const styles = StyleSheet.create({
     }
 
 });
+
+
+
