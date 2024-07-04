@@ -35,7 +35,7 @@ const CategoryScreen = ({ navigation }) => {
     const [perPrice, setPerPrice] = useState('');
     const [quantity, setQuantity] = useState('');
     const [total, setTotal] = useState('');
-
+    const [errorMessage, setErrorMessage] = useState('');
     useEffect(() => {
         setOldData(data);
         fetchData();
@@ -167,6 +167,25 @@ const CategoryScreen = ({ navigation }) => {
         }
     }
 
+
+    const handleDone = () => {
+        if (!quantity || !perPrice || !total || !selectedUnitType) {
+            setErrorMessage('Please fill all fields');
+        } else {
+            setErrorMessage('');
+            setQuantity('');
+            setSelectedUnitType('')
+            setModalVisible(false);
+        }
+    }
+
+    const handleClose = () => {
+        setErrorMessage('');
+        setQuantity('');
+        setSelectedUnitType('')
+        setModalVisible(false);
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <View
@@ -253,7 +272,7 @@ const CategoryScreen = ({ navigation }) => {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
                             <Ionicons name="close" size={30} />
                         </TouchableOpacity>
                         {selectedItem && (
@@ -281,14 +300,16 @@ const CategoryScreen = ({ navigation }) => {
                                                 setSelectedUnitType(item.value);
                                                 if (item.value === 'box') {
                                                     setPerPrice(selectedItem.box_cash_price_gadi);
-                                                }
-                                                else if (item.value === 'pack') {
+                                                } else if (item.value === 'pack') {
                                                     setPerPrice(selectedItem.pack_cash_price_gadi);
                                                 } else {
                                                     setPerPrice('');
                                                 }
+                                                setQuantity('');
+                                                setTotal('');
                                             }}
                                         />
+
                                         <Text style={styles.types}>Qty:</Text>
                                         <TextInput
                                             style={styles.input}
@@ -302,20 +323,23 @@ const CategoryScreen = ({ navigation }) => {
                                 <View style={styles.avai}>
                                     <View style={styles.boxcontain}>
                                         <Text style={styles.names}>PerPrice:</Text>
-                                        {quantity !== '' && (
-                                            <TextInput style={styles.input}
-                                                value={perPrice} />
-                                        )}
+
+                                        <TextInput
+                                            style={styles.input}
+                                            value={quantity !== '' ? perPrice : ''}
+                                            editable={false}
+                                        />
+
                                         <Text style={styles.names}>Total:</Text>
-                                        {quantity !== '' && (
-                                            <TextInput style={styles.input}
-                                                value={total} />
-                                        )}
+                                        <TextInput style={styles.input}
+                                            value={quantity !== '' ? total : ''}
+                                            editable={false} />
+
                                     </View>
                                 </View>
-
-                                <TouchableOpacity style={styles.button}>
-                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: '700' }}>DONE</Text>
+                                {errorMessage !== '' && <Text style={styles.errorText}>{errorMessage}</Text>}
+                                <TouchableOpacity onPress={handleDone} style={styles.doneButton}>
+                                    <Text style={styles.doneButtonText}>Done</Text>
                                 </TouchableOpacity>
                             </>
                         )}
@@ -350,9 +374,9 @@ const CategoryScreen = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
-            <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
+            {/* <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
                 <AntDesign name="arrowright" size={25} color="white" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 };
@@ -504,14 +528,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         color: '#000'
     },
-    addButton: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        backgroundColor: '#23AA29',
-        padding: 15,
-        borderRadius: 50,
-    },
+
     edit: {
         alignSelf: 'flex-end',
     },
@@ -521,7 +538,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dropdown: {
-        width: '50%',
+        width: '40%',
         borderBottomWidth: 1,
         borderBottomColor: 'black',
         alignSelf: 'center',
@@ -544,6 +561,22 @@ const styles = StyleSheet.create({
         marginTop: 20,
         color: 'black',
 
+    },
+    doneButton: {
+        backgroundColor: '#23AA29',
+        padding: 10,
+        borderRadius: 10,
+        marginTop: 10,
+    },
+    doneButtonText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    errorText: {
+        color: 'red',
+        textAlign: 'center',
+        marginTop: 10,
     },
 });
 
