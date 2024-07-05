@@ -176,6 +176,7 @@ const CategoryScreen = ({ navigation }) => {
             setQuantity('');
             setSelectedUnitType('')
             setModalVisible(false);
+            navigation.navigate('BillS')
         }
     }
 
@@ -374,9 +375,9 @@ const CategoryScreen = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
-            {/* <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
+            <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
                 <AntDesign name="arrowright" size={25} color="white" />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
         </View>
     );
 };
@@ -577,6 +578,14 @@ const styles = StyleSheet.create({
         color: 'red',
         textAlign: 'center',
         marginTop: 10,
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#23AA29',
+        padding: 15,
+        borderRadius: 50,
     },
 });
 
