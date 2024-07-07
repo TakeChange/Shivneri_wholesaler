@@ -31,15 +31,11 @@ const CategoryScreen = ({ navigation }) => {
     const [catModalVisible, setCatModalVisible] = useState(false);
     const [moreLoading, setMoreLoading] = useState(false);
     const [products, setProducts] = useState([]);
-
-    const data1 = [
-        { label: 'Item 1', value: '1' },
-        { label: 'Item 2', value: '2' },
-        { label: 'Item 3', value: '3' },
-        { label: 'Item 4', value: '4' },
-        { label: 'Item 5', value: '5' },
-    ];
-
+    const [selectedUnitType, setSelectedUnitType] = useState(null);
+    const [perPrice, setPerPrice] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [total, setTotal] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     useEffect(() => {
         setOldData(data);
         fetchData();
@@ -47,7 +43,7 @@ const CategoryScreen = ({ navigation }) => {
     }, []);
 
     const fetchData = async () => {
-        
+
         try {
             const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
             const responseJson = response.data;
@@ -64,37 +60,41 @@ const CategoryScreen = ({ navigation }) => {
 
     const fetchProd = async (id) => {
         setMoreLoading(true);
-        if(id==0)
-        {
+        if (id == 0) {
             try {
                 const response = await axios.get('https://demo.raviscyber.in/public/category_wise_productList.php');
                 setProducts(response.data);
+                response.data.forEach(product => {
+                    if (product.sell_price_cash_per_pack === null || product.sell_price_cash_per_box === null) {
+                        console.log('Null value found in product:', product.product_name);
+                    }
+                });
                 setData(response.data);
                 setMoreLoading(false);
-              } catch (error) {
+            } catch (error) {
                 console.error('Error fetching data:', error);
-              }
+            }
         }
-        else{
+        else {
             try {
                 const CategoryWiseUrl = 'https://demo.raviscyber.in/public/category_wise_productList.php';
-          
+
                 response = await axios.post(CategoryWiseUrl, {
                     category_id: id,
                 },
-                 {
-                    headers: {
-                      "Content-Type": "multipart/form-data",
-                    },
-                  }
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
                 );
-               res = response.data;
-               setProducts(res);
-               setData(res);
-               setMoreLoading(false);
+                res = response.data;
+                setProducts(res);
+                setData(res);
+                setMoreLoading(false);
             } catch (error) {
                 ToastAndroid.show('category issue', ToastAndroid.SHORT);
-            } 
+            }
         }
     }
 
@@ -129,9 +129,9 @@ const CategoryScreen = ({ navigation }) => {
         );
     };
 
-    const dispatchCategoryWise=(id)=>{
+    const dispatchCategoryWise = (id) => {
         setCatModalVisible(false);
-        console.log('id',id);
+        console.log('id', id);
         // dispatch(FetchFilterProduct(id));
         fetchProd(id);
     }
@@ -139,7 +139,7 @@ const CategoryScreen = ({ navigation }) => {
     const renderCategoryWise = ({ item }) => {
         return (
             <View>
-                <TouchableOpacity onPress={()=>dispatchCategoryWise(item.id)}>
+                <TouchableOpacity onPress={() => dispatchCategoryWise(item.id)}>
                     <View style={styles.categoryContainer}>
                         <Text style={styles.categotyText}>{item.category_name}</Text>
                     </View>
@@ -150,6 +150,41 @@ const CategoryScreen = ({ navigation }) => {
 
     const BillScreenNavigate = () => {
         navigation.navigate('BillScreen');
+    }
+
+    const calculateTotal = (qty, price) => {
+        const total = parseFloat(qty) * parseFloat(price);
+        return isNaN(total) ? '' : total.toString();
+    };
+
+    const handleQtyChange = (text) => {
+        setQuantity(text);
+        if (text !== '') {
+            const totalValue = calculateTotal(text, perPrice);
+            setTotal(totalValue);
+        } else {
+            setTotal('');
+        }
+    }
+
+
+    const handleDone = () => {
+        if (!quantity || !perPrice || !total || !selectedUnitType) {
+            setErrorMessage('Please fill all fields');
+        } else {
+            setErrorMessage('');
+            setQuantity('');
+            setSelectedUnitType('')
+            setModalVisible(false);
+            navigation.navigate('BillS')
+        }
+    }
+
+    const handleClose = () => {
+        setErrorMessage('');
+        setQuantity('');
+        setSelectedUnitType('')
+        setModalVisible(false);
     }
 
     return (
@@ -238,44 +273,74 @@ const CategoryScreen = ({ navigation }) => {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
                             <Ionicons name="close" size={30} />
                         </TouchableOpacity>
                         {selectedItem && (
                             <>
-                                <Text style={styles.product}>PRODUCT: {selectedItem.name}</Text>
+                                <Text style={styles.product}>PRODUCT: {selectedItem.product_name}</Text>
                                 <View style={styles.avai}>
-                                    <Text style={styles.names}>Available Box:</Text>
+                                    <Text style={styles.names}>Available Box:{selectedItem.box_unit}</Text>
                                     <View style={styles.boxcontain}>
+
                                         <Text style={styles.names}>Type:</Text>
                                         <Dropdown
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
-                                            data={data1}
+                                            data={[
+                                                ...(selectedItem.sell_price_cash_per_pack !== null ? [{ label: 'Pack', value: 'pack' }] : []),
+                                                ...(selectedItem.sell_price_cash_per_box !== null ? [{ label: 'Box', value: 'box' }] : [])
+                                            ]}
                                             maxHeight={100}
                                             labelField="label"
                                             valueField="value"
-                                            placeholder="Select unit type"
-                                            //value={data}
+                                            placeholder="Select unit "
+                                            value={selectedUnitType}
                                             onChange={item => {
-                                                //setSelectedUnitType(item.value);
+                                                setSelectedUnitType(item.value);
+                                                if (item.value === 'box') {
+                                                    setPerPrice(selectedItem.box_cash_price_gadi);
+                                                } else if (item.value === 'pack') {
+                                                    setPerPrice(selectedItem.pack_cash_price_gadi);
+                                                } else {
+                                                    setPerPrice('');
+                                                }
+                                                setQuantity('');
+                                                setTotal('');
                                             }}
                                         />
+
                                         <Text style={styles.types}>Qty:</Text>
-                                        <TextInput style={styles.input} />
+                                        <TextInput
+                                            style={styles.input}
+                                            onChangeText={handleQtyChange}
+                                            value={quantity}
+                                            keyboardType="numeric"
+                                        />
                                     </View>
                                 </View>
+
                                 <View style={styles.avai}>
                                     <View style={styles.boxcontain}>
                                         <Text style={styles.names}>PerPrice:</Text>
-                                        <TextInput style={styles.input} />
+
+                                        <TextInput
+                                            style={styles.input}
+                                            value={quantity !== '' ? perPrice : ''}
+                                            editable={false}
+                                        />
+
                                         <Text style={styles.names}>Total:</Text>
-                                        <TextInput style={styles.input} />
+                                        <TextInput style={styles.input}
+                                            value={quantity !== '' ? total : ''}
+                                            editable={false} />
+
                                     </View>
                                 </View>
-                                <TouchableOpacity style={styles.button}>
-                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: '700' }}>DONE</Text>
+                                {errorMessage !== '' && <Text style={styles.errorText}>{errorMessage}</Text>}
+                                <TouchableOpacity onPress={handleDone} style={styles.doneButton}>
+                                    <Text style={styles.doneButtonText}>Done</Text>
                                 </TouchableOpacity>
                             </>
                         )}
@@ -421,7 +486,7 @@ const styles = StyleSheet.create({
     },
     product: {
         fontWeight: '500',
-        fontSize: 20,
+        fontSize: 18,
         color: 'black',
         marginBottom: 10
     },
@@ -464,14 +529,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         color: '#000'
     },
-    addButton: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        backgroundColor: '#23AA29',
-        padding: 15,
-        borderRadius: 50,
-    },
+
     edit: {
         alignSelf: 'flex-end',
     },
@@ -481,7 +539,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dropdown: {
-        width: '50%',
+        width: '40%',
         borderBottomWidth: 1,
         borderBottomColor: 'black',
         alignSelf: 'center',
@@ -505,4 +563,29 @@ const styles = StyleSheet.create({
         color: 'black',
 
     },
+    doneButton: {
+        backgroundColor: '#23AA29',
+        padding: 10,
+        borderRadius: 10,
+        marginTop: 10,
+    },
+    doneButtonText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    errorText: {
+        color: 'red',
+        textAlign: 'center',
+        marginTop: 10,
+    },
+    addButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#23AA29',
+        padding: 15,
+        borderRadius: 50,
+    },
 });
+

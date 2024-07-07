@@ -61,7 +61,7 @@ const DrawerNavigation = () => {
           title: 'Customer Master',
           drawerIcon: ({ focused, size }) => (
             <FontAwesome5 name='user-edit' size={20} color='#000'
-              style={{ height: 22, width: 25,}} />
+              style={{ height: 22, width: 25, }} />
           ),
         }}
       />
@@ -126,6 +126,8 @@ const DrawerNavigation = () => {
           ),
         }}
       />
+
+    
     </Drawer.Navigator>
   )
 }
