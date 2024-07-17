@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
+import AddIcon from '../components/AddIcon';
 import { FetchFilterProduct } from '../api/FetchProduct';
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -36,6 +37,9 @@ const CategoryScreen = ({ navigation }) => {
     const [quantity, setQuantity] = useState('');
     const [total, setTotal] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [iconColors, setIconColors] = useState({});
+
     useEffect(() => {
         setOldData(data);
         fetchData();
@@ -43,7 +47,6 @@ const CategoryScreen = ({ navigation }) => {
     }, []);
 
     const fetchData = async () => {
-
         try {
             const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
             const responseJson = response.data;
@@ -110,13 +113,18 @@ const CategoryScreen = ({ navigation }) => {
     };
 
     const renderItem1 = ({ item }) => {
+       
         return (
             <View style={styles.listContainer}>
                 <View style={styles.imageContainer}>
-                    <ImageBackground source={{ uri: item.product_image == "" ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }} style={styles.image}>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); () => console.log('Image Path:', item.product_image) }}>
-                            <Ionicons name='add-circle' size={38} style={styles.addIcon} />
-                        </TouchableOpacity>
+                    <ImageBackground
+                        source={{ uri: item.product_image == "" ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }}
+                        style={styles.image}
+                    >
+                        <AddIcon
+                            onPress={() => { setSelectedItem(item); setModalVisible(true); console.log('Image Path:', item.product_image);console.log(item.id) }}
+                            color={iconColors[item.id] || '#23AA49'}
+                        />
                     </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name}</Text>
@@ -128,6 +136,7 @@ const CategoryScreen = ({ navigation }) => {
             </View>
         );
     };
+
 
     const dispatchCategoryWise = (id) => {
         setCatModalVisible(false);
@@ -173,12 +182,33 @@ const CategoryScreen = ({ navigation }) => {
             setErrorMessage('Please fill all fields');
         } else {
             setErrorMessage('');
+
+            // Add the selected item data to the selectedItems array
+            setSelectedItems(prevItems => [
+                ...prevItems,
+                {
+                    ...selectedItem,
+                    selectedUnitType,
+                    perPrice,
+                    quantity,
+                    total,
+                },
+            ]);
+
+            setIconColors(prevColors => ({
+                ...prevColors,
+                [selectedItem.id]: 'red'
+                
+            }));
+
             setQuantity('');
-            setSelectedUnitType('')
+            setSelectedUnitType('');
             setModalVisible(false);
-            navigation.navigate('BillS')
+            //navigation.navigate('BillScreen');
         }
-    }
+    };
+
+
 
     const handleClose = () => {
         setErrorMessage('');
@@ -260,7 +290,7 @@ const CategoryScreen = ({ navigation }) => {
                 <FlatList
                     data={products}
                     renderItem={renderItem1}
-                    keyExtractor={item => item.product_id}
+                    keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
                 />)}
