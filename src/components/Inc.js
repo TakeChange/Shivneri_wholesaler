@@ -7,11 +7,11 @@ const Inc = ({onPress1}) => {
 
   return (
     <View>
-      <TouchableOpacity style={{ width: 26, height: 26, borderRadius: 30 / 2, borderWidth: 1, borderColor: '#DFE3FF' }} onPress={onPress1}>
+      <TouchableOpacity style={{ width: 30, height: 30, borderRadius: 30 / 2, backgroundColor:'#23AA49',justifyContent:'center',alignItems:'center'}} onPress={onPress1}>
         <Add1
           name='add'
           size={25}
-          color='black'
+          color='white'
         />
       </TouchableOpacity>
     </View>
