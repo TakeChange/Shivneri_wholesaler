@@ -17,7 +17,9 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import AddIcon from '../components/AddIcon';
-import { FetchFilterProduct } from '../api/FetchProduct';
+import {addToBill} from '../redux_toolkit/Bill_list/billSlice'
+
+
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
@@ -69,7 +71,7 @@ const CategoryScreen = ({ navigation }) => {
                 setProducts(response.data);
                 response.data.forEach(product => {
                     if (product.sell_price_cash_per_pack === null || product.sell_price_cash_per_box === null) {
-                        console.log('Null value found in product:', product.product_name);
+                        //console.log('Null value found in product:', product.product_name);
                     }
                 });
                 setData(response.data);
@@ -182,40 +184,32 @@ const CategoryScreen = ({ navigation }) => {
         }
     };
 
-
-
     const handleDone = () => {
         if (!quantity || !perPrice || !total || !selectedUnitType) {
             setErrorMessage('Please fill all fields');
         } else {
             setErrorMessage('');
-
-            // Add the selected item data to the selectedItems array
-            setSelectedItems(prevItems => [
-                ...prevItems,
-                {
-                    ...selectedItem,
-                    selectedUnitType,
-                    perPrice,
-                    quantity,
-                    total,
-                },
-            ]);
-
+            const newItem = {
+                ...selectedItem,
+                selectedUnitType: selectedUnitType === 'box_unit_name' ? selectedItem.box_unit_name : selectedItem.unit_name,
+                perPrice,
+                quantity,
+                total,
+            };
+    
+            dispatch(addToBill(newItem));
+    
             setIconColors(prevColors => ({
                 ...prevColors,
                 [selectedItem.id]: 'red'
-
             }));
-
+    
             setQuantity('');
             setTotal('');
             setSelectedUnitType('');
             setModalVisible(false);
-            //navigation.navigate('BillScreen');
         }
     };
-
 
 
     const handleClose = () => {
