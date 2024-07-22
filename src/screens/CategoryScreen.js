@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
+import AddIcon from '../components/AddIcon';
 import { FetchFilterProduct } from '../api/FetchProduct';
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -36,6 +37,9 @@ const CategoryScreen = ({ navigation }) => {
     const [quantity, setQuantity] = useState('');
     const [total, setTotal] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [iconColors, setIconColors] = useState({});
+
     useEffect(() => {
         setOldData(data);
         fetchData();
@@ -43,7 +47,6 @@ const CategoryScreen = ({ navigation }) => {
     }, []);
 
     const fetchData = async () => {
-
         try {
             const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
             const responseJson = response.data;
@@ -110,17 +113,27 @@ const CategoryScreen = ({ navigation }) => {
     };
 
     const renderItem1 = ({ item }) => {
+
         return (
             <View style={styles.listContainer}>
                 <View style={styles.imageContainer}>
-                    <ImageBackground source={{ uri: item.product_image == "" ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }} style={styles.image}>
-                        <TouchableOpacity style={styles.floatIcon} onPress={() => { setSelectedItem(item); setModalVisible(true); () => console.log('Image Path:', item.product_image) }}>
-                            <Ionicons name='add-circle' size={38} style={styles.addIcon} />
-                        </TouchableOpacity>
+                    <ImageBackground
+                        source={{ uri: item.product_image == "" ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }}
+                        style={styles.image}
+                    >
+                        <AddIcon
+                            onPress={() => { setSelectedItem(item); setModalVisible(true); console.log('Image Path:', item.product_image); console.log(item.id) }}
+                            color={iconColors[item.id] || '#23AA49'}
+                        />
                     </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name}</Text>
-                <Text style={styles.total}>{item.unit_type} Price : {item.total_price}</Text>
+                {item.box_unit_name ? (
+                    <Text style={styles.total}>{item.box_unit_name} Price : ₹ {item.sell_price_cash_per_box}</Text>
+                ) : null}
+                {item.unit_name ? (
+                    <Text style={styles.total}>{item.unit_name} Price : ₹ {item.sell_price_cash_per_pack}</Text>
+                ) : null}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.total}>Qty : 0</Text>
                     <Text style={styles.total}>Total : 0</Text>
@@ -128,6 +141,7 @@ const CategoryScreen = ({ navigation }) => {
             </View>
         );
     };
+
 
     const dispatchCategoryWise = (id) => {
         setCatModalVisible(false);
@@ -154,8 +168,9 @@ const CategoryScreen = ({ navigation }) => {
 
     const calculateTotal = (qty, price) => {
         const total = parseFloat(qty) * parseFloat(price);
-        return isNaN(total) ? '' : total.toString();
+        return isNaN(total) ? '' : total.toFixed(2).toString();
     };
+
 
     const handleQtyChange = (text) => {
         setQuantity(text);
@@ -165,7 +180,8 @@ const CategoryScreen = ({ navigation }) => {
         } else {
             setTotal('');
         }
-    }
+    };
+
 
 
     const handleDone = () => {
@@ -173,16 +189,39 @@ const CategoryScreen = ({ navigation }) => {
             setErrorMessage('Please fill all fields');
         } else {
             setErrorMessage('');
+
+            // Add the selected item data to the selectedItems array
+            setSelectedItems(prevItems => [
+                ...prevItems,
+                {
+                    ...selectedItem,
+                    selectedUnitType,
+                    perPrice,
+                    quantity,
+                    total,
+                },
+            ]);
+
+            setIconColors(prevColors => ({
+                ...prevColors,
+                [selectedItem.id]: 'red'
+
+            }));
+
             setQuantity('');
-            setSelectedUnitType('')
+            setTotal('');
+            setSelectedUnitType('');
             setModalVisible(false);
-            navigation.navigate('BillS')
+            //navigation.navigate('BillScreen');
         }
-    }
+    };
+
+
 
     const handleClose = () => {
         setErrorMessage('');
         setQuantity('');
+        setTotal('');
         setSelectedUnitType('')
         setModalVisible(false);
     }
@@ -260,7 +299,7 @@ const CategoryScreen = ({ navigation }) => {
                 <FlatList
                     data={products}
                     renderItem={renderItem1}
-                    keyExtractor={item => item.product_id}
+                    keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
                 />)}
@@ -280,17 +319,16 @@ const CategoryScreen = ({ navigation }) => {
                             <>
                                 <Text style={styles.product}>PRODUCT: {selectedItem.product_name}</Text>
                                 <View style={styles.avai}>
-                                    <Text style={styles.names}>Available Box:{selectedItem.box_unit}</Text>
+                                    {/* <Text style={styles.names}>Available Box:{selectedItem.box_unit}</Text> */}
                                     <View style={styles.boxcontain}>
-
                                         <Text style={styles.names}>Type:</Text>
                                         <Dropdown
                                             style={styles.dropdown}
                                             placeholderStyle={styles.placeholderStyle}
                                             selectedTextStyle={styles.selectedTextStyle}
                                             data={[
-                                                ...(selectedItem.sell_price_cash_per_pack !== null ? [{ label: 'Pack', value: 'pack' }] : []),
-                                                ...(selectedItem.sell_price_cash_per_box !== null ? [{ label: 'Box', value: 'box' }] : [])
+                                                { label: selectedItem?.box_unit_name, value: 'box_unit_name' },
+                                                { label: selectedItem?.unit_name, value: 'unit_name' }
                                             ]}
                                             maxHeight={100}
                                             labelField="label"
@@ -299,19 +337,19 @@ const CategoryScreen = ({ navigation }) => {
                                             value={selectedUnitType}
                                             onChange={item => {
                                                 setSelectedUnitType(item.value);
-                                                if (item.value === 'box') {
-                                                    setPerPrice(selectedItem.box_cash_price_gadi);
-                                                } else if (item.value === 'pack') {
-                                                    setPerPrice(selectedItem.pack_cash_price_gadi);
+                                                if (item.value === 'box_unit_name') {
+                                                    setPerPrice(selectedItem.sell_price_cash_per_box);
+                                                } else if (item.value === 'unit_name') {
+                                                    setPerPrice(selectedItem.sell_price_cash_per_pack);
                                                 } else {
                                                     setPerPrice('');
                                                 }
                                                 setQuantity('');
                                                 setTotal('');
+                                                
                                             }}
                                         />
-
-                                        <Text style={styles.types}>Qty:</Text>
+                                        <Text style={styles.types}>Qty : </Text>
                                         <TextInput
                                             style={styles.input}
                                             onChangeText={handleQtyChange}
@@ -320,22 +358,21 @@ const CategoryScreen = ({ navigation }) => {
                                         />
                                     </View>
                                 </View>
-
                                 <View style={styles.avai}>
                                     <View style={styles.boxcontain}>
                                         <Text style={styles.names}>PerPrice:</Text>
-
                                         <TextInput
                                             style={styles.input}
-                                            value={quantity !== '' ? perPrice : ''}
+                                            value={quantity !='' && perPrice ? perPrice.toString() : ''}
+                                            editable={false}
+
+                                        />
+                                        <Text style={styles.names}>Total:</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            value={total ? total.toString() : ''}
                                             editable={false}
                                         />
-
-                                        <Text style={styles.names}>Total:</Text>
-                                        <TextInput style={styles.input}
-                                            value={quantity !== '' ? total : ''}
-                                            editable={false} />
-
                                     </View>
                                 </View>
                                 {errorMessage !== '' && <Text style={styles.errorText}>{errorMessage}</Text>}
@@ -344,6 +381,7 @@ const CategoryScreen = ({ navigation }) => {
                                 </TouchableOpacity>
                             </>
                         )}
+
                     </View>
                 </View>
             </Modal>
@@ -462,7 +500,9 @@ const styles = StyleSheet.create({
     },
     total: {
         color: '#000',
-        paddingLeft: '5%'
+        paddingLeft: '5%',
+        fontSize:12.5,
+        fontWeight:'400'
     },
     floatIcon: {
         position: 'absolute',
@@ -483,12 +523,13 @@ const styles = StyleSheet.create({
         elevation: 1,
         borderRadius: 10,
         padding: 20,
+        width:350
     },
     product: {
         fontWeight: '500',
         fontSize: 18,
         color: 'black',
-        marginBottom: 10
+        marginTop: 20
     },
     avai: {
         backgroundColor: '#fff',
@@ -500,6 +541,7 @@ const styles = StyleSheet.create({
         padding: 5,
         width: '26%',
         borderBottomWidth: 1,
+        color:'black'
     },
     names: {
         fontSize: 15,
@@ -517,7 +559,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10,
-        backgroundColor: 'grey'
+        backgroundColor: 'grey',
+        
     },
     boxcontain: {
         flexDirection: 'row',
@@ -550,7 +593,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     placeholderStyle: {
-        color: '#000',
+        color: 'black',
         fontSize: 14,
     },
     itemContainer: {
