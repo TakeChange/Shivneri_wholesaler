@@ -1,4 +1,5 @@
 import {
+    Alert,
     View,
     Text,
     FlatList,
@@ -17,11 +18,13 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import AddIcon from '../components/AddIcon';
-import {addToBill} from '../redux_toolkit/Bill_list/billSlice'
+import {addToBill,removeFromBill} from '../redux_toolkit/Bill_list/billSlice'
 
 
 const CategoryScreen = ({ navigation }) => {
     const dispatch = useDispatch();
+    const iconColors = useSelector(state => state.bill.iconColors);
+
     const [visible, setVisible] = useState(false);
     const [data, setData] = useState([]);
     const [search, setSearch] = useState('');
@@ -40,7 +43,6 @@ const CategoryScreen = ({ navigation }) => {
     const [total, setTotal] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
-    const [iconColors, setIconColors] = useState({});
 
     useEffect(() => {
         setOldData(data);
@@ -114,6 +116,9 @@ const CategoryScreen = ({ navigation }) => {
         }
     };
 
+    const isIconColorRed = (itemId) => {
+        return (iconColors[itemId] || '#23AA49') === 'red';
+    };
     const renderItem1 = ({ item }) => {
 
         return (
@@ -123,10 +128,18 @@ const CategoryScreen = ({ navigation }) => {
                         source={{ uri: item.product_image == "" ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }}
                         style={styles.image}
                     >
-                        <AddIcon
-                            onPress={() => { setSelectedItem(item); setModalVisible(true); console.log('Image Path:', item.product_image); console.log(item.id) }}
-                            color={iconColors[item.id] || '#23AA49'}
-                        />
+                         <AddIcon
+                        onPress={() => {
+                            if (!isIconColorRed(item.id)) {
+                                setSelectedItem(item);
+                                setModalVisible(true);
+                            }
+                            else{
+                                Alert.alert('This item is already in the bill.');
+                            }
+                        }}
+                        color={iconColors[item.id] || '#23AA49'}
+                    />
                     </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name}</Text>
@@ -165,6 +178,7 @@ const CategoryScreen = ({ navigation }) => {
     };
 
     const BillScreenNavigate = () => {
+        console.log("navigate to billscreen");
         navigation.navigate('BillScreen');
     }
 
@@ -199,11 +213,7 @@ const CategoryScreen = ({ navigation }) => {
     
             dispatch(addToBill(newItem));
     
-            setIconColors(prevColors => ({
-                ...prevColors,
-                [selectedItem.id]: 'red'
-            }));
-    
+          
             setQuantity('');
             setTotal('');
             setSelectedUnitType('');
@@ -318,8 +328,9 @@ const CategoryScreen = ({ navigation }) => {
                                         <Text style={styles.names}>Type:</Text>
                                         <Dropdown
                                             style={styles.dropdown}
-                                            placeholderStyle={styles.placeholderStyle}
+                                            placeholderStyle={styles.placeholderStyle} 
                                             selectedTextStyle={styles.selectedTextStyle}
+                                            itemTextStyle={styles.itemTextStyle}
                                             data={[
                                                 { label: selectedItem?.box_unit_name, value: 'box_unit_name' },
                                                 { label: selectedItem?.unit_name, value: 'unit_name' }
@@ -589,6 +600,11 @@ const styles = StyleSheet.create({
     placeholderStyle: {
         color: 'black',
         fontSize: 14,
+    },
+    itemTextStyle: {
+        color: 'black', 
+        fontSize: 16,  
+        
     },
     itemContainer: {
         // padding: 10,

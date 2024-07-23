@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Image, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, Image, FlatList, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
 import Dec from '../components/Dec';
@@ -7,13 +7,15 @@ import Inc from '../components/Inc';
 import { ListItem } from 'react-native-elements';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToBill, removeFromBill, updateItemQuantity } from '../redux_toolkit/Bill_list/billSlice';
-import { } from '../redux_toolkit/product_list/Productslice'
+//import { } from '../redux_toolkit/product_list/Productslice'
 
-const BillScreen = () => {
+const BillScreen = ({ navigation }) => {
 
     const Product_list = useSelector((state) => state.product.data) || [];
+    //console.log('Selected Items:', Product_list);
+    const [productModalVisible, setProductModalVisible] = useState(false);
+    const [products, setProducts] = useState([]);
 
-    console.log('Selected Items:', Product_list);
     const dispatch = useDispatch();
     const billItems = useSelector(state => state.bill.items);
     const selectedUnitType = useSelector(state => state.bill.selectedUnitType);
@@ -42,11 +44,12 @@ const BillScreen = () => {
 
     const renderItem1 = ({ item }) => (
         <TouchableOpacity onPress={() => handleItemClick(`${item.product_name_eng} `)}>
-            <ListItem>
-                <ListItem.Content>
-                    <ListItem.Title>{`${item.product_name_eng}`}</ListItem.Title>
-                </ListItem.Content>
-            </ListItem>
+            <View style={{marginHorizontal:10,}}>
+                <Text style={{color:'black',fontSize:15,fontWeight:'700',marginVertical:12}}>
+                {`${item.product_name_eng}`}
+                </Text>
+                <View style={styles.separator}/>
+            </View>
         </TouchableOpacity>
     );
 
@@ -79,7 +82,9 @@ const BillScreen = () => {
         const newQuantity = Math.max(parseInt(item.quantity, 10) - 1, 1);
         dispatch(updateItemQuantity({ id: item.id, quantity: newQuantity }));
     };
-
+    const handleRemoveItem = (item) => {
+        dispatch(removeFromBill(item.id)); // Remove item from bill
+    };
     const Product = ({ item, index }) => {
         const [total, setTotal] = useState(parseFloat(item.total).toFixed(2));
 
@@ -111,13 +116,13 @@ const BillScreen = () => {
                         <View style={styles.IncDcr}>
                             <Inc onPress1={() => handleClick1(index)} />
                             <View style={styles.quantityContainer}>
-                                <Text  style={styles.detailText}>{item.quantity}</Text>
+                                <Text style={styles.detailText}>{item.quantity}</Text>
                             </View>
                             <Dec onPress2={() => handleClick2(index)} />
                         </View>
                     </View>
                 </View>
-                
+
             </View>
         );
     };
@@ -125,39 +130,23 @@ const BillScreen = () => {
     return (
         <ScrollView>
             <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
+                        <Icon name="arrow-back" size={25} color="black" />
+                    </TouchableOpacity>
+
+                    <Text style={styles.headerText}>Bill</Text>
+                    <TouchableOpacity onPress={() => setProductModalVisible(true)}>
+                        <Icon name="search" size={25} color="black" />
+                    </TouchableOpacity>
+
+                </View>
                 <View style={styles.custnameview}>
                     <Text style={styles.custtext}>Customer name</Text>
                 </View>
                 <View style={styles.penview}>
                     <Text style={styles.pendingText}>Pending:000000</Text>
                 </View>
-                <View style={styles.search}>
-                    <Icon name="search" size={22} color="black" style={styles.searchIcon} />
-                    <View style={styles.searchInputContainer}>
-                        <TextInput
-                            placeholder="Search Product Name"
-                            placeholderTextColor={'#ccc'}
-                            style={styles.searchInput}
-                            onChangeText={(text) => {
-                                setSearch(text);
-                                handleSearch(text);
-                            }}
-                            value={search}
-                        />
-                    </View>
-                    {search.length > 0 && (
-                        <TouchableOpacity onPress={clearSearch}>
-                            <Icon name="close" size={25} color="black" style={styles.clearIcon} />
-                        </TouchableOpacity>
-                    )}
-                </View>
-                {search.trim() !== '' && (
-                    <FlatList
-                        data={data}
-                        renderItem={renderItem1}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                )}
 
                 <FlatList
                     key={key} // Pass key to FlatList
@@ -165,12 +154,46 @@ const BillScreen = () => {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => <Product item={item} index={index} />}
                 />
-                <View style={styles.totalContainer}>
-                    <Text style={styles.totalText}>Total : ₹{totalAmount}/-</Text>
-                </View>
-                <TouchableOpacity style={styles.btn}>
-                    <Text style={styles.text}>Order Now</Text>
-                </TouchableOpacity>
+                {billItems != '' && (
+                    <>
+                        <View style={styles.totalContainer}>
+                            <Text style={styles.totalText}>Total : ₹{totalAmount}/-</Text>
+                        </View><TouchableOpacity style={styles.btn}>
+                            <Text style={styles.text}>Order Now</Text>
+                        </TouchableOpacity>
+                    </>
+                )}
+                {/* Product Modal */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={productModalVisible}
+                    onRequestClose={() => setProductModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <View style={styles.search}>
+                                <TextInput
+                                    placeholder="Search Product Name"
+                                    placeholderTextColor={'#ccc'}
+                                    style={styles.searchInput}
+                                    onChangeText={handleSearch}
+                                    value={search}
+                                />
+                                {search.length > 0 && (
+                                    <TouchableOpacity onPress={clearSearch}>
+                                        <Icon name="close" size={25} color="black" style={styles.clearIcon} />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                            <FlatList
+                                data={data.length > 0 ? data : Product_list}
+                                renderItem={renderItem1}
+                                keyExtractor={(item, index) => index.toString()}
+                            />
+                        </View>
+                    </View>
+                </Modal>
             </View>
         </ScrollView>
     );
@@ -181,8 +204,23 @@ export default BillScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 20,
-        paddingTop: 10,
+        //  paddingHorizontal: 15,
+        //paddingTop: 10,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'white',
+        //paddingHorizontal: 15,
+        padding: 10,
+        height: 60,
+
+    },
+    headerText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'black'
     },
     custnameview: {
         flexDirection: 'row',
@@ -208,10 +246,13 @@ const styles = StyleSheet.create({
     search: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderColor: '#ccc',
+        borderColor: 'black',
         borderWidth: 1,
         marginVertical: 15,
-        borderRadius: 15,
+        borderRadius: 10,
+        justifyContent: 'space-between',
+        marginHorizontal:10
+
     },
     searchIcon: {
         padding: 10,
@@ -229,8 +270,9 @@ const styles = StyleSheet.create({
     BillList: {
         height: 180,
         marginVertical: 10,
-        borderColor:'#23AA49',
-        borderWidth:1,
+        borderColor: '#23AA49',
+        borderWidth: 1,
+        marginHorizontal:10
     },
     head: {
         backgroundColor: '#23AA49',
@@ -249,34 +291,35 @@ const styles = StyleSheet.create({
     },
     imageWrapper: {
         width: '40%',
-        height:138,
+        height: 138,
         backgroundColor: 'red',
     },
     image: {
         width: '100%',
         height: '100%',
-        resizeMode:'cover',
+        resizeMode: 'cover',
         alignSelf: 'center',
     },
     detailsContainer: {
         width: '60%',
         padding: 5,
-    
+
     },
     detailText: {
         color: 'black',
         fontWeight: '500',
         fontSize: 13,
-        margin:3
+        margin: 3
     },
     IncDcr: {
         flexDirection: 'row',
-        borderColor:'#23AA49',
-        borderWidth:1.5,
-        width:'50%',
-        justifyContent:'space-between',
-        borderRadius:60/2,
-        height:'34%',
+        borderColor: '#23AA49',
+        borderWidth: 1.5,
+        width: '60%',
+        justifyContent: 'space-between',
+        borderRadius: 60 / 2,
+        height: '34%',
+        top: 6
     },
     quantityContainer: {
         marginHorizontal: '6%',
@@ -307,4 +350,25 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
     },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalContent: {
+        width: '90%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+       // padding: 20,
+        maxHeight: '60%',
+        justifyContent: 'space-between'
+    },
+    separator: {
+        height: 1,          
+        backgroundColor: 'black', 
+        marginVertical: 1,
+        width: '100%',  
+    },
+
 });

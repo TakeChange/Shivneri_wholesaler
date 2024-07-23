@@ -41,7 +41,7 @@ const AppNavigation = () => {
                 <Stack.Screen
                     name="BillScreen"
                     component={BillScreen}
-                    options={{ headerShown: true }}
+                    options={{ headerShown: false}}
                 />
                 <Stack.Screen
                     name="CreditBalanceScreen"
