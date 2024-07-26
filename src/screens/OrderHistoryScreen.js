@@ -18,8 +18,8 @@ const OrderHistoryScreen = () => {
       const response = await axios.post(loginUrl, { order_type: 2 }, { headers: { "Content-Type": "multipart/form-data" } });
       console.log('res', response);
 
-      // Assuming your API response returns an array of customer objects with a 'cust_name' property
-      setCustomerData(response.data); // Update state with API response data
+     
+      setCustomerData(response.data);
     } catch (error) {
       console.log("error:", error);
     }

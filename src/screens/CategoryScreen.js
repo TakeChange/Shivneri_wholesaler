@@ -18,10 +18,14 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import AddIcon from '../components/AddIcon';
-import {addToBill,removeFromBill} from '../redux_toolkit/Bill_list/billSlice'
+import { addToBill, removeFromBill } from '../redux_toolkit/Bill_list/billSlice'
+import ProductModal from '../components/ProductModel';
 
-
-const CategoryScreen = ({ navigation }) => {
+const CategoryScreen = ({ route,navigation }) => {
+    const { username } = route.params || {};
+    if (!username) {
+        console.error('Username is undefined in CategoryScreen');
+      }
     const dispatch = useDispatch();
     const iconColors = useSelector(state => state.bill.iconColors);
 
@@ -128,18 +132,18 @@ const CategoryScreen = ({ navigation }) => {
                         source={{ uri: item.product_image == "" ? 'https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png' : item.product_image }}
                         style={styles.image}
                     >
-                         <AddIcon
-                        onPress={() => {
-                            if (!isIconColorRed(item.id)) {
-                                setSelectedItem(item);
-                                setModalVisible(true);
-                            }
-                            else{
-                                Alert.alert('This item is already in the bill.');
-                            }
-                        }}
-                        color={iconColors[item.id] || '#23AA49'}
-                    />
+                        <AddIcon
+                            onPress={() => {
+                                if (!isIconColorRed(item.id)) {
+                                    setSelectedItem(item);
+                                    setModalVisible(true);
+                                }
+                                else {
+                                    Alert.alert('This item is already in the bill.');
+                                }
+                            }}
+                            color={iconColors[item.id] || '#23AA49'}
+                        />
                     </ImageBackground>
                 </View>
                 <Text style={styles.nameText}>{item.product_name}</Text>
@@ -179,57 +183,9 @@ const CategoryScreen = ({ navigation }) => {
 
     const BillScreenNavigate = () => {
         console.log("navigate to billscreen");
-        navigation.navigate('BillScreen');
+        navigation.navigate('BillScreen', { customerName: username });
     }
-
-    const calculateTotal = (qty, price) => {
-        const total = parseFloat(qty) * parseFloat(price);
-        return isNaN(total) ? '' : total.toFixed(2).toString();
-    };
-
-
-    const handleQtyChange = (text) => {
-        setQuantity(text);
-        if (text !== '') {
-            const totalValue = calculateTotal(text, perPrice);
-            setTotal(totalValue);
-        } else {
-            setTotal('');
-        }
-    };
-
-    const handleDone = () => {
-        if (!quantity || !perPrice || !total || !selectedUnitType) {
-            setErrorMessage('Please fill all fields');
-        } else {
-            setErrorMessage('');
-            const newItem = {
-                ...selectedItem,
-                selectedUnitType: selectedUnitType === 'box_unit_name' ? selectedItem.box_unit_name : selectedItem.unit_name,
-                perPrice,
-                quantity,
-                total,
-            };
     
-            dispatch(addToBill(newItem));
-    
-          
-            setQuantity('');
-            setTotal('');
-            setSelectedUnitType('');
-            setModalVisible(false);
-        }
-    };
-
-
-    const handleClose = () => {
-        setErrorMessage('');
-        setQuantity('');
-        setTotal('');
-        setSelectedUnitType('')
-        setModalVisible(false);
-    }
-
     return (
         <View style={{ flex: 1 }}>
             <View
@@ -308,88 +264,12 @@ const CategoryScreen = ({ navigation }) => {
                     showsVerticalScrollIndicator={false}
                 />)}
 
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-                            <Ionicons name="close" size={30} />
-                        </TouchableOpacity>
-                        {selectedItem && (
-                            <>
-                                <Text style={styles.product}>PRODUCT: {selectedItem.product_name}</Text>
-                                <View style={styles.avai}>
-                                    {/* <Text style={styles.names}>Available Box:{selectedItem.box_unit}</Text> */}
-                                    <View style={styles.boxcontain}>
-                                        <Text style={styles.names}>Type:</Text>
-                                        <Dropdown
-                                            style={styles.dropdown}
-                                            placeholderStyle={styles.placeholderStyle} 
-                                            selectedTextStyle={styles.selectedTextStyle}
-                                            itemTextStyle={styles.itemTextStyle}
-                                            data={[
-                                                { label: selectedItem?.box_unit_name, value: 'box_unit_name' },
-                                                { label: selectedItem?.unit_name, value: 'unit_name' }
-                                            ]}
-                                            maxHeight={100}
-                                            labelField="label"
-                                            valueField="value"
-                                            placeholder="Select unit "
-                                            value={selectedUnitType}
-                                            onChange={item => {
-                                                setSelectedUnitType(item.value);
-                                                if (item.value === 'box_unit_name') {
-                                                    setPerPrice(selectedItem.sell_price_cash_per_box);
-                                                } else if (item.value === 'unit_name') {
-                                                    setPerPrice(selectedItem.sell_price_cash_per_pack);
-                                                } else {
-                                                    setPerPrice('');
-                                                }
-                                                setQuantity('');
-                                                setTotal('');
-                                                
-                                            }}
-                                        />
-                                        <Text style={styles.types}>Qty : </Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            onChangeText={handleQtyChange}
-                                            value={quantity}
-                                            keyboardType="numeric"
-                                        />
-                                    </View>
-                                </View>
-                                <View style={styles.avai}>
-                                    <View style={styles.boxcontain}>
-                                        <Text style={styles.names}>PerPrice:</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={quantity !='' && perPrice ? perPrice.toString() : ''}
-                                            editable={false}
-
-                                        />
-                                        <Text style={styles.names}>Total:</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={total ? total.toString() : ''}
-                                            editable={false}
-                                        />
-                                    </View>
-                                </View>
-                                {errorMessage !== '' && <Text style={styles.errorText}>{errorMessage}</Text>}
-                                <TouchableOpacity onPress={handleDone} style={styles.doneButton}>
-                                    <Text style={styles.doneButtonText}>Done</Text>
-                                </TouchableOpacity>
-                            </>
-                        )}
-
-                    </View>
-                </View>
-            </Modal>
+            <ProductModal
+                selectedItem={selectedItem}
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                iconColors={iconColors}
+            />
 
             <Modal
                 animationType="slide"
@@ -506,8 +386,8 @@ const styles = StyleSheet.create({
     total: {
         color: '#000',
         paddingLeft: '5%',
-        fontSize:12.5,
-        fontWeight:'400'
+        fontSize: 12.5,
+        fontWeight: '400'
     },
     floatIcon: {
         position: 'absolute',
@@ -528,7 +408,7 @@ const styles = StyleSheet.create({
         elevation: 1,
         borderRadius: 10,
         padding: 20,
-        width:350
+        width: 350
     },
     product: {
         fontWeight: '500',
@@ -546,7 +426,7 @@ const styles = StyleSheet.create({
         padding: 5,
         width: '26%',
         borderBottomWidth: 1,
-        color:'black'
+        color: 'black'
     },
     names: {
         fontSize: 15,
@@ -565,7 +445,7 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10,
         backgroundColor: 'grey',
-        
+
     },
     boxcontain: {
         flexDirection: 'row',
@@ -602,9 +482,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     itemTextStyle: {
-        color: 'black', 
-        fontSize: 16,  
-        
+        color: 'black',
+        fontSize: 16,
+
     },
     itemContainer: {
         // padding: 10,

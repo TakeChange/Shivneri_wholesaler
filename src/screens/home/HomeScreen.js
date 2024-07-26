@@ -10,6 +10,8 @@ import Modal from "react-native-modal";
 import { useNavigationState } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { FetchFilterProduct, FetchProduct } from '../../api/FetchProduct';
+import { setCustomerData } from '../../redux_toolkit/customer/customerSlice';
+
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
@@ -189,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
   
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} `)}>
+    <TouchableOpacity  onPress={() => handleItemClick(item)}>
       <ListItem>
         <ListItem.Content>
           <ListItem.Title>{`${item.user_name}`}</ListItem.Title>
@@ -198,11 +200,22 @@ const HomeScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const handleItemClick = itemName => {
-    setSearch(itemName);
-    handleSearch(itemName);
-    setTemp(itemName);
+  const handleItemClick = (item) => {
+    setSearch(item.user_name);
+    handleSearch(item.user_name);
+    setTemp(item.user_name);
+  
+    dispatch(setCustomerData({
+      customerName: item.user_name,
+      mobileNumber: item.mobile_number,
+      address: item.address
+    }));
+  
+    console.log('Customer Name:', item.user_name);
+    console.log('Customer Address:', item.address);
+    console.log('Customer Mobile Number:', item.mobile_number);
   };
+  
 
   const registerNewUser = async (customerName, mobileNumber, address) => {
     setLoading(true);
@@ -244,7 +257,7 @@ const HomeScreen = ({ navigation }) => {
   const NextScreen = () => {
     if (search.length != 0 && search === temp) {
       dispatch(FetchFilterProduct('0'));
-      navigation.navigate('CategoryScreen', username = temp);
+      navigation.navigate('CategoryScreen', { username: temp });
       ToastAndroid.show("start the " + temp + " billing", ToastAndroid.SHORT);
     }
     else {
