@@ -6,15 +6,11 @@ import Dec from '../components/Dec';
 import Inc from '../components/Inc';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToBill, removeFromBill, updateItemQuantity } from '../redux_toolkit/Bill_list/billSlice';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Dropdown } from 'react-native-element-dropdown';
 import ProductModal from '../components/ProductModel';
 
 const BillScreen = ({ navigation,route }) => {
     const customer = useSelector(state => state.customer);
-    console.log(customer)
     const dispatch = useDispatch();
-    //const iconColors = useSelector(state => state.bill.iconColors);
     const billItems = useSelector(state => state.bill.items);
     const [search, setSearch] = useState('');
     const [data, setData] = useState([]);
@@ -63,7 +59,6 @@ const BillScreen = ({ navigation,route }) => {
 
     const renderItem1 = ({ item }) => {
         if (!item || !item.product_name_eng) {
-            console.error('Invalid item:', item);
             return null;
         }
         return (
@@ -79,7 +74,6 @@ const BillScreen = ({ navigation,route }) => {
     };
 
     const handleItemClick = (item) => {
-        console.log('Selected item:', item);
         setSelectedItem(item);
         setProductModalVisible(false);
         setProductModalVisible1(true);
@@ -159,7 +153,7 @@ const BillScreen = ({ navigation,route }) => {
     };
 
     return (
-        <ScrollView>
+       
             <View style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
@@ -179,7 +173,7 @@ const BillScreen = ({ navigation,route }) => {
                 </View>
 
                 <FlatList
-                    key={Date.now()} // Pass a new key to force re-render
+                    key={Date.now()} 
                     data={billItems}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => <Product item={item} index={index} />}
@@ -235,7 +229,7 @@ const BillScreen = ({ navigation,route }) => {
                     //iconColors={iconColors}
                 />
             </View>
-        </ScrollView>
+        
     );
 };
 

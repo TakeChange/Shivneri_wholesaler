@@ -28,7 +28,7 @@ const Productslice = createSlice({
     builder.addCase(FetchFilterProduct.fulfilled, (state, action) => {
       state.isLoader = false;
       state.data = action.payload;
-      console.log("dtatat :: ",action.payload)
+     
     });
     builder.addCase(FetchFilterProduct.rejected, (state, action) => {
       state.isLoader = false;

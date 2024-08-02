@@ -36,7 +36,7 @@ const ProductModal = ({ selectedItem, modalVisible, setModalVisible }) => {
         } else {
             const existingItem = billItems.find(item => 
                 item.product_name === selectedItem.product_name  
-               // item.selectedUnitType === (selectedUnitType === 'box_unit_name' ? selectedItem.box_unit_name : selectedItem.unit_name)
+              
             );
 
             if (existingItem) {
@@ -50,10 +50,8 @@ const ProductModal = ({ selectedItem, modalVisible, setModalVisible }) => {
                     quantity,
                     total,
                 };
-                console.log('New Item:', newItem); // Debugging log
                 dispatch(addToBill(newItem));
 
-                // Reset state and close modal
                 setQuantity('');
                 setTotal('');
                 setSelectedUnitType(null);
@@ -69,9 +67,6 @@ const ProductModal = ({ selectedItem, modalVisible, setModalVisible }) => {
         setSelectedUnitType(null);
         setModalVisible(false);
     };
-
-    // Added debugging log
-    console.log('Selected Item data:', selectedItem); 
 
     return (
         <Modal

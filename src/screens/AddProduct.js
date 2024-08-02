@@ -39,18 +39,18 @@ const AddProduct = () => {
 
     const toggleCheckbox = () => {
         setIsChecked(!isChecked);
-        setUnitPriceInput(''); // Reset input text when hiding the input field
+        setUnitPriceInput(''); 
     };
 
     const fetchData = async () => {
         try {
             const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
             const responseJson = response.data;
-            console.log('Response data:', responseJson); // Log response data to check its structure
+            
             if (responseJson.status === 'success') {
-                // Check if response data is an array
+                
                 if (Array.isArray(responseJson.data)) {
-                    // If it's an array, proceed with mapping
+                    
                     let newArray = responseJson.data.map((item) => ({
                         key: item.id,
                         value: item.category_name
@@ -71,12 +71,12 @@ const AddProduct = () => {
         try {
             const response = await axios.get('https://demo.raviscyber.in/public/box_unitList.php');
             const responseJson = response.data;
-            console.log('Response data:', responseJson); // Log response data to check its structure
+          
             let newArray = responseJson.data.map((item, index) => ({
                 key: index,
                 value: item
             }));
-            console.log("newArray :", newArray);
+           
             setDataBoxUnit(newArray);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -87,12 +87,12 @@ const AddProduct = () => {
         try {
             const response = await axios.get('https://demo.raviscyber.in/public/product_unitList.php');
             const responseJson = response.data;
-            console.log('Response data:', responseJson); // Log response data to check its structure
+           
             let newArray = responseJson.data.map((item, index) => ({
                 key: index,
                 value: item
             }));
-            console.log("setDataUnit :", newArray);
+           
             setDataUnit(newArray);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -140,7 +140,7 @@ const AddProduct = () => {
         } else {
             setFilePathErr('');
         }
-        console.log('isValid2',isValid)
+        
         if (selectedCategory == '') {
             setSelectedCategoryError('Please select at once category');
             isValid = false;
@@ -189,22 +189,9 @@ const AddProduct = () => {
             setSelectedUnitError('');
         }
 
-        console.log('isValidL',isValid)
+        
         if (isValid) {
-            console.log('filePath:',filePath);
-            console.log('productname_marathi:',productname_marathi);
-            console.log(productname);
-            console.log(quantity);
-            console.log(selectedCategory);
-            console.log(selectedBoxUnit);
-            console.log(boxprice);
-            console.log(selectedUnit);
-            console.log(unitPriceInput);
-            
-            // setProductname('');
-            // setBoxPrice('');
-            // setQuantity('');
-            // setTotal('');
+           
             let obj = {
                 product_image:filePath,
                 product_name:productname_marathi,
@@ -221,8 +208,7 @@ const AddProduct = () => {
     }
 
     const handleAdd = async (param) => {
-        //setLoading(true);
-        console.log('param :: ',param);
+       
         try {
             const addProdUrl = 'https://demo.raviscyber.in/public/product.php';
 
@@ -236,21 +222,12 @@ const AddProduct = () => {
             );
 
             const { status, message } = response.data;
-            console.log('res',response);
             ToastAndroid.show('Product added successfully!!', ToastAndroid.SHORT);
-            // if (status === "success") {
-            //     setSession();
-            //     ToastAndroid.show(message, ToastAndroid.SHORT);
-            //     navigation.navigate('DrawerNavigation');
-            // } else {
-            //     console.error('Login failed:', message);
-            //     ToastAndroid.show(message, ToastAndroid.SHORT);
-            // }
+         
         } catch (error) {
             console.log('error',error)
             ToastAndroid.show('Please enter valid username and password', ToastAndroid.SHORT);
         } finally {
-            //setLoading(false);
         }
     };
 
@@ -262,10 +239,8 @@ const AddProduct = () => {
             quality: 1,
         };
         launchImageLibrary(options, (response) => {
-            // console.log('Response1 = ', response);
 
             if (response.didCancel) {
-                //alert('User cancelled image picker');
                 return;
             } else {
                 const imageURI = response.assets[0].uri;

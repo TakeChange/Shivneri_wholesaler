@@ -18,14 +18,10 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import AddIcon from '../components/AddIcon';
-import { addToBill, removeFromBill } from '../redux_toolkit/Bill_list/billSlice'
 import ProductModal from '../components/ProductModel';
 
 const CategoryScreen = ({ route,navigation }) => {
-    const { username } = route.params || {};
-    if (!username) {
-        console.error('Username is undefined in CategoryScreen');
-      }
+   
     const dispatch = useDispatch();
     const iconColors = useSelector(state => state.bill.iconColors);
 
@@ -41,12 +37,6 @@ const CategoryScreen = ({ route,navigation }) => {
     const [catModalVisible, setCatModalVisible] = useState(false);
     const [moreLoading, setMoreLoading] = useState(false);
     const [products, setProducts] = useState([]);
-    const [selectedUnitType, setSelectedUnitType] = useState(null);
-    const [perPrice, setPerPrice] = useState('');
-    const [quantity, setQuantity] = useState('');
-    const [total, setTotal] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
         setOldData(data);
@@ -77,7 +67,7 @@ const CategoryScreen = ({ route,navigation }) => {
                 setProducts(response.data);
                 response.data.forEach(product => {
                     if (product.sell_price_cash_per_pack === null || product.sell_price_cash_per_box === null) {
-                        //console.log('Null value found in product:', product.product_name);
+                        
                     }
                 });
                 setData(response.data);
@@ -164,8 +154,7 @@ const CategoryScreen = ({ route,navigation }) => {
 
     const dispatchCategoryWise = (id) => {
         setCatModalVisible(false);
-        console.log('id', id);
-        // dispatch(FetchFilterProduct(id));
+       
         fetchProd(id);
     }
 
@@ -182,8 +171,7 @@ const CategoryScreen = ({ route,navigation }) => {
     };
 
     const BillScreenNavigate = () => {
-        console.log("navigate to billscreen");
-        navigation.navigate('BillScreen', { customerName: username });
+        navigation.navigate('BillScreen');
     }
     
     return (
