@@ -5,7 +5,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 
-const OrderVehicleScreen = () => {
+const OrderVehicleScreen = ({navigation}) => {
   const [customerData, setCustomerData] = useState([]);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const OrderVehicleScreen = () => {
   
           <View style={styles.viewbill}>
             <Text style={styles.txt}>View Bill</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('ShowBill')}>
               <Entypo name='eye' size={22} color='#000000' />
             </TouchableOpacity>
           </View>
