@@ -7,9 +7,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Modal from "react-native-modal";
-import { useNavigationState } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { FetchFilterProduct, FetchProduct } from '../../api/FetchProduct';
+import { setCustomerData } from '../../redux_toolkit/customer/customerSlice';
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
@@ -18,7 +18,6 @@ const OpenModal = ({ visible, onClose, onSave }) => {
   const [mobileVerify, setMobileVerify] = useState('');
   const [address, setAddress] = useState('');
   const [addVerify, setAddVerify] = useState('');
-
 
   const handleSave = () => {
     onSave(customerName, mobileNumber, address);
@@ -139,12 +138,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleSaveUser = (customerName, mobileNumber, address) => {
-    // console.log('Customer Name:', customerName);
-    // console.log('Mobile Number:', mobileNumber);
-    // console.log('Address:', address);
-
     registerNewUser(customerName, mobileNumber, address);
-
   }
 
   const fetchData = async () => {
@@ -182,14 +176,13 @@ const HomeScreen = ({ navigation }) => {
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
-      // console.log("data",data);
-      // console.log("sortedData",sortedData)
+ 
     }
   };
-  
+
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleItemClick(`${item.user_name} `)}>
+    <TouchableOpacity onPress={() => handleItemClick(item)}>
       <ListItem>
         <ListItem.Content>
           <ListItem.Title>{`${item.user_name}`}</ListItem.Title>
@@ -198,11 +191,18 @@ const HomeScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const handleItemClick = itemName => {
-    setSearch(itemName);
-    handleSearch(itemName);
-    setTemp(itemName);
+  const handleItemClick = (item) => {
+    setSearch(item.user_name);
+    handleSearch(item.user_name);
+    setTemp(item.user_name);
+
+    dispatch(setCustomerData({
+      customerName: item.user_name,
+      mobileNumber: item.mobile_number,
+      address: item.address
+    }));
   };
+
 
   const registerNewUser = async (customerName, mobileNumber, address) => {
     setLoading(true);
@@ -223,15 +223,13 @@ const HomeScreen = ({ navigation }) => {
       );
 
       const { status, message } = response.data;
-      // console.log('res', message);
-
+  
       if (status === "success") {
 
         ToastAndroid.show("Register Successfully", ToastAndroid.SHORT);
         ToastAndroid.show(message, ToastAndroid.SHORT);
         fetchData();
       } else {
-        // console.error('Registation Failed:', message);
         ToastAndroid.show(message, ToastAndroid.SHORT);
       }
     } catch (error) {
@@ -244,7 +242,7 @@ const HomeScreen = ({ navigation }) => {
   const NextScreen = () => {
     if (search.length != 0 && search === temp) {
       dispatch(FetchFilterProduct('0'));
-      navigation.navigate('CategoryScreen', username = temp);
+      navigation.navigate('CategoryScreen', { username: temp });
       ToastAndroid.show("start the " + temp + " billing", ToastAndroid.SHORT);
     }
     else {
@@ -302,7 +300,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   textstyle: {
-   color:'black',
+    color: 'black',
     fontSize: 18,
     fontWeight: '600',
     borderWidth: 1,

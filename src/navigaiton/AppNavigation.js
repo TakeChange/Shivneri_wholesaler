@@ -8,6 +8,7 @@ import CategoryScreen from '../screens/CategoryScreen';
 import BillScreen from '../screens/BillScreen';
 import CheckInternet from '../components/CheckInternet';
 import CreditBalanceScreen from '../screens/CreditBalanceScreen';
+import ShowBill from '../screens/ShowBill'
 const Stack = createStackNavigator();
 
 const AppNavigation = () => {
@@ -41,12 +42,18 @@ const AppNavigation = () => {
                 <Stack.Screen
                     name="BillScreen"
                     component={BillScreen}
-                    options={{ headerShown: true }}
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen
                     name="CreditBalanceScreen"
                     component={CreditBalanceScreen}
                     options={{ headerShown: true }}
+                />
+
+                <Stack.Screen
+                    name="ShowBill"
+                    component={ShowBill}
+                    options={{ headerShown: false }}
                 />
 
             </Stack.Navigator>

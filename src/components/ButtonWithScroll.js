@@ -59,7 +59,6 @@ return (
                 width: 200,
                 marginVertical: 10,
               }}
-              onPress={() => console.log('aye')}
             />
             <Button
               title="Secondary"

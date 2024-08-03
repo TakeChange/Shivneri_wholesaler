@@ -76,8 +76,7 @@ const LoginScreen = ({ navigation }) => {
             );
 
             const { status, message } = response.data;
-            console.log('res',response.data);
-            
+         
             if (status === "success") {
                 setSession();
                 ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -97,13 +96,6 @@ const LoginScreen = ({ navigation }) => {
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.head}>
-                    {/* <TouchableOpacity style={styles.lefticon}>
-                        <LeftArrow
-                            name='chevron-small-left'
-                            size={35}
-                            color='black'
-                        />
-                    </TouchableOpacity> */}
                 </View>
                 <View style={styles.logo}>
                     <Image
@@ -175,7 +167,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: '4%',
-        //backgroundColor:'red'
     },
 
     lefticon: {
@@ -208,24 +199,19 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 15,
         fontWeight: '800',
-        // marginTop: '14%',
         backgroundColor: '#F3F5F7',
         borderRadius: 12,
-        //borderWidth: 1,
     },
     container1: {
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 5,
-        //borderWidth: 1,
-        //borderColor: '#ccc',
         marginHorizontal: 10,
         marginTop: '8%'
 
     },
     icon: {
         padding: 10,
-        //backgroundColor: '#f2f2f2',
         borderRadius: 5,
     },
 
@@ -236,7 +222,7 @@ const styles = StyleSheet.create({
         outline: 'none',
     },
     separator: {
-        height: '80%', // Adjust the height as needed
+        height: '80%', 
         width: 1,
         backgroundColor: '#ccc',
         marginHorizontal: 1,
