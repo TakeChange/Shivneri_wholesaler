@@ -20,7 +20,7 @@ const CategoryScreen = ({ navigation }) => {
     const [showListing, setShowListing] = useState(false);
     const Product_list = useSelector((state) => state.product.data);
     const moreLoading = useSelector((state) => state.product?.isLoader);
-    console.log('Product_list',Product_list[0])
+    // console.log('Product_list',Product_list[0])
     const data = [
         { label: 'Item 1', value: '1' }, 
         { label: 'Item 2', value: '2' },

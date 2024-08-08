@@ -28,33 +28,6 @@ const CreditBalanceScreen = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
-    // const fetchData = async () => {
-    //     try {
-    //         //const getUser = 'https://demo.raviscyber.in/public/customerlist.php';
-    //         const getUser = 'https://demo.raviscyber.in/public/customer_payment_list.php'
-    //         const response = await axios.post(getUser, {
-    //             headers: {
-    //                 "Content-Type": "multipart/form-data",
-    //             },
-    //         });
-
-    //         const { status, data } = response.data;
-    //         const sorted = data.sort((a, b) => {
-    //             const nameA = a.cust_name.toLowerCase();
-    //             const nameB = b.cust_name.toLowerCase();
-    //             if (nameA < nameB) return -1;
-    //             if (nameA > nameB) return 1;
-    //             return 0;
-    //         });
-    //         setData(sorted);
-    //         setSortedData(sorted);
-    //         console.log(sorted)
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //     }
-    // };
-
     const fetchData = async () => {
         try {
             const getUser = 'https://demo.raviscyber.in/public/customer_payment_list.php'
@@ -63,26 +36,16 @@ const CreditBalanceScreen = () => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-    
-            console.log("Response here:", response.data); // Log the response data
-    
-            // const { status, data } = response.data;
-            //         const sorted = data.sort((a, b) => {
-            //             const nameA = a.cust_name.toLowerCase();
-            //             const nameB = b.cust_name.toLowerCase();
-            //             if (nameA < nameB) return -1;
-            //             if (nameA > nameB) return 1;
-            //             return 0;
-                //    });
-                    setData(response.data);
-                    setSortedData(response.data);
-                    
-                    console.log(response.data)
+
+            setData(response.data);
+            setSortedData(response.data);
+
+            // console.log(response.data)
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
-    
+
 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleItemClick(item)}>
@@ -98,12 +61,12 @@ const CreditBalanceScreen = () => {
         if (item) {
             setSelectedCustomerName(item.cust_name ? item.cust_name.trim() : 'null');
             setSearchInput(item.cust_name ? item.cust_name.trim() : ''); // Set the search input with the selected customer name
-             setSelectedCustomerMobile(item.mobile_number ? item.mobile_number.trim() : 'null');
-             setSelectedCustomerAddress(item.address ? item.address.trim() : 'null');
-             setPendingAmount(item.pending_amount ? item.pending_amount.trim() : '0'); 
-             setNewAmount(item.pending_amount ? item.pending_amount.trim() : '0');
-             handleSearch(item.cust_name ? item.cust_name.trim() : '');
-             setData([]);
+            setSelectedCustomerMobile(item.mobile_number ? item.mobile_number.trim() : 'null');
+            setSelectedCustomerAddress(item.address ? item.address.trim() : 'null');
+            setPendingAmount(item.pending_amount ? item.pending_amount.trim() : '0');
+            setNewAmount(item.pending_amount ? item.pending_amount.trim() : '0');
+            handleSearch(item.cust_name ? item.cust_name.trim() : '');
+            setData([]);
         }
     };
 
@@ -179,25 +142,25 @@ const CreditBalanceScreen = () => {
         }
         if (isValid) {
             //handleLogin();
-            console.log('success')
+            // console.log('success')
         }
     }
-    
+
     useFocusEffect(
-        React.useCallback(()=>{
-            return() =>{
-            setSearchError('');
-            setCustomerNameError('');
-            setMobileError('');
-            setCustomerAddError('');
-            setPendingError('');
-            setNewAmountError('');
-            setDescriptiontError('');
+        React.useCallback(() => {
+            return () => {
+                setSearchError('');
+                setCustomerNameError('');
+                setMobileError('');
+                setCustomerAddError('');
+                setPendingError('');
+                setNewAmountError('');
+                setDescriptiontError('');
             };
-        },[])
+        }, [])
     );
 
-    
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.search}>
@@ -211,7 +174,7 @@ const CreditBalanceScreen = () => {
                             setSearchInput(text);
                             handleSearch(text);
                         }}
-                        style={{ paddingHorizontal: 10,color:'black' }}
+                        style={{ paddingHorizontal: 10, color: 'black' }}
                     />
                 </View>
                 {searchInput.length > 0 && (
@@ -228,14 +191,14 @@ const CreditBalanceScreen = () => {
                 />
             )}
             <View>
-            <Text style={{ color: 'red', fontWeight: '600' }}>{searchError}</Text>
+                <Text style={{ color: 'red', fontWeight: '600' }}>{searchError}</Text>
                 <Text style={styles.txt}>Customer name:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedCustomerName}
                     onChangeText={setSelectedCustomerName}
                 />
-                <Text style={{ color: 'red', fontWeight: '600',}}>{customerNameError}</Text>
+                <Text style={{ color: 'red', fontWeight: '600', }}>{customerNameError}</Text>
                 <Text style={styles.txt}>Customer Mobile:</Text>
                 <TextInput
                     style={styles.textinput1}
@@ -267,7 +230,7 @@ const CreditBalanceScreen = () => {
                 <Text style={styles.txt}>Description:</Text>
                 <Textarea
                     containerStyle={styles.textareaContainer}
-                    style={styles.textarea} 
+                    style={styles.textarea}
                     maxLength={120}
                     placeholderTextColor={'#c7c7c7'}
                     underlineColorAndroid={'transparent'}
@@ -305,7 +268,7 @@ const styles = StyleSheet.create({
         borderColor: 'grey',
         borderWidth: 1,
         padding: 5,
-        color:'black',
+        color: 'black',
     },
     btn: {
         backgroundColor: '#23AA49',
@@ -328,13 +291,13 @@ const styles = StyleSheet.create({
         padding: 5,
         borderColor: 'grey',
         borderWidth: 1,
-      },
-      textarea: {
+    },
+    textarea: {
         textAlignVertical: 'top',  // hack android
         height: 170,
         fontSize: 14,
         color: '#333',
-      },
+    },
 });
 
 

@@ -21,24 +21,16 @@ export const FetchFilterProduct = createAsyncThunk('FetchFilterProduct', async (
       );
 
      res = response.data;
-     console.log('res::1',res);
+
      const final = await res;
-    //  console.log('final :11', final);
      return final;
   } catch (error) {
       ToastAndroid.show('category issue', ToastAndroid.SHORT);
   } 
-    console.log('lll',data)
   } else {
     url = 'https://demo.raviscyber.in/public/productlist.php';
     res = await fetch(url);
     const final = await res.json();
-    // console.log('final :22', final);
     return final;
   }
-
- 
-  // const final = await res.json();
-  // console.log('final :', res);
-  // return final;
 });

@@ -16,7 +16,7 @@ const OrderHistoryScreen = () => {
     try {
       const loginUrl = 'https://demo.raviscyber.in/public/customer_payment_list.php';
       const response = await axios.post(loginUrl, { order_type: 2 }, { headers: { "Content-Type": "multipart/form-data" } });
-      console.log('res', response);
+      // console.log('res', response);
 
      
       setCustomerData(response.data);

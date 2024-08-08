@@ -50,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
             );
             const value = await AsyncStorage.getItem('login');
             if (value !== null) {
-                console.log(value);
+                // console.log(value);
             }
         } catch (error) {
             console.log(error);

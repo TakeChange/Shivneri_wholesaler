@@ -141,7 +141,7 @@ const ShowBill = ({ navigation }) => {
 
     try {
       const file = await RNHTMLtoPDF.convert(options);
-      console.log('PDF generated at:', file.filePath);
+      // console.log('PDF generated at:', file.filePath);
       Alert.alert('PDF Generated', `File path: ${file.filePath}`);
     } catch (error) {
       console.error('Failed to generate PDF:', error);

@@ -194,6 +194,7 @@ const HomeScreen = ({ navigation }) => {
   const handleItemClick = (item) => {
     setSearch(item.user_name);
     handleSearch(item.user_name);
+    setData([]); 
     setTemp(item.user_name);
 
     dispatch(setCustomerData({

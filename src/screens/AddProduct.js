@@ -244,7 +244,7 @@ const AddProduct = () => {
                 return;
             } else {
                 const imageURI = response.assets[0].uri;
-                console.log(imageURI);
+               // console.log(imageURI);
                 setFilePath(imageURI);
             }
         });

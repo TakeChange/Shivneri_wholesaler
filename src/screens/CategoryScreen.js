@@ -98,7 +98,6 @@ const CategoryScreen = ({ route,navigation }) => {
             }
         }
     }
-
     const searchFilterFunction = text => {
         if (text !== '') {
             let tempData = products.filter(item => {
