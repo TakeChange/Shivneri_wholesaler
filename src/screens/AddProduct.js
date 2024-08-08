@@ -220,7 +220,6 @@ const AddProduct = () => {
                 },
               }
             );
-
             const { status, message } = response.data;
             ToastAndroid.show('Product added successfully!!', ToastAndroid.SHORT);
          
