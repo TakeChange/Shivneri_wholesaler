@@ -10,6 +10,7 @@ import Modal from "react-native-modal";
 import { useDispatch } from 'react-redux';
 import { FetchFilterProduct, FetchProduct } from '../../api/FetchProduct';
 import { setCustomerData } from '../../redux_toolkit/customer/customerSlice';
+import { clearBill } from '../../redux_toolkit/Bill_list/billSlice';
 
 const OpenModal = ({ visible, onClose, onSave }) => {
   const [customerName, setCustomerName] = useState('');
@@ -176,7 +177,7 @@ const HomeScreen = ({ navigation }) => {
         item.user_name.toLowerCase().includes(text.toLowerCase())
       );
       setData(filtered);
- 
+
     }
   };
 
@@ -191,18 +192,47 @@ const HomeScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  // const handleItemClick = (item) => {
+  //   setSearch(item.user_name);
+  //   handleSearch(item.user_name);
+  //   setData([]);
+  //   setTemp(item.user_name);
+
+  //   // Clear previous bill data
+  //   dispatch(clearBill());
+
+  //   dispatch(setCustomerData({
+  //     customerName: item.user_name,
+  //     mobileNumber: item.mobile_number,
+  //     address: item.address
+  //   }));
+  // };
+
   const handleItemClick = (item) => {
+    console.log('Selected Customer Data:', {
+      id: item.user_id, // Ensure `id` is part of the customer data
+      name: item.user_name,
+      mobileNumber: item.mobile_number,
+      address: item.address,
+    });
+    
+    
     setSearch(item.user_name);
     handleSearch(item.user_name);
-    setData([]); 
+    setData([]);
     setTemp(item.user_name);
-
+  
+    // Clear previous bill data
+    dispatch(clearBill());
+  
     dispatch(setCustomerData({
+      customerId: item.user_id, // Add the `id` to the dispatched customer data
       customerName: item.user_name,
       mobileNumber: item.mobile_number,
       address: item.address
     }));
   };
+  
 
 
   const registerNewUser = async (customerName, mobileNumber, address) => {
@@ -224,7 +254,7 @@ const HomeScreen = ({ navigation }) => {
       );
 
       const { status, message } = response.data;
-  
+
       if (status === "success") {
 
         ToastAndroid.show("Register Successfully", ToastAndroid.SHORT);

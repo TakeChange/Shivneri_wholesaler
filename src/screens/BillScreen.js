@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, Image, FlatList, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/Entypo';
@@ -7,11 +7,14 @@ import Inc from '../components/Inc';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToBill, removeFromBill, updateItemQuantity } from '../redux_toolkit/Bill_list/billSlice';
 import ProductModal from '../components/ProductModel';
+import RNPrint from 'react-native-print';
 
-const BillScreen = ({ navigation,route }) => {
+const BillScreen = ({ navigation, route }) => {
     const customer = useSelector(state => state.customer);
+    //console.log("customer data", customer)
     const dispatch = useDispatch();
     const billItems = useSelector(state => state.bill.items);
+    //console.log(billItems)
     const [search, setSearch] = useState('');
     const [data, setData] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
@@ -81,7 +84,7 @@ const BillScreen = ({ navigation,route }) => {
 
     const handleCloseProductModal = () => {
         setProductModalVisible1(false);
-        setSelectedItem(null); 
+        setSelectedItem(null);
     };
     const clearSearch = () => {
         setSearch('');
@@ -151,85 +154,272 @@ const BillScreen = ({ navigation,route }) => {
             </View>
         );
     };
+    ////////////////////////////////////////////
+    const downloadpdf = async () => {
+        if (billItems.length === 0) {
+            console.error('No items to send.');
+            return;
+        }
+
+        const billData = {
+            customer_id: customer.customerId || null,
+            product_name: billItems.map(item => item.product_name).join(", "),
+            price: billItems.map(item => item.perPrice).join(", "),
+            total: totalAmount ? totalAmount.toFixed(2) : null,
+            quantity: billItems.map(item => item.quantity).join(", "),
+            all_product_total: totalAmount ? totalAmount.toFixed(2) : null,
+            created_at: new Date().toISOString(),
+        };
+
+
+        console.log("Sent Data is:", billData);
+
+        try {
+            const response = await fetch('https://demo.raviscyber.in/public/bill_list.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(billData), // Change from `billItems` to `billData`
+            });
+
+            const result = await response.json();
+            console.log('Bill submitted successfully:', result);
+
+            if (response.ok) {
+                const rawResponse = await response.text();
+                console.log('Raw response:', rawResponse);
+
+                const result = await response.json();
+                console.log('Bill submitted successfully:', result);
+
+                if (result.status !== 'success') {
+                    console.error('Failed to submit bill:', result.message);
+                }
+            } else {
+                console.error('Response error:', response.status, response.statusText);
+            }
+        } catch (error) {
+            console.error('Error submitting bill:', error);
+        }
+    };
+
+
+    /////////////// This code is for pdf //////////////////
+
+    // const viewShotRef = useRef();
+    // const billDetails = [
+    //   {
+    //     id: 1,
+    //     product: 'monaco',
+    //     Quantity: 10,
+    //     unit: 'Box',
+    //     perprice: 10,
+    //     total: 100
+    //   },
+    //   {
+    //     id: 1,
+    //     product: 'monaco',
+    //     Quantity: 10,
+    //     unit: 'Box',
+    //     perprice: 10,
+    //     total: 100
+    //   },
+    //   {
+    //     id: 1,
+    //     product: 'monaco',
+    //     Quantity: 10,
+    //     unit: 'Box',
+    //     perprice: 10,
+    //     total: 100
+    //   },
+    //   {
+    //     id: 1,
+    //     product: 'monaco',
+    //     Quantity: 10,
+    //     unit: 'Box',
+    //     perprice: 10,
+    //     total: 100
+    //   }
+    // ];
+
+    // const requestStoragePermission = async () => {
+    //   if (Platform.OS === 'android') {
+    //     try {
+    //       const granted = await PermissionsAndroid.request(
+    //         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+    //         {
+    //           title: 'Storage Permission Required',
+    //           message: 'This app needs access to your storage to download the PDF file',
+    //           buttonNeutral: 'Ask Me Later',
+    //           buttonNegative: 'Cancel',
+    //           buttonPositive: 'OK',
+    //         }
+    //       );
+    //       return granted === PermissionsAndroid.RESULTS.GRANTED;
+    //     } catch (err) {
+    //       console.warn('Storage permission request error:', err);
+    //       return false;
+    //     }
+    //   }
+    //   return true;
+    // };
+
+    // const downloadpdf = async () => {
+    // const customerName = 'John Doe'; // Replace with actual name
+    // const paymentType = 'Credit Card'; // Replace with actual payment type
+    // const billDate = '2024-08-01'; // Replace with actual date
+
+    // const html = `
+    //   <html>
+    //     <head>
+    //       <style>
+    //         body { font-family: Arial, sans-serif; margin: 20px; }
+    //         .header { text-align: center; margin-bottom: 20px; margin-top:80px}
+    //         .details { margin-bottom: 20px; text-align: center;top:10 }
+    //         .details p { margin: 5px 0; }
+    //         .table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+    //         .table th, .table td { border: 1px solid #000; padding: 8px; }
+    //         .table th { background-color: #f0f0f0; }
+    //       </style>
+    //     </head>
+    //     <body>
+    //       <div class="header">
+    //         <h1>Shivneri Wholsellar</h1>
+    //       </div>
+    //       <div class="details">
+    //         <p><strong>Customer Name:</strong> ${customerName}</p>
+    //         <p><strong>Payment Type:</strong> ${paymentType}</p>
+    //         <p><strong>Date:</strong> ${billDate}</p>
+    //       </div>
+    //       <table class="table">
+    //         <tr>
+    //           <th>Sr.no</th>
+    //           <th>Product</th>
+    //           <th>Quantity</th>
+    //           <th>Unit</th>
+    //           <th>Per Unit Rate</th>
+    //           <th>Total</th>
+    //         </tr>
+    //           ${billDetails.map((item, index) => `
+    //           <tr style="text-align: center">
+    //             <td>${index + 1}</td>
+    //             <td>${item.product}</td>
+    //             <td>${item.Quantity}</td>
+    //             <td>${item.unit}</td>
+    //             <td>${item.perprice}</td>
+    //             <td>${item.total}</td>
+    //           </tr>
+    //         `).join('')}
+    //             <tr style="background-color: #f0f0f0;">
+    //               <td colspan="4" style="text-align: right; font-weight: bold;">Sub Total</td>
+    //               <td colspan="2" style="font-weight: bold;text-align: right">${billDetails.reduce((total, item) => total + item.total, 0)}</td> 
+    //             </tr>
+    //             <tr style="background-color: #f0f0f0;">
+    //               <td colspan="4" style="text-align: right; font-weight: bold;">SurCharge Amount</td>
+    //               <td colspan="2" style="font-weight: bold;text-align: right">${billDetails.reduce((total, item) => total + item.total, 0)}</td> 
+    //             </tr>
+    //             <tr style="background-color: #f0f0f0;">
+    //               <td colspan="4" style="text-align: right; font-weight: bold;">Total Amount</td>
+    //               <td colspan="2" style="font-weight: bold;text-align: right">${billDetails.reduce((total, item) => total + item.total, 0)}</td> 
+    //             </tr>
+    //       </table>
+    //     </body>
+    //   </html>
+    // `;
+
+    //         try {
+    //             await RNPrint.print({
+    //                 html,
+    //             });
+    //         } catch (error) {
+    //             console.error('Error printing directly: ', error);
+    //             Alert.alert('Error', 'Failed to print directly. Please check printer settings.');
+    //         }
+
+
+    // }
+    //////////////////////////////////////
+
 
     return (
-       
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
-                        <Icon name="arrow-back" size={25} color="black" />
-                    </TouchableOpacity>
 
-                    <Text style={styles.headerText}>Bill</Text>
-                    <TouchableOpacity onPress={() => setProductModalVisible(true)}>
-                        <Icon name="search" size={25} color="black" />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.custnameview}>
-                    <Text style={styles.custtext}>Customer name : {customer.customerName}</Text>
-                </View>
-                <View style={styles.penview}>
-                    <Text style={styles.pendingText}>Pending:000000</Text>
-                </View>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.navigate('CategoryScreen')}>
+                    <Icon name="arrow-back" size={25} color="black" />
+                </TouchableOpacity>
 
-                <FlatList
-                    key={Date.now()} 
-                    data={billItems}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => <Product item={item} index={index} />}
-                />
-                {billItems.length > 0 && (
-                    <>
-                        <View style={styles.totalContainer}>
-                            <Text style={styles.totalText}>Total : ₹{totalAmount}/-</Text>
-                        </View>
-                        <TouchableOpacity style={styles.btn}>
-                            <Text style={styles.text}>Order Now</Text>
-                        </TouchableOpacity>
-                    </>
-                )}
-                {/* first Modal */}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={productModalVisible}
-                    onRequestClose={() => setProductModalVisible(false)}
-                >
-                    <View style={styles.modalContainer}>
-                        <View style={styles.modalContent}>
-                            <View style={styles.search}>
-                                <TextInput
-                                    placeholder="Search Product Name"
-                                    placeholderTextColor={'#ccc'}
-                                    style={styles.searchInput}
-                                    onChangeText={handleSearch}
-                                    value={search}
-                                />
-                                {search.length > 0 && (
-                                    <TouchableOpacity onPress={clearSearch}>
-                                        <Icon name="close" size={25} color="black" style={styles.clearIcon} />
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                            <FlatList
-                                data={data.length > 0 ? data : products}
-                                renderItem={renderItem1}
-                                keyExtractor={(item, index) => index.toString()}
-                            />
-                        </View>
-                    </View>
-                </Modal>
-                {/* second modal */}
-                <ProductModal
-                    selectedItem={selectedItem}
-                    modalVisible={productModalVisible1}
-                    setModalVisible={handleCloseProductModal}
-                    dispatch={dispatch}
-                    clearSelectedItem={() => setSelectedItem(null)}
-                    //iconColors={iconColors}
-                />
+                <Text style={styles.headerText}>Bill</Text>
+                <TouchableOpacity onPress={() => setProductModalVisible(true)}>
+                    <Icon name="search" size={25} color="black" />
+                </TouchableOpacity>
             </View>
-        
+            <View style={styles.custnameview}>
+                <Text style={styles.custtext}>Customer name : {customer.customerName}</Text>
+            </View>
+            <View style={styles.penview}>
+                <Text style={styles.pendingText}>Pending:000000</Text>
+            </View>
+
+            <FlatList
+                key={Date.now()}
+                data={billItems}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => <Product item={item} index={index} />}
+            />
+            {billItems.length > 0 && (
+                <>
+                    <View style={styles.totalContainer}>
+                        <Text style={styles.totalText}>Total : ₹{totalAmount}/-</Text>
+                    </View>
+                    <TouchableOpacity style={styles.btn} onPress={downloadpdf}>
+                        <Text style={styles.text}>Order Now</Text>
+                    </TouchableOpacity>
+                </>
+            )}
+            {/* first Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={productModalVisible}
+                onRequestClose={() => setProductModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.search}>
+                            <TextInput
+                                placeholder="Search Product Name"
+                                placeholderTextColor={'#ccc'}
+                                style={styles.searchInput}
+                                onChangeText={handleSearch}
+                                value={search}
+                            />
+                            {search.length > 0 && (
+                                <TouchableOpacity onPress={clearSearch}>
+                                    <Icon name="close" size={25} color="black" style={styles.clearIcon} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <FlatList
+                            data={data.length > 0 ? data : products}
+                            renderItem={renderItem1}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                    </View>
+                </View>
+            </Modal>
+            {/* second modal */}
+            <ProductModal
+                selectedItem={selectedItem}
+                modalVisible={productModalVisible1}
+                setModalVisible={handleCloseProductModal}
+                dispatch={dispatch}
+                clearSelectedItem={() => setSelectedItem(null)}
+            //iconColors={iconColors}
+            />
+        </View>
+
     );
 };
 

@@ -6,6 +6,7 @@ const billSlice = createSlice({
   initialState: {
     items: [],
     iconColors: {},
+    selectedUnitType: null,
   },
   reducers: {
     addToBill: (state, action) => {
@@ -31,12 +32,15 @@ const billSlice = createSlice({
       state.items = state.items.filter(item => item.id !== id);
       state.iconColors[id] = '#23AA49';
     },
-
     setSelectedUnitType: (state, action) => {
       state.selectedUnitType = action.payload;
-  },
+    },
+    clearBill: (state) => { // Add this action
+      state.items = [];
+      state.iconColors = {};
+    },
   },
 });
 
-export const { addToBill, removeFromBill, updateItemQuantity, setSelectedUnitType } = billSlice.actions;
+export const { addToBill, removeFromBill, updateItemQuantity, setSelectedUnitType, clearBill } = billSlice.actions;
 export default billSlice.reducer;
