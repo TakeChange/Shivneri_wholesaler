@@ -20,8 +20,8 @@ import axios from 'axios';
 import AddIcon from '../components/AddIcon';
 import ProductModal from '../components/ProductModel';
 
-const CategoryScreen = ({ route,navigation }) => {
-   
+const CategoryScreen = ({ route, navigation }) => {
+
     const dispatch = useDispatch();
     const iconColors = useSelector(state => state.bill.iconColors);
 
@@ -37,7 +37,7 @@ const CategoryScreen = ({ route,navigation }) => {
     const [catModalVisible, setCatModalVisible] = useState(false);
     const [moreLoading, setMoreLoading] = useState(false);
     const [products, setProducts] = useState([]);
-
+    const billItems = useSelector(state => state.bill.items);
     useEffect(() => {
         setOldData(data);
         fetchData();
@@ -67,7 +67,7 @@ const CategoryScreen = ({ route,navigation }) => {
                 setProducts(response.data);
                 response.data.forEach(product => {
                     if (product.sell_price_cash_per_pack === null || product.sell_price_cash_per_box === null) {
-                        
+
                     }
                 });
                 setData(response.data);
@@ -113,6 +113,10 @@ const CategoryScreen = ({ route,navigation }) => {
         return (iconColors[itemId] || '#23AA49') === 'red';
     };
     const renderItem1 = ({ item }) => {
+        const billItem = billItems.find(billItem => billItem.id === item.id);
+        const quantity = billItem ? billItem.quantity : 0;
+        const unitPrice = item.unit_name ? item.sell_price_cash_per_pack : item.sell_price_cash_per_box;
+        const total = quantity * unitPrice;
 
         return (
             <View style={styles.listContainer}>
@@ -143,8 +147,8 @@ const CategoryScreen = ({ route,navigation }) => {
                     <Text style={styles.total}>{item.unit_name} Price : ₹ {item.sell_price_cash_per_pack}</Text>
                 ) : null}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={styles.total}>Qty : 0</Text>
-                    <Text style={styles.total}>Total : 0</Text>
+                <Text style={styles.total}>Qty : {quantity}</Text>
+                <Text style={styles.total}>Total : ₹ {total}</Text>
                 </View>
             </View>
         );
@@ -153,7 +157,7 @@ const CategoryScreen = ({ route,navigation }) => {
 
     const dispatchCategoryWise = (id) => {
         setCatModalVisible(false);
-       
+
         fetchProd(id);
     }
 
@@ -172,7 +176,7 @@ const CategoryScreen = ({ route,navigation }) => {
     const BillScreenNavigate = () => {
         navigation.navigate('BillScreen');
     }
-    
+
     return (
         <View style={{ flex: 1 }}>
             <View

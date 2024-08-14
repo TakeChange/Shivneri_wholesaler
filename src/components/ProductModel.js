@@ -51,7 +51,7 @@ const ProductModal = ({ selectedItem, modalVisible, setModalVisible }) => {
                     total,
                 };
                 dispatch(addToBill(newItem));
-
+                console.log(newItem);
                 setQuantity('');
                 setTotal('');
                 setSelectedUnitType(null);
