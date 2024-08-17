@@ -1,454 +1,127 @@
-// import { StyleSheet, TouchableOpacity, View, TextInput, Text, ScrollView, FlatList, Image } from 'react-native'
-// import React, { useState, useEffect } from 'react'
-// import Icon from 'react-native-vector-icons/Ionicons';
-// import { Dropdown } from 'react-native-element-dropdown';
-// import axios from 'axios';
-// import { ListItem } from 'react-native-elements';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { launchImageLibrary } from 'react-native-image-picker';
-// import { useFocusEffect } from '@react-navigation/native';
-
-// const EditProductScreen = () => {
-
-//     const [value, setValue] = useState(null);
-//     const [searchInput, setSearchInput] = useState('');
-//     const [sortedData, setSortedData] = useState([]);
-//     const [data, setData] = useState([]);
-//     const [selectedProductName, setSelectedProductName] = useState('');
-//     const [selectedProductNameMarathi, setSelectedProductNameMarathi] = useState('');
-//     const [selectedSellingRate, setSelectedSellingRate] = useState('');
-//     const [selectedPurchesRate, setSelectedPurchesRate] = useState('');
-//     const [selectedStack, setSelectedStack] = useState('');
-//     const [selectedProductType, setSelectedProductType] = useState('');
-//     const [selectedBoxPrice, setSelectedBoxPrice] = useState('');
-//     const [filePath, setFilePath] = useState();
-//     const [selectImage, setSelectedImage] = useState('')
-
-//     const Product_list = useSelector((state) => state.product.data);
-//     console.log('Product_list:', Product_list);
-
-//     const clearSearch = () => {
-//         setSearchInput("");
-//         setSelectedProductName("")
-//         setSelectedProductNameMarathi("")
-//         setSelectedSellingRate("")
-//         setSelectedPurchesRate("")
-//         setSelectedStack("")
-//         setSelectedProductType("")
-//         setSelectedBoxPrice("")
-//     };
-
-//     const chooseFile = (type) => {
-//         let options = {
-//             mediaType: type,
-//             maxWidth: 300,
-//             maxHeight: 550,
-//             quality: 1,
-//         };
-//         launchImageLibrary(options, (response) => {
-//             // console.log('Response1 = ', response);
-
-//             if (response.didCancel) {
-//                 //alert('User cancelled image picker');
-//                 return;
-//             } else {
-//                 const imageURI = response.assets[0].uri;
-//                 console.log(imageURI);
-//                 setFilePath(imageURI);
-//             }
-//         });
-//     };
-
-//     const renderItem = ({ item }) => (
-//         <TouchableOpacity onPress={() => handleItemClick(item)}>
-//             <ListItem>
-//                 <ListItem.Content>
-//                     <ListItem.Title>{item.product_name_eng}</ListItem.Title>
-//                 </ListItem.Content>
-//             </ListItem>
-//         </TouchableOpacity>
-//     );
-
-//     const handleItemClick = item => {
-//         if (item) {
-//             setSelectedProductName(item.product_name_eng ? item.product_name_eng.trim() : '');
-//             setSelectedProductNameMarathi(item.product_name ? item.product_name.trim() : '');
-//             setSelectedStack(item.quantity ? item.quantity.trim() : '');
-//             setSelectedImage(item.product_image ? item.product_image.trim() : '');
-//             setSelectedBoxPrice(item.sell_price_cash_per_box ? item.sell_price_cash_per_box.trim() : '');
-//             setSearchInput(item.product_name_eng ? item.product_name_eng.trim() : '');
-//             setData([]);
-
-//             //console.log("selected image",selectImage)
-//         }
-//     };
-
-
-//     const handleSearch = text => {
-//         setSearchInput(text);
-//         if (text.trim() === '') {
-//             setData([]);
-//         } else {
-//             const filtered = Product_list.filter(item =>
-//                 item.product_name_eng.toLowerCase().includes(text.toLowerCase())
-//             );
-//             setData(filtered);
-//         }
-//     };
-
-//     //////////////////////////Validation
-
-
-//     const [searchError, setSearchError] = useState();
-//     const [productNameError, setProductNameError] = useState();
-//     const [sellingRateError, setSellingRateError] = useState();
-//     const [purchaseRateError, setPurchaseRateError] = useState();
-//     const [stackError, setStackError] = useState();
-//     const [productTypeError, setProductTypeError] = useState();
-//     const [boxPriceError, setBoxPriceError] = useState();
-//     const [imageError, setImageError] = useState();
-//     const [dropdownError, setDropdownError] = useState();
-//     const Validation = () => {
-//         var isValid = true;
-//         if (searchInput == '') {
-//             setSearchError('Please search product');
-//             isValid = false;
-//         } else {
-//             setSearchError('');
-//         }
-//         if (selectedProductName == '') {
-//             setProductNameError('Enter product name');
-//             isValid = false;
-//         } else {
-//             setProductNameError('');
-//         }
-
-//         if (selectedSellingRate == '') {
-//             setSellingRateError('Enter Selling rate');
-//             isValid = false;
-//         } else {
-//             setSellingRateError('');
-//         }
-
-//         if (selectedPurchesRate == '') {
-//             setPurchaseRateError('Enter Purchase rate ');
-//             isValid = false;
-//         } else {
-//             setPurchaseRateError('');
-//         }
-
-//         if (selectedStack == '') {
-//             setStackError(' Enter Stock/Quantity');
-//             isValid = false;
-//         } else {
-//             setStackError('');
-//         }
-//         if (selectedProductType == '') {
-//             setDropdownError('Select a product type');
-//             isValid = false;
-//         } else {
-//             setDropdownError('');
-//         }
-//         if (selectedBoxPrice == '') {
-//             setBoxPriceError('Enter Box Price');
-//             isValid = false;
-//         } else {
-//             setBoxPriceError('');
-//         }
-//         if (!filePath) {
-//             setImageError('Please choose an image');
-//             isValid = false;
-//         } else {
-//             setImageError('');
-//         }
-//         if (isValid) {
-//             //handleLogin();
-//             console.log('success')
-//         }
-//     }
-//     //////////////////////////////////////////
-//     const resetErrors = () => {
-//         setSearchError('');
-//         setProductNameError('');
-//         setSellingRateError('');
-//         setPurchaseRateError('');
-//         setStackError('');
-//         setProductTypeError('');
-//         setBoxPriceError('');
-//         setImageError('');
-//         setDropdownError('');
-//     };
-
-//     useFocusEffect(
-//         React.useCallback(() => {
-//             return () => {
-//                 // Reset errors when navigating away from screen
-//                 resetErrors();
-//             };
-//         }, [])
-//     );
-
-
-
-
-//     return (
-//         <ScrollView style={styles.container}>
-//             <View style={styles.search}>
-//                 <Icon name="search" size={22} color="black" style={{ padding: 10 }} />
-//                 <View style={{ flex: 1 }}>
-//                     <TextInput
-//                         placeholder="Search Product Name"
-//                         placeholderTextColor={'black'}
-//                         style={{ paddingHorizontal: 10, color: 'black' }}
-//                         onChangeText={(text) => {
-//                             setSearchInput(text);
-//                             handleSearch(text);
-//                         }}
-//                         value={searchInput}
-//                     />
-
-//                 </View>
-//                 {searchInput.length > 0 && (
-//                     <TouchableOpacity onPress={clearSearch}>
-//                         <Icon name="close" size={25} color="black" style={{ marginHorizontal: 10 }} />
-//                     </TouchableOpacity>
-//                 )}
-//             </View>
-//             {searchInput.trim() !== '' && (
-//                 <FlatList
-//                     data={data}
-//                     renderItem={renderItem}
-//                     keyExtractor={(item, index) => index.toString()}
-//                 />
-//             )}
-//             <View>
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{searchError}</Text>
-//                 <Text style={styles.txt}>Product Name:</Text>
-//                 <TextInput
-//                     style={styles.textinput1}
-//                     value={selectedProductNameMarathi}
-//                     onChangeText={setSelectedProductNameMarathi}
-//                 />
-//                 <TextInput
-//                     style={styles.textinput1}
-//                     value={selectedProductName}
-//                     onChangeText={setSelectedProductName}
-//                 />
-
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{productNameError}</Text>
-
-//                 <Text style={styles.txt}>Selling Rate:</Text>
-//                 <TextInput
-//                     style={styles.textinput1}
-//                     value={selectedSellingRate}
-//                     onChangeText={setSelectedSellingRate}
-//                 />
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{sellingRateError}</Text>
-//                 <Text style={styles.txt}>Purchase Rate:</Text>
-//                 <TextInput
-//                     style={styles.textinput1}
-//                     value={selectedPurchesRate}
-//                     onChangeText={setSelectedPurchesRate}
-//                 />
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{purchaseRateError}</Text>
-//                 <Text style={styles.txt}>Stock / Quantity:</Text>
-//                 <TextInput
-//                     style={styles.textinput1}
-//                     value={selectedStack}
-//                     onChangeText={setSelectedStack}
-//                 />
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{stackError}</Text>
-//                 <View style={{ flexDirection: 'row' }}>
-//                     <Text style={styles.txt}>Product Type:</Text>
-//                     <Dropdown
-//                         style={styles.dropdown}
-//                         placeholderStyle={styles.placeholderStyle}
-//                         selectedTextStyle={styles.selectedTextStyle}
-//                         data={data}
-//                         maxHeight={100}
-//                         labelField="label"
-//                         valueField="value"
-//                         placeholder="Select item"
-//                         value={value}
-//                         onChange={item => {
-//                             setValue(item.unit_type);
-//                         }}
-//                     />
-//                 </View>
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{dropdownError}</Text>
-//                 <Text style={styles.txt}>Box Price:</Text>
-//                 <TextInput
-//                     style={styles.textinput1}
-//                     value={selectedBoxPrice}
-//                     onChangeText={setSelectedBoxPrice}
-//                 />
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{boxPriceError}</Text>
-//                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-//                     <Text style={styles.txt}>Upload Product Image :</Text>
-//                     <TouchableOpacity
-//                         activeOpacity={0.5}
-//                         style={styles.buttonStyle}
-//                         onPress={() => chooseFile('photo')}>
-//                         <Text style={styles.img}>Choose Image</Text>
-//                     </TouchableOpacity>
-//                 </View>
-//                 <Text></Text>
-//                 {selectImage == "" ? <Image
-//                     style={styles.imageStyle}
-//                     source={{
-//                         uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
-//                     }}
-
-//                 /> :
-//                     <Image
-//                         source={{ uri: selectImage }}
-//                         style={styles.imageStyle}
-//                     />}
-//                 <Text style={{ color: 'red', fontWeight: '600' }}>{imageError}</Text>
-//                 <TouchableOpacity style={styles.btn} onPress={Validation} _>
-//                     <Text style={styles.text}>Update Product</Text>
-//                 </TouchableOpacity>
-//             </View>
-//         </ScrollView>
-
-
-//     )
-// }
-
-// export default EditProductScreen
-
-// const styles = StyleSheet.create({
-//     container: {
-//         padding: 20
-//     },
-//     search: {
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         borderColor: 'grey',
-//         borderWidth: 1,
-//     },
-//     txt: {
-//         color: 'black',
-//         marginTop: '5%',
-//         fontSize: 15,
-//         fontWeight: 'bold'
-//     },
-//     textinput1: {
-//         borderColor: 'grey',
-//         borderWidth: 1,
-//         marginBottom: 10,
-//         padding: 5,
-//         color: 'black',
-//     },
-//     btn: {
-//         backgroundColor: '#23AA49',
-//         height: 55,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         borderRadius: 25,
-//         marginTop: '10%',
-//         marginBottom: '10%'
-//     },
-//     text: {
-//         fontSize: 15,
-//         fontWeight: 'bold',
-//         color: 'white',
-//     },
-//     dropdown: {
-//         width: '63%',
-//         borderWidth: 1,
-//         alignSelf: 'center',
-//         marginLeft: '2%',
-//         marginTop: '3%'
-//     },
-//     selectedTextStyle: {
-//         color: 'black',
-//         fontSize: 14,
-//     },
-//     placeholderStyle: {
-//         color: '#000',
-//         fontSize: 14,
-//     },
-//     buttonStyle: {
-//         backgroundColor: '#23AA49',
-//         padding: 8,
-//         width: '35%',
-//         borderRadius: 15,
-//         marginTop: '2%'
-//     },
-//     img: {
-//         fontWeight: '700',
-//         alignSelf: 'center',
-//         color: "#FFF"
-//     },
-//     imageStyle: {
-//         width: 200,
-//         height: 200,
-//         alignSelf: 'center'
-//     },
-
-// })
-
-
-
-import { StyleSheet, TouchableOpacity, View, TextInput, Text, ScrollView, FlatList, Image } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { StyleSheet, TouchableOpacity, View, TextInput, Text, ScrollView, FlatList, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import axios from 'axios';
 import { ListItem } from 'react-native-elements';
-import { useDispatch, useSelector } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { SelectList } from 'react-native-dropdown-select-list'
 const EditProductScreen = () => {
-
-    const [value, setValue] = useState(null);
-    const [searchInput, setSearchInput] = useState('');
-    const [sortedData, setSortedData] = useState([]);
-    const [data, setData] = useState([]);
+    const [productList, setProductList] = useState([]);
     const [selectedProductName, setSelectedProductName] = useState('');
     const [selectedProductNameMarathi, setSelectedProductNameMarathi] = useState('');
-    const [selectedSellingRate, setSelectedSellingRate] = useState('');
-    const [selectedPurchesRate, setSelectedPurchesRate] = useState('');
-    const [selectedStack, setSelectedStack] = useState('');
-    const [selectedProductType, setSelectedProductType] = useState('');
     const [selectedBoxPrice, setSelectedBoxPrice] = useState('');
-    const [filePath, setFilePath] = useState();
-    const [selectImage, setSelectedImage] = useState('')
-    const [unitOptions, setUnitOptions] = useState([]);
+    const [selectedunitPrice, setSelectedunitPrice] = useState('');
+    const [selectedImage, setSelectedImage] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const [data, setData] = useState([]);
+    const [dataBoxUnit, setDataBoxUnit] = useState([]);
+    const [dataUnit, setDataUnit] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedBoxUnit, setSelectedBoxUnit] = useState("");
+    const [selectedUnit, setSelectedUnit] = useState("");
+    const [data1, setData1] = React.useState([]);
+    const [quantity, setQuantity] = useState('');
 
-    const [ProductList, setProductList] = useState([]);
-    const [dropdownData, setDropdownData] = useState([]);
+
+    ///All error message
+    const [searchError, setSearchError] = useState('');
+    const [imageError, setImageError] = useState('');
+    const [marathinameerror, setMarathinameerror] = useState('');
+    const [englishnameerror, setEnglishnameerror] = useState('');
+    const [quantityerror, setQuantityerror] = useState('');
+    const [categoryerror, setCategoryerror] = useState('');
+    const [boxuniterror, setBoxUniterror] = useState('');
+    const [boxpriceerror, setBoxPriceError] = useState('');
+    const [uniterror, setUniterror] = useState('');
+    const [unitpriceerror, setUnitPriceError] = useState('');
+    const [dropdownData, setDropdownData] = useState([]); 
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://demo.raviscyber.in/public/category_wise_productList.php');
-                setProductList(response.data);
-                // Extract unique unit types for dropdown
-                const units = Array.from(new Set(response.data.map(item => ({
-                    label: item.unit_name || item.box_unit_name, // Assuming unit_name or box_unit_name is available
-                    value: item.unit_name || item.box_unit_name
-                }))));
-                setDropdownData(units);
-            } catch (error) {
-                console.error('Error fetching product list:', error);
-            }
-        };
         fetchData();
+        fetchBoxUnit();
+        fetchUnit();
+        fetchCategoryData();
     }, []);
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/category_wise_productList.php');
+            const responseData = response.data;
+            setProductList(responseData);
 
-    const clearSearch = () => {
-        setSearchInput("");
-        setSelectedProductName("")
-        setSelectedProductNameMarathi("")
-        setSelectedSellingRate("")
-        setSelectedPurchesRate("")
-        setSelectedStack("")
-        setSelectedProductType("")
-        setSelectedBoxPrice("")
+            // Extract unique unit types for dropdown
+            const units = Array.from(new Set(responseData.flatMap(item => {
+                return [item.unit_name, item.box_unit_name].filter(Boolean);
+            }))).map(unit => ({ label: unit, value: unit }));
+
+            setDropdownData(units);
+             console.log('Product List Data:', responseData); // Log product list data
+            // console.log('Units for Dropdown:', units); // Log units for dropdown
+        } catch (error) {
+            console.error('Error fetching product list:', error);
+        }
     };
+
+    const fetchCategoryData = async () => {
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/categorylist.php');
+            const responseJson = response.data;
+
+            if (responseJson.status === 'success') {
+                if (Array.isArray(responseJson.data)) {
+                    let newArray = responseJson.data.map((item) => ({
+                        key: item.id,
+                        value: item.category_name
+                    }));
+                    setData1(newArray);
+
+                    //console.log('Category List Data:', newArray); // Log category list data
+                } else {
+                    console.error('Error: Response data is not an array');
+                }
+            } else {
+                console.error('Error: Response status is not success');
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const fetchBoxUnit = async () => {
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/box_unitList.php');
+            const responseJson = response.data;
+
+            let newArray = responseJson.data.map((item, index) => ({
+                key: index,
+                value: item
+            }));
+
+            setDataBoxUnit(newArray);
+            ///console.log('Box Unit List Data:', newArray); // Log box unit list data
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const fetchUnit = async () => {
+        try {
+            const response = await axios.get('https://demo.raviscyber.in/public/product_unitList.php');
+            const responseJson = response.data;
+
+            let newArray = responseJson.data.map((item, index) => ({
+                key: index,
+                value: item
+            }));
+
+            setDataUnit(newArray);
+            //console.log('Product Unit List Data:', newArray); // Log product unit list data
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
 
     const chooseFile = (type) => {
         let options = {
@@ -458,15 +131,11 @@ const EditProductScreen = () => {
             quality: 1,
         };
         launchImageLibrary(options, (response) => {
-            // console.log('Response1 = ', response);
-
             if (response.didCancel) {
-                //alert('User cancelled image picker');
                 return;
             } else {
                 const imageURI = response.assets[0].uri;
-                console.log(imageURI);
-                setFilePath(imageURI);
+                setSelectedImage(imageURI);
             }
         });
     };
@@ -483,113 +152,147 @@ const EditProductScreen = () => {
 
     const handleItemClick = item => {
         if (item) {
+            // Update state with selected item details
             setSelectedProductName(item.product_name_eng ? item.product_name_eng.trim() : '');
             setSelectedProductNameMarathi(item.product_name ? item.product_name.trim() : '');
-            setSelectedStack(item.quantity ? item.quantity.trim() : '');
-            setSelectedImage(item.product_image ? item.product_image.trim() : '');
             setSelectedBoxPrice(item.sell_price_cash_per_box ? item.sell_price_cash_per_box.trim() : '');
+            setSelectedunitPrice(item.sell_price_cash_per_pack ? item.sell_price_cash_per_pack.trim() : '');
+            setSelectedImage(item.product_image ? item.product_image.trim() : '');
             setSearchInput(item.product_name_eng ? item.product_name_eng.trim() : '');
-            setSelectedProductType(item.unit_name || item.box_unit_name || '');
-            setData([]);
+            setQuantity(item.min_qty ? item.min_qty.trim() : '');
 
-            //console.log("selected image",selectImage)
+            // Set the product type based on the selected item
+            const unitOptions = [];
+            if (item.unit_name) {
+                unitOptions.push({
+                    label: item.unit_name,
+                    value: item.unit_name
+                });
+            }
+            if (item.box_unit_name) {
+                unitOptions.push({
+                    label: item.box_unit_name,
+                    value: item.box_unit_name
+                });
+            }
+            // setDropdownData(unitOptions);
+
+
+
+            // Log selected product details to console
+            console.log('Selected Product Name (English):', item.product_name_eng);
+            console.log('Selected Product Name (Marathi):', item.product_name);
+            console.log('Selected Box Price:', item.sell_price_cash_per_box);
+            console.log('Selected Product Image URL:', item.product_image);
+            console.log('Selected Product Box Unit Name:', item.box_unit_name);
+            console.log('Selected Category ID:', item.product_cateory_id);
+            console.log('Selected box_unit_name:', item.box_unit_name);
+            console.log('Selected Unit Name:', item.unit_name);
+            console.log("quantity", item.min_qty)
+
+            // Find the category name
+            const category = data1.find(cat => cat.key === item.product_cateory_id);
+            const categoryName = category ? category.value : 'Unknown Category';
+            console.log('Selected Category Name:', categoryName);
+            setSelectedCategory(categoryName);
+
+
+            // box unit
+            const selectedBoxUnit = dataBoxUnit.find(box => box.value === item.box_unit_name);
+            setSelectedBoxUnit(selectedBoxUnit ? selectedBoxUnit.value : '');
+            console.log(selectedBoxUnit)
+            console.log('Selected Box Price:', item.sell_price_cash_per_box);
+
+            //sub unit
+            const selectedUnit = dataUnit.find(unit => unit.value === item.unit_name);
+            setSelectedUnit(selectedUnit ? selectedUnit.value : '');
+            console.log(selectedUnit)
+            console.log('Selected unit Price:', item.sell_price_cash_per_pack);
+
+            setData([]);
         }
     };
 
-
+    const clearSearch = () => {
+        setSearchInput('');
+        setData([]);
+        setSelectedProductName('');
+        setSelectedProductNameMarathi('');
+        setSelectedBoxPrice('');
+        setSelectedunitPrice('');
+        setSelectedImage('');
+        setQuantity('');
+        setSelectedCategory('');
+        setSelectedBoxUnit('');
+        setSelectedUnit('');
+    };
+    
     const handleSearch = text => {
         setSearchInput(text);
         if (text.trim() === '') {
-            setData([]);
+             clearSearch();
         } else {
-            const filtered = ProductList.filter(item =>
+            const filtered = productList.filter(item =>
                 item.product_name_eng.toLowerCase().includes(text.toLowerCase())
             );
             setData(filtered);
         }
     };
 
-    //////////////////////////Validation
-
-
-    const [searchError, setSearchError] = useState();
-    const [productNameError, setProductNameError] = useState();
-    const [sellingRateError, setSellingRateError] = useState();
-    const [purchaseRateError, setPurchaseRateError] = useState();
-    const [stackError, setStackError] = useState();
-    const [productTypeError, setProductTypeError] = useState();
-    const [boxPriceError, setBoxPriceError] = useState();
-    const [imageError, setImageError] = useState();
-    const [dropdownError, setDropdownError] = useState();
     const Validation = () => {
-        var isValid = true;
-        if (searchInput == '') {
-            setSearchError('Please search product');
-            isValid = false;
-        } else {
-            setSearchError('');
-        }
-        if (selectedProductName == '') {
-            setProductNameError('Enter product name');
-            isValid = false;
-        } else {
-            setProductNameError('');
-        }
-
-        if (selectedSellingRate == '') {
-            setSellingRateError('Enter Selling rate');
-            isValid = false;
-        } else {
-            setSellingRateError('');
-        }
-
-        if (selectedPurchesRate == '') {
-            setPurchaseRateError('Enter Purchase rate ');
-            isValid = false;
-        } else {
-            setPurchaseRateError('');
-        }
-
-        if (selectedStack == '') {
-            setStackError(' Enter Stock/Quantity');
-            isValid = false;
-        } else {
-            setStackError('');
-        }
-        if (selectedProductType == '') {
-            setDropdownError('Select a product type');
-            isValid = false;
-        } else {
-            setDropdownError('');
-        }
-        if (selectedBoxPrice == '') {
-            setBoxPriceError('Enter Box Price');
-            isValid = false;
-        } else {
-            setBoxPriceError('');
-        }
-        if (!filePath) {
-            setImageError('Please choose an image');
-            isValid = false;
-        } else {
-            setImageError('');
-        }
-        if (isValid) {
-            //handleLogin();
-            console.log('success')
-        }
-    }
-    //////////////////////////////////////////
-    const resetErrors = () => {
+        let isValid = true;
         setSearchError('');
-        setProductNameError('');
-        setSellingRateError('');
-        setPurchaseRateError('');
-        setStackError('');
-        setProductTypeError('');
         setBoxPriceError('');
         setImageError('');
-        setDropdownError('');
+        setMarathinameerror('');
+        setEnglishnameerror('');
+        setQuantityerror('');
+        setCategoryerror('');
+        setBoxUniterror('');
+        setUniterror('');
+        setUnitPriceError('');
+
+
+        if (selectedProductNameMarathi.trim() === "") {
+            setMarathinameerror("Product name in Marathi is required");
+            isValid = false;
+        }
+        if (selectedProductName.trim() === "") {
+            setEnglishnameerror("Product name in English is required");
+            isValid = false;
+        }
+        if (quantity.trim() === "") {
+            setQuantityerror("Quantity is required");
+            isValid = false;
+        }
+        if (selectedCategory === "") {
+            setCategoryerror("Category is required");
+            isValid = false;
+        }
+        if (selectedBoxUnit === "") {
+            setBoxUniterror("Box Unit is required");
+            isValid = false;
+        }
+        if (selectedBoxPrice.trim() === "") {
+            setBoxPriceError("Box Price is required");
+            isValid = false;
+        }
+        if (selectedUnit === "") {
+            setUniterror("Unit is required");
+            isValid = false;
+        }
+        if (selectedunitPrice.trim() === "") {
+            setUnitPriceError("Unit Price is required");
+            isValid = false;
+        }
+
+        return isValid;
+    };
+
+    const resetErrors = () => {
+        setSearchError('');
+        setBoxPriceError('');
+        setImageError('');
     };
 
     useFocusEffect(
@@ -601,6 +304,52 @@ const EditProductScreen = () => {
         }, [])
     );
 
+
+
+    const handleSubmit = async () => {
+        // Validate inputs before sending
+        const isValid = Validation();
+    
+        if (!isValid) {
+            return;
+        }
+    
+        // Prepare data for the API request
+        const postData = {
+            product_name_eng: selectedProductName.trim(),
+            product_name_marathi: selectedProductNameMarathi.trim(),
+            sell_price_cash_per_box: selectedBoxPrice.trim(),
+            sell_price_cash_per_pack: selectedunitPrice.trim(),
+            category_id: selectedCategory,  // Ensure you are sending the correct category ID
+            box_unit_name: selectedBoxUnit,
+            unit_name: selectedUnit,
+            min_qty: quantity.trim(),
+            product_image: selectedImage // Include the image if required by the API
+        };
+    
+        // Log the data to the console before sending it
+        console.log('Data to be sent:', postData);
+    
+        try {
+            // Make the POST request
+            const response = await axios.post('https://demo.raviscyber.in/public/product_wise_categoryList.php', postData);
+    
+            // Handle successful response
+            if (response.data.status === 'success') {
+                console.log('Data posted successfully:', response.data);
+                // Clear inputs or navigate to another screen, etc.
+            } else {
+                console.error('Error posting data:', response.data.message);
+                setErrorMessage(response.data.message || 'Failed to post data');
+            }
+        } catch (error) {
+            console.error('Error posting data:', error);
+            setErrorMessage('Failed to post data');
+        }
+    };
+    
+
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.search}>
@@ -611,12 +360,10 @@ const EditProductScreen = () => {
                         placeholderTextColor={'black'}
                         style={{ paddingHorizontal: 10, color: 'black' }}
                         onChangeText={(text) => {
-                            setSearchInput(text);
                             handleSearch(text);
                         }}
                         value={searchInput}
                     />
-
                 </View>
                 {searchInput.length > 0 && (
                     <TouchableOpacity onPress={clearSearch}>
@@ -633,66 +380,91 @@ const EditProductScreen = () => {
             )}
             <View>
                 <Text style={{ color: 'red', fontWeight: '600' }}>{searchError}</Text>
-                <Text style={styles.txt}>Product Name:</Text>
+
+                {/* Marathi name */}
+                <Text style={styles.txt}>उत्पादनाचे मराठी नाव :</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedProductNameMarathi}
                     onChangeText={setSelectedProductNameMarathi}
                 />
+                {marathinameerror ? <Text style={styles.error}>{marathinameerror}</Text> : null}
+
+                {/* English name */}
+                <Text style={styles.txt}>Product Name in English:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedProductName}
                     onChangeText={setSelectedProductName}
                 />
+                {englishnameerror ? <Text style={styles.error}>{englishnameerror}</Text> : null}
 
-                <Text style={{ color: 'red', fontWeight: '600' }}>{productNameError}</Text>
+                {/* quantity */}
+                <Text style={styles.txt}>Min quantity</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    placeholder='Min quantity'
+                    placeholderTextColor={'black'}
+                    value={quantity}
+                    onChangeText={(text) => setQuantity(text)}
+                />
+                {quantityerror ? <Text style={styles.error}>{quantityerror}</Text> : null}
 
-                <Text style={styles.txt}>Selling Rate:</Text>
-                <TextInput
-                    style={styles.textinput1}
-                    value={selectedSellingRate}
-                    onChangeText={setSelectedSellingRate}
+                {/* Category */}
+                <Text style={styles.txt}>Category :</Text>
+                <SelectList
+                    setSelected={setSelectedCategory}
+                    data={data1}
+                    placeholder={selectedCategory|| 'Select Box Unit'}
+                    value={selectedCategory}
                 />
-                <Text style={{ color: 'red', fontWeight: '600' }}>{sellingRateError}</Text>
-                <Text style={styles.txt}>Purchase Rate:</Text>
-                <TextInput
-                    style={styles.textinput1}
-                    value={selectedPurchesRate}
-                    onChangeText={setSelectedPurchesRate}
+                {categoryerror ? <Text style={styles.error}>{categoryerror}</Text> : null}
+
+                {/* Box Unit */}
+                <Text style={styles.txt}>Box Unit</Text>
+                <SelectList
+                    electList
+                    setSelected={setSelectedBoxUnit}
+                    data={dataBoxUnit}
+                    value={selectedBoxUnit}
+                    placeholder={selectedBoxUnit || 'Select Box Unit'}
                 />
-                <Text style={{ color: 'red', fontWeight: '600' }}>{purchaseRateError}</Text>
-                <Text style={styles.txt}>Stock / Quantity:</Text>
-                <TextInput
-                    style={styles.textinput1}
-                    value={selectedStack}
-                    onChangeText={setSelectedStack}
-                />
-                <Text style={{ color: 'red', fontWeight: '600' }}>{stackError}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.txt}>Product Type:</Text>
-                    <Dropdown
-                        style={styles.dropdown}
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        data={dropdownData}
-                        maxHeight={100}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Select product type"
-                        value={selectedProductType}
-                        onChange={item => {
-                            setSelectedProductType(item.value); // Update selected product type
-                        }}
-                    />
-                </View>
-                <Text style={{ color: 'red', fontWeight: '600' }}>{dropdownError}</Text>
-                <Text style={styles.txt}>Box Price:</Text>
+                {boxuniterror ? <Text style={styles.error}>{boxuniterror}</Text> : null}
+
+                {/* sell Price of box */}
+                <Text style={styles.txt}>Sell Price of box:</Text>
                 <TextInput
                     style={styles.textinput1}
                     value={selectedBoxPrice}
                     onChangeText={setSelectedBoxPrice}
                 />
-                <Text style={{ color: 'red', fontWeight: '600' }}>{boxPriceError}</Text>
+                {boxpriceerror ? <Text style={styles.error}>{boxpriceerror}</Text> : null}
+
+
+                {/* sub unit */}
+                <Text style={styles.txt}>Unit</Text>
+                <SelectList
+                    setSelected={setSelectedUnit}
+                    data={dataUnit}
+                    value={selectedUnit || 'Select Box Unit'}
+                    placeholder={selectedUnit}
+                />
+                {uniterror ? <Text style={styles.error}>{uniterror}</Text> : null}
+
+
+
+                {/* unit price */}
+                <Text style={styles.txt}>Sell Price of unit:</Text>
+                <TextInput
+                    style={styles.textinput1}
+                    placeholder="Enter selected unit price"
+                    onChangeText={setSelectedunitPrice}
+                    placeholderTextColor={"black"}
+                    value={selectedunitPrice}
+                />
+                {unitpriceerror ? <Text style={styles.error}>{unitpriceerror}</Text> : null}
+
+                {/* Image */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.txt}>Upload Product Image :</Text>
                     <TouchableOpacity
@@ -703,29 +475,29 @@ const EditProductScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <Text></Text>
-                {selectImage == "" ? <Image
-                    style={styles.imageStyle}
-                    source={{
-                        uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
-                    }}
-
-                /> :
+                {selectedImage === "" ? (
                     <Image
-                        source={{ uri: selectImage }}
                         style={styles.imageStyle}
-                    />}
+                        source={{
+                            uri: 'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg',
+                        }}
+                    />
+                ) : (
+                    <Image
+                        source={{ uri: selectedImage }}
+                        style={styles.imageStyle}
+                    />
+                )}
                 <Text style={{ color: 'red', fontWeight: '600' }}>{imageError}</Text>
-                <TouchableOpacity style={styles.btn} onPress={Validation} _>
+                <TouchableOpacity style={styles.btn} onPress={handleSubmit}>
                     <Text style={styles.text}>Update Product</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
+    );
+};
 
-
-    )
-}
-
-export default EditProductScreen
+export default EditProductScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -749,6 +521,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         padding: 5,
         color: 'black',
+        borderRadius: 5
     },
     btn: {
         backgroundColor: '#23AA49',
@@ -765,11 +538,12 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     dropdown: {
-        width: '63%',
+        width: '60%',
+        height: 35,
         borderWidth: 1,
         alignSelf: 'center',
         marginLeft: '2%',
-        marginTop: '3%'
+        marginTop: '5%'
     },
     selectedTextStyle: {
         color: 'black',
@@ -795,6 +569,11 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         alignSelf: 'center'
+    },
+    error: {
+        color: 'red',
+        fontSize: 12,
+        marginBottom: 10,
     },
 
 })

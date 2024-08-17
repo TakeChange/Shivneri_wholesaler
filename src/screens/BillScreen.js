@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     imageWrapper: {
-        width: '40%',
+        width: '55%',
         height: 138,
         backgroundColor: 'red',
     },
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     detailsContainer: {
-        width: '60%',
+        width: '50%',
         padding: 5,
 
     },
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderColor: '#23AA49',
         borderWidth: 1.5,
-        width: '60%',
+        width: '85%',
         justifyContent: 'space-between',
         borderRadius: 60 / 2,
         height: '34%',
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         backgroundColor: '#23AA49',
-        width: '40%',
+        width: '50%',
         height: 55,
         justifyContent: 'center',
         alignItems: 'center',
