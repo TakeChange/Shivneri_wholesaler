@@ -9,7 +9,7 @@ import { addToBill, removeFromBill, updateItemQuantity } from '../redux_toolkit/
 import ProductModal from '../components/ProductModel';
 import RNPrint from 'react-native-print';
 import RNFS from 'react-native-fs';
-
+import ConfirmationModal from '../components/ConfirmationModel';
 const BillScreen = ({ navigation, route }) => {
     const customer = useSelector(state => state.customer);
     //console.log("customer data", customer)
@@ -23,6 +23,7 @@ const BillScreen = ({ navigation, route }) => {
     const [productModalVisible1, setProductModalVisible1] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [products, setProducts] = useState([]);
+    const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
 
     useEffect(() => {
         calculateTotal();
@@ -316,6 +317,19 @@ const BillScreen = ({ navigation, route }) => {
     //////////////////////////////////////
 
 
+      const handleOrderNow = () => {
+        setConfirmationModalVisible(true);
+    };
+
+    const handleConfirm = async () => {
+        setConfirmationModalVisible(false);
+        await print();
+    };
+
+    const handleCancel = () => {
+        setConfirmationModalVisible(false);
+    };
+
     return (
 
         <View style={styles.container}>
@@ -351,7 +365,7 @@ const BillScreen = ({ navigation, route }) => {
                     <View style={styles.totalContainer}>
                         <Text style={styles.totalText}>Total : ₹{totalAmount}/-</Text>
                     </View>
-                    <TouchableOpacity style={styles.btn} onPress={print}>
+                    <TouchableOpacity style={styles.btn} onPress={handleOrderNow}>
                         <Text style={styles.text}>Order Now</Text>
                     </TouchableOpacity>
                 </View>
@@ -395,6 +409,15 @@ const BillScreen = ({ navigation, route }) => {
                 dispatch={dispatch}
                 clearSelectedItem={() => setSelectedItem(null)}
             //iconColors={iconColors}
+            />
+
+            
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+                visible={confirmationModalVisible}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                message="Are you sure you want to print this bill?"
             />
         </View>
 
