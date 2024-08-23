@@ -46,16 +46,16 @@ const CategoryScreen = ({ route, navigation }) => {
     }, []);
 
 
-    // Back handler setup
+    // Back handler 
     useEffect(() => {
         const backAction = () => {
-            // Check if the current screen is CategoryScreen
+           
             const currentRouteName = navigation.getState().routes[navigation.getState().index].name;
             if (currentRouteName !== 'CategoryScreen') {
-                return false; // Allow normal back action on other screens
+                return false; 
             }
             if (billItems.length === 0) {
-                // Show dialog for exit confirmation
+                
                 Alert.alert(
                     'Exit Confirmation',
                     'Do you want to exit?',
@@ -94,7 +94,7 @@ const CategoryScreen = ({ route, navigation }) => {
                     { cancelable: false }
                 );
             }
-            return true; // Prevent the default back action
+            return true; 
         };
 
         const backHandler = BackHandler.addEventListener(
@@ -103,10 +103,11 @@ const CategoryScreen = ({ route, navigation }) => {
         );
 
         return () => {
-            backHandler.remove(); // Cleanup on unmount
+            backHandler.remove(); 
         };
     }, [billItems, navigation, dispatch]);
-
+    
+////////////////////////////////////////////////////////
 
 
     const fetchData = async () => {
