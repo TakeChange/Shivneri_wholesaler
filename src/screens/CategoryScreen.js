@@ -9,21 +9,22 @@ import {
     Modal,
     StyleSheet,
     ImageBackground,
-    ActivityIndicator
+    ActivityIndicator,
+    BackHandler,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import AddIcon from '../components/AddIcon';
 import ProductModal from '../components/ProductModel';
+import { clearBill } from '../redux_toolkit/Bill_list/billSlice';
 
 const CategoryScreen = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
     const iconColors = useSelector(state => state.bill.iconColors);
+    const billItems = useSelector(state => state.bill.items);
 
     const [visible, setVisible] = useState(false);
     const [data, setData] = useState([]);
@@ -37,12 +38,76 @@ const CategoryScreen = ({ route, navigation }) => {
     const [catModalVisible, setCatModalVisible] = useState(false);
     const [moreLoading, setMoreLoading] = useState(false);
     const [products, setProducts] = useState([]);
-    const billItems = useSelector(state => state.bill.items);
+
     useEffect(() => {
         setOldData(data);
         fetchData();
         fetchProd(0);
     }, []);
+
+
+    // Back handler setup
+    useEffect(() => {
+        const backAction = () => {
+            // Check if the current screen is CategoryScreen
+            const currentRouteName = navigation.getState().routes[navigation.getState().index].name;
+            if (currentRouteName !== 'CategoryScreen') {
+                return false; // Allow normal back action on other screens
+            }
+            if (billItems.length === 0) {
+                // Show dialog for exit confirmation
+                Alert.alert(
+                    'Exit Confirmation',
+                    'Do you want to exit?',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => null,
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Yes',
+                            onPress: () => navigation.goBack(),
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            } else {
+                // Show dialog for discard bill confirmation
+                Alert.alert(
+                    'Discard Bill',
+                    'Do you want to discard the bill and exit?',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => null,
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'Yes',
+                            onPress: () => {
+                                dispatch(clearBill()); //remove data
+                                navigation.goBack();
+                            },
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            }
+            return true; // Prevent the default back action
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            backAction
+        );
+
+        return () => {
+            backHandler.remove(); // Cleanup on unmount
+        };
+    }, [billItems, navigation, dispatch]);
+
+
 
     const fetchData = async () => {
         try {
@@ -100,10 +165,10 @@ const CategoryScreen = ({ route, navigation }) => {
     }
     const searchFilterFunction = text => {
         if (text !== '') {
-            let tempData = products.filter(item => {
-                return item.product_name_eng.toLowerCase().indexOf(text.toLowerCase()) > -1;
-            });
-            setProducts(tempData);
+            const filteredData = oldData.filter(item =>
+                item.product_name_eng.toLowerCase().includes(text.toLowerCase())
+            );
+            setProducts(filteredData);
         } else {
             setProducts(oldData);
         }
@@ -112,11 +177,20 @@ const CategoryScreen = ({ route, navigation }) => {
     const isIconColorRed = (itemId) => {
         return (iconColors[itemId] || '#23AA49') === 'red';
     };
+
+
+
+
     const renderItem1 = ({ item }) => {
         const billItem = billItems.find(billItem => billItem.id === item.id);
-        const quantity = billItem ? billItem.quantity : 0;
-        const unitPrice = item.unit_name ? item.sell_price_cash_per_pack : item.sell_price_cash_per_box;
-        const total = quantity * unitPrice;
+        const quantity = billItem ? parseInt(billItem.quantity, 10) : 0;
+
+        // Determine unit price based on the unit type
+        const unitPrice = item.unit_name ? parseFloat(item.sell_price_cash_per_pack) : parseFloat(item.sell_price_cash_per_box);
+
+        // Calculate total price using quantity and unit price
+        const total = billItem ? parseFloat(billItem.total) : (quantity * (isNaN(unitPrice) ? 0 : unitPrice));
+
 
         return (
             <View style={styles.listContainer}>
@@ -147,12 +221,24 @@ const CategoryScreen = ({ route, navigation }) => {
                     <Text style={styles.total}>{item.unit_name} Price : ₹ {item.sell_price_cash_per_pack}</Text>
                 ) : null}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={styles.total}>Qty : {quantity}</Text>
-                <Text style={styles.total}>Total : ₹ {total}</Text>
+                    <Text style={styles.total}>Qty : {quantity}</Text>
+                    <Text style={styles.total}>Total : ₹ {total}</Text>
                 </View>
             </View>
         );
     };
+
+    const calculateGrandTotal = () => {
+        let grandTotal = 0;
+
+        billItems.forEach(billItem => {
+            const total = parseFloat(billItem.total);
+            grandTotal += isNaN(total) ? 0 : total;
+        });
+
+        return grandTotal.toFixed(2);
+    };
+
 
 
     const dispatchCategoryWise = (id) => {
@@ -289,9 +375,12 @@ const CategoryScreen = ({ route, navigation }) => {
                     </View>
                 </View>
             </Modal>
-            <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
-                <AntDesign name="arrowright" size={25} color="white" />
-            </TouchableOpacity>
+            <View style={styles.bottomBar}>
+                <Text style={styles.totalPrice}>Total Price: ₹ {calculateGrandTotal()} /-</Text>
+                <TouchableOpacity style={styles.addButton} onPress={BillScreenNavigate}>
+                    <AntDesign name="arrowright" size={24} color="black" />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -503,9 +592,27 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 10,
     },
+    bottomBar: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: 'white',
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderTopWidth: 0.5,
+        borderTopColor: '#ddd',
+    },
+    totalPrice: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black'
+    },
     addButton: {
         position: 'absolute',
-        bottom: 20,
+        // bottom: 20,
         right: 20,
         backgroundColor: '#23AA29',
         padding: 15,
