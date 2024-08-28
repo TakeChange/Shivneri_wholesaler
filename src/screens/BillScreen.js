@@ -8,8 +8,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addToBill, removeFromBill, updateItemQuantity } from '../redux_toolkit/Bill_list/billSlice';
 import ProductModal from '../components/ProductModel';
 import RNPrint from 'react-native-print';
-import RNFS from 'react-native-fs';
 import ConfirmationModal from '../components/ConfirmationModel';
+
 const BillScreen = ({ navigation, route }) => {
     const customer = useSelector(state => state.customer);
     //console.log("customer data", customer)
@@ -24,10 +24,38 @@ const BillScreen = ({ navigation, route }) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [products, setProducts] = useState([]);
     const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
+    const [billItem, setBillItem] = useState(null);
 
     useEffect(() => {
         calculateTotal();
+        console.log('billItems :', billItems);
+
     }, [billItems]);
+
+    useEffect(() => {
+        calculateTotal();
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString();
+        const formattedTime = currentDate.toLocaleTimeString();
+
+        const updatedBillItems = billItems.map(item => ({
+            ...item,
+            totalAmount: totalAmount,
+        }));
+
+        const newBillItem = {
+            customerName: customer.customerName,
+            date: formattedDate,
+            time: formattedTime,
+            totalAmount: totalAmount,
+            billItems: updatedBillItems,
+        };
+
+        setBillItem(newBillItem);
+
+        console.log('New billItem object:', newBillItem);
+    }, [billItems, customer,totalAmount]);
 
     useEffect(() => {
         if (!productModalVisible) {
@@ -46,7 +74,6 @@ const BillScreen = ({ navigation, route }) => {
                 console.error('Error fetching products:', error);
             }
         };
-
         fetchProducts();
     }, []);
 
@@ -88,6 +115,7 @@ const BillScreen = ({ navigation, route }) => {
         setProductModalVisible1(false);
         setSelectedItem(null);
     };
+
     const clearSearch = () => {
         setSearch('');
         setData([]);
@@ -163,58 +191,6 @@ const BillScreen = ({ navigation, route }) => {
             </View>
         );
     };
-    ////////////////////////////////////////////
-    // const downloadpdf = async () => {
-    //     if (billItems.length === 0) {
-    //         console.error('No items to send.');
-    //         return;
-    //     }
-
-    //     const billData = {
-    //         customer_id: customer.customerId || null,
-    //         product_name: billItems.map(item => item.product_name).join(", "),
-    //         price: billItems.map(item => item.perPrice).join(", "),
-    //         total: totalAmount ? totalAmount.toFixed(2) : null,
-    //         quantity: billItems.map(item => item.quantity).join(", "),
-    //         all_product_total: totalAmount ? totalAmount.toFixed(2) : null,
-    //         created_at: new Date().toISOString(),
-    //     };
-
-
-    //     console.log("Sent Data is:", billData);
-
-    //     try {
-    //         const response = await fetch('https://demo.raviscyber.in/public/bill_list.php', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(billData), // Change from `billItems` to `billData`
-    //         });
-
-    //         const result = await response.json();
-    //         console.log('Bill submitted successfully:', result);
-
-    //         if (response.ok) {
-    //             const rawResponse = await response.text();
-    //             console.log('Raw response:', rawResponse);
-
-    //             const result = await response.json();
-    //             console.log('Bill submitted successfully:', result);
-
-    //             if (result.status !== 'success') {
-    //                 console.error('Failed to submit bill:', result.message);
-    //             }
-    //         } else {
-    //             console.error('Response error:', response.status, response.statusText);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error submitting bill:', error);
-    //     }
-    // };
-
-
-    /////////////// This code is for pdf //////////////////
 
     const viewShotRef = useRef();
     const billDetails = billItems.map(item => ({
@@ -313,11 +289,7 @@ const BillScreen = ({ navigation, route }) => {
         }
     }
 
-
-    //////////////////////////////////////
-
-
-      const handleOrderNow = () => {
+    const handleOrderNow = () => {
         setConfirmationModalVisible(true);
     };
 
@@ -411,7 +383,7 @@ const BillScreen = ({ navigation, route }) => {
             //iconColors={iconColors}
             />
 
-            
+
             {/* Confirmation Modal */}
             <ConfirmationModal
                 visible={confirmationModalVisible}
