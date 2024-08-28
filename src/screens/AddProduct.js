@@ -446,7 +446,7 @@
 
 
 
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, ToastAndroid } from 'react-native'
+import { Alert, StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
@@ -521,7 +521,7 @@ const AddProduct = () => {
             const responseJson = response.data;
 
             let newArray = responseJson.data.map((item, index) => ({
-                key: index,
+                key: index.toString(),
                 value: item
             }));
 
@@ -537,7 +537,7 @@ const AddProduct = () => {
             const responseJson = response.data;
 
             let newArray = responseJson.data.map((item, index) => ({
-                key: index,
+                key: index.toString(),
                 value: item
             }));
 
@@ -643,12 +643,15 @@ const AddProduct = () => {
                 product_name_eng: productname,
                 min_qty: quantity,
                 product_cateory_id: selectedCategory,
-                box_unit: selectedBoxUnit,
+                box_unit_name: selectedBoxUnit,
                 sell_price_cash_per_box: boxprice,
-                unit: selectedUnit,
+                unit_name: selectedUnit,
                 sell_price_cash_per_pack: unitPriceInput
+
             }
             handleAdd(obj);
+            console.log("Product Data Before Sending:", obj);
+
         }
     }
 
@@ -665,10 +668,11 @@ const AddProduct = () => {
         formData.append('product_name_eng', param.product_name_eng);
         formData.append('min_qty', param.min_qty);
         formData.append('product_cateory_id', param.product_cateory_id);
-        formData.append('box_unit', param.box_unit);
+
         formData.append('sell_price_cash_per_box', param.sell_price_cash_per_box);
-        formData.append('unit', param.unit);
         formData.append('sell_price_cash_per_pack', param.sell_price_cash_per_pack);
+        formData.append('unit_name', param.unit_name);
+        formData.append('box_unit_name', param.box_unit_name);
 
         try {
             const response = await axios.post(addProdUrl, formData, {
@@ -677,6 +681,9 @@ const AddProduct = () => {
                 },
             });
             const { status, message } = response.data;
+            console.log("Unit Name Before Sending:", param.unit_name);
+            console.log("Box Unit Name Before Sending:", param.box_unit_name);
+
             ToastAndroid.show('Product added successfully!!', ToastAndroid.SHORT);
             setFilePath(null);
             setProductname('');
@@ -803,7 +810,16 @@ const AddProduct = () => {
                     <Text style={styles.error}>{selectedCategoryError}</Text>
 
                     <Text style={styles.name}>Box Unit</Text>
-                    <SelectList setSelected={setSelectedBoxUnit} data={dataBoxUnit} onSelect={() => alert(selectedBoxUnit)} />
+
+                    <SelectList
+                        setSelected={selectedKey => {
+                            const selectedBoxUnitName = dataBoxUnit.find(item => item.key === selectedKey)?.value;
+                            setSelectedBoxUnit(selectedBoxUnitName);
+                            console.log("Selected Box Unit Name:", selectedBoxUnitName); // Debugging output
+                        }}
+                        data={dataBoxUnit}
+                    />
+
                     <View>
                         <Text style={styles.error}>{selectedBoxUnitError}</Text>
                         <Text style={styles.name}>Sell price cash per box</Text>
@@ -827,7 +843,14 @@ const AddProduct = () => {
                     {isChecked && (
                         <View>
                             <Text style={styles.name1}>Unit</Text>
-                            <SelectList setSelected={setSelectedUnit} data={dataUnit} onSelect={() => alert(selectedUnit)} />
+                            <SelectList
+                                setSelected={selectedKey => {
+                                    const selectedUnitName = dataUnit.find(item => item.key === selectedKey)?.value;
+                                    setSelectedUnit(selectedUnitName);
+                                    console.log("Selected Unit Name:", selectedUnitName); // Debugging output
+                                }}
+                                data={dataUnit}
+                            />
                             <Text style={styles.error}>{selectedUnitError}</Text>
                             <TextInput
                                 style={styles.inputfield_style}
