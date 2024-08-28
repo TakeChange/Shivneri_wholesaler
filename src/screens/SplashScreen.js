@@ -17,7 +17,6 @@ const SplashScreen = ({ navigation }) => {
         try {
             const value = await AsyncStorage.getItem('login');
             if (value == "yes") {
-                // console.log(value);
                 navigation.navigate('DrawerNavigation');
             } else {
                 navigation.navigate('LoginScreen');
